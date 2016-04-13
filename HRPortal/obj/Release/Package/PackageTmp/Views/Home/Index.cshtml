@@ -1,0 +1,21 @@
+﻿@model HRPortal.Models.JobAndCandidateViewModels
+
+@{
+    ViewBag.Title = "Home Page";
+    //var isAdmin = Session["IsAdmin"] != null ? Session["IsAdmin"].ToString():string.Empty;
+    var isAdmin = User.Identity.Name.ToUpper().Contains("ADMIN") ? "True" : "False";@*@TODO:Need to remove once role done*@
+}
+
+<div class="jumbotron">
+    <h4>Search Criteria:</h4>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        @if (isAdmin == "True")
+        {
+            @Html.Partial("_CandidateList", Model.CandidateItems)
+        }
+            else {@Html.Partial("_JobList", Model.JobItems) }
+    </div>
+</div>

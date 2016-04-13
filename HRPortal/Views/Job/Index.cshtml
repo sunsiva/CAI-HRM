@@ -1,0 +1,213 @@
+﻿@model IEnumerable<HRPortal.JOBPOSTING>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int sl = 0;
+}
+<br />
+<h2>Job Posting</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 align="right">
+                @Html.ActionLink("Create New", "Create", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
+            </h4>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <tr>
+                        <th>#</th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.JOB_CODE)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.JOB_DESCRIPTION)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.POSITION_NAME)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NO_OF_VACANCIES)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.YEARS_OF_EXP_TOTAL)
+                        </th>
+                        <th>
+                           PUBLISHED DATE
+                        </th>
+                        <th>
+                            STATUS
+                        </th>
+                        <th colspan="5">ACTION</th>
+                    </tr>
+                    
+                    @foreach (var item in Model)
+                    {
+                        <tr class="text-center">
+                            <td>@(sl = sl + 1) </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.JOB_CODE)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.JOB_DESCRIPTION)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.POSITION_NAME)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NO_OF_VACANCIES)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.YEARS_OF_EXP_TOTAL)
+                            </td>
+                            <td>
+                                @(item.CREATED_ON != null ? item.CREATED_ON.ToString("dd-MMM-yyyy") : "Empty")<br />
+                                <span style="font-size:x-small" >@HRPortal.Helper.HelperFuntions.TimeAgo(item.CREATED_ON)</span>
+                            </td>
+                            <td>
+                               Active
+                            </td>
+                            <td>
+                                <p data-placement="top" data-toggle="tooltip" title="Details">
+                                    <a href="@Url.Action("Details", "Job", new { id = item.JOB_ID })" class="btn btn-info btn-xs" id="btnJobDetails" value="@item.JOB_ID">
+                                        <span class="glyphicon glyphicon-list"></span>
+                                    </a>
+                                </p>
+                            </td>
+                            <td>
+                                <p data-placement="top" data-toggle="tooltip" title="Edit">
+                                    <a href="@Url.Action("Edit", "Job", new { id = item.JOB_ID })" id="btnJobEdit" value="@item.JOB_ID" class="btn btn-primary btn-xs">
+                                        <span class="glyphicon glyphicon-pencil"></span>
+                                    </a>
+                                </p>
+                            </td>
+                           
+                            <td>
+                                <p data-placement="top" data-toggle="tooltip" title="Delete">
+                                    <a  href="@Url.Action("Delete", "Job", new { id = item.JOB_ID })" class="btn btn-danger btn-xs" id="btnJobDelete" value="@item.JOB_ID">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                </p>
+                            </td>
+                            @*<td><p data-placement="top" data-toggle="tooltip" title="Edit"><button id="btnJobEdit" value="@item.JOB_ID" class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit">
+                                <span class="glyphicon glyphicon-pencil"></span></button></p><td>
+                            <td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" id="btnJobDelete" value="@item.JOB_ID" data-title="Delete" data-toggle="modal" data-target="#delete">
+                                <span class="glyphicon glyphicon-trash"></span></button></p></td>*@
+
+                                @*@Html.ActionLink("Edit", "Edit", new { id = item.JOB_ID }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.JOB_ID }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.JOB_ID })*@
+                        </tr>
+                    }
+
+                    <tr><td align="right" class="" colspan="11">@Model.Count() Record(s) found.</td></tr>
+                </table>
+                <div class="clearfix"></div>
+                <ul class="pagination pull-right">
+                    <li class="disabled"><a href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                </ul>
+            </div>
+            </div>
+</div>
+</div>
+
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                <h4 class="modal-title custom_align" id="Heading">Edit Your Detail</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input class="form-control " type="text" placeholder="Mohsin">
+                </div>
+                <div class="form-group">
+
+                    <input class="form-control " type="text" placeholder="Irshad">
+                </div>
+                <div class="form-group">
+                    <textarea rows="2" class="form-control" placeholder="CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan"></textarea>
+
+
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Update</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                <h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Record?</div>
+
+            </div>
+            <div class="modal-footer ">
+                <button type="button" id="btnJobDelConfirm" class="btn btn-success"><span class="glyphicon glyphicon-ok-sign"></span> Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<script lang="ja" type="text/javascript">
+    $(document).ready(function () {
+        //$("#mytable #checkall").click(function () {
+        //    if ($("#mytable #checkall").is(':checked')) {
+        //        $("#mytable input[type=checkbox]").each(function () {
+        //            $(this).prop("checked", true);
+        //        });
+
+        //    } else {
+        //        $("#mytable input[type=checkbox]").each(function () {
+        //            $(this).prop("checked", false);
+        //        });
+        //    }
+        //});
+
+        //$("[data-toggle=tooltip]").tooltip();
+
+
+        $("#btnJobDelConfirm").click(function ()
+        {
+            alert($("#btnJobDelete").val());
+            $.ajax({
+                url: '@Url.Action("JsonDeleteConfirmed","Job")',
+                data: JSON.stringify({ id: $("#btnJobDelete").val() }),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                async: true,
+                cache: false,
+                processData: false,
+                traditional: true,
+                success: function () {
+                    alert("Ok");
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error:Action is aborted.Please try again later.");
+                }
+            });
+        });
+    });
+</script>

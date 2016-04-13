@@ -1,0 +1,135 @@
+﻿@model HRPortal.JOBPOSTING
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var isActive =(Model.ISACTIVE == true ? "Active" : "In-Active");
+    }
+
+<h2 align="center">JOB DETAILS</h2>
+
+<div>
+    @*<h4>JOB DETAILS</h4>*@
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.JOB_CODE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.JOB_CODE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.JOB_DESCRIPTION)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.JOB_DESCRIPTION)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.POSITION_NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.POSITION_NAME)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NO_OF_VACANCIES)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NO_OF_VACANCIES)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YEARS_OF_EXP_TOTAL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YEARS_OF_EXP_TOTAL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YEARS_OF_EXP_RELEVANT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YEARS_OF_EXP_RELEVANT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WORK_LOCATION)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WORK_LOCATION)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.COMMENTS)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.COMMENTS)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OTHER_BENEFITS)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OTHER_BENEFITS)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ISACTIVE)
+        </dt>
+
+        <dd>
+            @isActive
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MODIFIED_BY)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MODIFIED_BY)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MODIFIED_ON)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MODIFIED_ON)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CREATED_BY)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CREATED_BY)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CREATED_ON)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CREATED_ON)
+        </dd>
+
+    </dl>
+</div>
+<p>
+@if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"]=="H")
+{
+    @Html.ActionLink("Back to List", "Index", "Home")}
+else {@Html.ActionLink("Back to List", "Index")}
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.JOB_ID }) |*@ 
+</p>

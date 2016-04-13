@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav dropdown">
+        <li >
+            @Html.ActionLink("You logged in as " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage Account"})
+       @*<span class="col-sm-offset-12 glyphicon glyphicon-user"></span>*@
+         </li>
+        <li><a class="glyphicon glyphicon-log-out" title="Click To Log Off" href="javascript:document.getElementById('logoutForm').submit()"></a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        @*<li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>*@
+
+        <li>@Html.ActionLink("About", "About", "Home")</li>
+        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+        @*<li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>*@
+    </ul>
+}
+<br />
+<div class="row">
+    <div class="col-sm-offset-5">
+        <div class="input-group col-lg-5">
+            <input type="text" class="form-control" placeholder="Search for...">
+            <span class="input-group-btn">
+                <button class="btn btn-default glyphicon-serach-home glyphicon-search" type="submit"></button>
+            </span>
+        </div>
+    </div>
+</div>

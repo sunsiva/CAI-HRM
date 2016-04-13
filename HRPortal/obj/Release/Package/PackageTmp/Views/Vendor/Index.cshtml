@@ -1,0 +1,58 @@
+﻿@model IEnumerable<HRPortal.VENDOR_MASTER>
+
+@{
+    ViewBag.Title = "Vendor Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Vendor Master</h2>
+<br />
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.VENDOR_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VENDOR_SPOC)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMAIL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VENDOR_CONTACT_NO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ISACTIVE)
+        </th>
+        <th>Action</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.VENDOR_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VENDOR_SPOC)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMAIL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VENDOR_CONTACT_NO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ISACTIVE)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.VENDOR_ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.VENDOR_ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.VENDOR_ID })
+        </td>
+    </tr>
+}
+
+</table>

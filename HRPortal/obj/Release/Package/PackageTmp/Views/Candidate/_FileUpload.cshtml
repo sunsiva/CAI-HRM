@@ -1,0 +1,8 @@
+﻿
+@using (Html.BeginForm("_FileUpload", "Candidate", FormMethod.Get, new { enctype = "multipart/form-data" }))
+{
+    <label for="file">Resume Upload :</label> <input type="file" name="file" id="file" />
+    <br /><input type="submit" value="Upload" />
+            <br><br>
+            @ViewBag.Message
+}

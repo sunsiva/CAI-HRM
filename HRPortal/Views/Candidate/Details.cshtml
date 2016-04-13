@@ -1,0 +1,170 @@
+﻿@model HRPortal.CANDIDATE
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var isActive = (Model.ISACTIVE == true ? "Active" : "In-Active");
+    var dob = (Model.DOB.ToString("dd-MMM-yyyy"));
+}
+
+<h2 align="center">Candidate Details</h2>
+
+<div>
+    @*<h4>CANDIDATE</h4>*@
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CANDIDATE_NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CANDIDATE_NAME)
+        </dd>
+
+        @*<dt>
+        @Html.DisplayNameFor(model => model.JOB_ID)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.JOB_ID)
+    </dd>*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YEARS_OF_EXP_TOTAL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YEARS_OF_EXP_TOTAL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YEARS_OF_EXP_RELEVANT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YEARS_OF_EXP_RELEVANT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MOBILE_NO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MOBILE_NO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ALTERNATE_MOBILE_NO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ALTERNATE_MOBILE_NO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EMAIL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EMAIL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ALTERNATE_EMAIL_ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ALTERNATE_EMAIL_ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DOB)
+        </dt>
+
+        <dd>
+            @dob
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CURRENT_COMPANY)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CURRENT_COMPANY)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NOTICE_PERIOD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NOTICE_PERIOD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.COMMENTS)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.COMMENTS)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ISINNOTICEPERIOD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ISINNOTICEPERIOD)
+        </dd>
+
+        <dt>
+           @Html.DisplayNameFor(model => model.ISACTIVE)
+        </dt>
+
+        <dd>
+            @isActive
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MODIFIED_BY)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MODIFIED_BY)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MODIFIED_ON)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MODIFIED_ON)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CREATED_BY)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CREATED_BY)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CREATED_ON)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CREATED_ON)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.CANDIDATE_ID }) |*@
+    @if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "H")
+    {
+        @Html.ActionLink("Back to List", "Index", "Home")}
+    else {@Html.ActionLink("Back to List", "Index")}
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.JOB_ID }) |*@
+    
+</p>

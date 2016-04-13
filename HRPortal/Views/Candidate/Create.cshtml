@@ -1,0 +1,214 @@
+﻿@model HRPortal.CANDIDATE
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var JCod = Request.QueryString.Count>0? Request.QueryString[0]:string.Empty;
+}
+
+<h2 align="center">Create Candidate Profile</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>@*CANDIDATE*@</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+             <div class="form-group">
+                <span align="right" class="text-danger">@ViewBag.IsExist</span>
+            </div>
+            <div class="form-group">
+                @Html.Label("JOB CODE", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.Label(JCod, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                </div>
+            </div>
+
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.CANDIDATE_NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CANDIDATE_NAME, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
+                    @Html.ValidationMessageFor(model => model.CANDIDATE_NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.YEARS_OF_EXP_TOTAL, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.YEARS_OF_EXP_TOTAL, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
+                    @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_TOTAL, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.CURRENT_COMPANY, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CURRENT_COMPANY, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
+                    @Html.ValidationMessageFor(model => model.CURRENT_COMPANY, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.MOBILE_NO, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
+                    @Html.ValidationMessageFor(model => model.MOBILE_NO, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.EMAIL, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
+                    @Html.ValidationMessageFor(model => model.EMAIL, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control date-picker", placeholder = "Select a date..." } })
+                    @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger", @required = "mandatory" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.COMMENTS, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.COMMENTS, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.COMMENTS, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.YEARS_OF_EXP_RELEVANT, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.YEARS_OF_EXP_RELEVANT, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_RELEVANT, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ALTERNATE_MOBILE_NO, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ALTERNATE_MOBILE_NO, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ALTERNATE_MOBILE_NO, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ALTERNATE_EMAIL_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ALTERNATE_EMAIL_ID, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ALTERNATE_EMAIL_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.ANY_OTHER_OFFER, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10 checkbox">
+                    <span><input type="radio" id="rdoOfferYes" name="rdoOffer" value="Yes" checked="checked" required />Yes</span>
+                    <span><input type="radio" id="rdoOfferNo" name="rdoOffer" value="No" />No</span>
+                        @Html.ValidationMessageFor(model => model.ANY_OTHER_OFFER, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        
+            <div class="form-group form-group-required" id="txtLWD">
+                @Html.LabelFor(model => model.LAST_WORKING_DATE, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.LAST_WORKING_DATE, new { htmlAttributes = new { @class = "form-control date-picker", placeholder = "Select a date..." } })
+                    @Html.ValidationMessageFor(model => model.LAST_WORKING_DATE, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        <div class="form-group form-group-required hide" id="txtNP">
+            @Html.LabelFor(model => model.NOTICE_PERIOD, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select id="NoticePeriod" name="NoticePeriod" class="form-control">
+                    <option value="">Select Notice Period</option>
+                    <option value="1W">1 WEEK</option>
+                    <option value="15D">15 DAYS</option>
+                    <option value="30D">30 DAYS</option>
+                    <option value="45D">45 DAYS</option>
+                    <option value="60D">60 DAYS</option>
+                    <option value="90D">90 DAYS</option>
+                </select>
+                @*@Html.DropDownList(new SelectListItem, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.ValidationMessageFor(model => model.NOTICE_PERIOD, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ISINNOTICEPERIOD, "IS_IN_NOTICE_PERIOD", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        <span><input type="radio" id="rdoIsNPYes" name="rdoIsNP" value="Yes" />Yes</span>
+                        <span><input type="radio" id="rdoIsNPrNo" name="rdoIsNP" value="No" />No</span>
+                        @Html.ValidationMessageFor(model => model.ISINNOTICEPERIOD, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        <div class="form-group form-group-required">
+            <label for="file" class="control-label col-md-2">RESUME UPLOAD :</label>
+            <div class="col-md-10">
+                <input class="form-control" type="file" name="file" id="file" />
+            </div>
+        </div>
+            @*<div class="cv"> Would you like to attach you CV? <a href='@Url.Content("_FilieUpload")' id="resume_link">Click here</a></div>
+            <input type="file" id="resume" style="visibility: hidden">*@
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                    <input type="button" value="Clear" onclick="this.form.reset()" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+}
+
+@*@Html.Partial("_FileUpload")*@
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script lang="ja" type="text/javascript">
+        $(document).ready(function () {
+            var myfile = "";
+
+            $('#resume_link').click(function (e) {
+                e.preventDefault();
+                $('#resume').trigger('click');
+            });
+
+            $('#resume').on('change', function () {
+                myfile = $(this).val();
+                var ext = myfile.split('.').pop();
+                if (ext == "pdf" || ext == "docx" || ext == "doc") {
+                    alert(ext);
+                } else {
+                    alert(ext);
+                }
+            });
+
+            $('#rdoOfferYes').click(function () {
+                $('#txtNP').hasClass('hide') ? "" : $('#txtNP').removeClass('show') && $('#txtNP').addClass('hide');
+                $('#txtLWD').hasClass('hide') ? $('#txtLWD').removeClass('hide') && $('#txtLWD').addClass('show'):"";
+            });
+
+            $('#rdoOfferNo').click(function () {
+                $('#txtNP').hasClass('hide') ? $('#txtNP').removeClass('hide') && $('#txtNP').addClass('show'):"";
+                $('#txtLWD').hasClass('hide') ? "" : $('#txtLWD').removeClass('show') && $('#txtLWD').addClass('hide');
+            });
+
+        $(function () {
+            // This will make every element with the class "date-picker" into a DatePicker element
+            $('.date-picker').datepicker();
+        })
+    });
+    </script>
+}
