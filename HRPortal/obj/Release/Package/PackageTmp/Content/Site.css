@@ -22,3 +22,21 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.form-group-required .control-label:after {
+  content:"*";
+  color:red;
+}
+
+.glyphicon-serach-home {
+  position: relative;
+  top: -0.5px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.4;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

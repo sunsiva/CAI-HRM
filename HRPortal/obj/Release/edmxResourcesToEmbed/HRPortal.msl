@@ -61,31 +61,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="CANDIDATES">
-      <EntityTypeMapping TypeName="HRPortalModel.CANDIDATE">
-        <MappingFragment StoreEntitySet="CANDIDATES">
-          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
-          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
-          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
-          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
-          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
-          <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
-          <ScalarProperty Name="ALTERNATE_MOBILE_NO" ColumnName="ALTERNATE_MOBILE_NO" />
-          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
-          <ScalarProperty Name="ALTERNATE_EMAIL_ID" ColumnName="ALTERNATE_EMAIL_ID" />
-          <ScalarProperty Name="DOB" ColumnName="DOB" />
-          <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
-          <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="ISINNOTICEPERIOD" ColumnName="ISINNOTICEPERIOD" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="ERROR_LOG">
       <EntityTypeMapping TypeName="HRPortalModel.ERROR_LOG">
         <MappingFragment StoreEntitySet="ERROR_LOG">
@@ -99,29 +74,6 @@
           <ScalarProperty Name="ERR_EVENT" ColumnName="ERR_EVENT" />
           <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
           <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="JOBPOSTINGs">
-      <EntityTypeMapping TypeName="HRPortalModel.JOBPOSTING">
-        <MappingFragment StoreEntitySet="JOBPOSTING">
-          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
-          <ScalarProperty Name="JOB_CODE" ColumnName="JOB_CODE" />
-          <ScalarProperty Name="JOB_DESCRIPTION" ColumnName="JOB_DESCRIPTION" />
-          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
-          <ScalarProperty Name="NO_OF_VACANCIES" ColumnName="NO_OF_VACANCIES" />
-          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
-          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
-          <ScalarProperty Name="CLOSE_DATE" ColumnName="CLOSE_DATE" />
-          <ScalarProperty Name="ISIMMEDIATEPOSITION" ColumnName="ISIMMEDIATEPOSITION" />
-          <ScalarProperty Name="WORK_LOCATOIN" ColumnName="WORK_LOCATOIN" />
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="OTHER_BENEFITS" ColumnName="OTHER_BENEFITS" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -164,5 +116,69 @@
         <ScalarProperty Name="Id" ColumnName="UserId" />
       </EndProperty>
     </AssociationSetMapping>
+    <EntitySetMapping Name="CANDIDATES">
+      <EntityTypeMapping TypeName="HRPortalModel.CANDIDATE">
+        <MappingFragment StoreEntitySet="CANDIDATES">
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="ISINNOTICEPERIOD" ColumnName="ISINNOTICEPERIOD" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+          <ScalarProperty Name="ANY_OTHER_OFFER" ColumnName="ANY_OTHER_OFFER" />
+          <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
+          <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
+          <ScalarProperty Name="DOB" ColumnName="DOB" />
+          <ScalarProperty Name="ALTERNATE_EMAIL_ID" ColumnName="ALTERNATE_EMAIL_ID" />
+          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+          <ScalarProperty Name="ALTERNATE_MOBILE_NO" ColumnName="ALTERNATE_MOBILE_NO" />
+          <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
+          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
+          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="JOBPOSTINGs">
+      <EntityTypeMapping TypeName="HRPortalModel.JOBPOSTING">
+        <MappingFragment StoreEntitySet="JOBPOSTING">
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="OTHER_BENEFITS" ColumnName="OTHER_BENEFITS" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="WORK_LOCATION" ColumnName="WORK_LOCATION" />
+          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
+          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+          <ScalarProperty Name="NO_OF_VACANCIES" ColumnName="NO_OF_VACANCIES" />
+          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+          <ScalarProperty Name="JOB_DESCRIPTION" ColumnName="JOB_DESCRIPTION" />
+          <ScalarProperty Name="JOB_CODE" ColumnName="JOB_CODE" />
+          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserLogs">
+      <EntityTypeMapping TypeName="HRPortalModel.UserLog">
+        <MappingFragment StoreEntitySet="UserLog">
+          <ScalarProperty Name="UserMAC" ColumnName="UserMAC" />
+          <ScalarProperty Name="UserIP" ColumnName="UserIP" />
+          <ScalarProperty Name="IsOnline" ColumnName="IsOnline" />
+          <ScalarProperty Name="LoggedOutOn" ColumnName="LoggedOutOn" />
+          <ScalarProperty Name="LoggedInOn" ColumnName="LoggedInOn" />
+          <ScalarProperty Name="LoggedInBy" ColumnName="LoggedInBy" />
+          <ScalarProperty Name="UserLogDesc" ColumnName="UserLogDesc" />
+          <ScalarProperty Name="UserLogName" ColumnName="UserLogName" />
+          <ScalarProperty Name="UserLogId" ColumnName="UserLogId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

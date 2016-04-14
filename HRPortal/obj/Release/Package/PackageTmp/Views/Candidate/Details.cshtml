@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var isActive = (Model.ISACTIVE == true ? "Active" : "In-Active");
+    var dob = (Model.DOB.ToString("dd-MMM-yyyy"));
 }
 
 <h2 align="center">Candidate Details</h2>
@@ -19,13 +21,13 @@
             @Html.DisplayFor(model => model.CANDIDATE_NAME)
         </dd>
 
-        <dt> @*TODO:Display Job Code*@
-            @Html.DisplayNameFor(model => model.JOB_ID)
-        </dt>
+        @*<dt>
+        @Html.DisplayNameFor(model => model.JOB_ID)
+    </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.JOB_ID)
-        </dd>
+    <dd>
+        @Html.DisplayFor(model => model.JOB_ID)
+    </dd>*@
 
         <dt>
             @Html.DisplayNameFor(model => model.YEARS_OF_EXP_TOTAL)
@@ -80,7 +82,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.DOB)
+            @dob
         </dd>
 
         <dt>
@@ -116,11 +118,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ISACTIVE)
+           @Html.DisplayNameFor(model => model.ISACTIVE)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ISACTIVE)
+            @isActive
         </dd>
 
         <dt>

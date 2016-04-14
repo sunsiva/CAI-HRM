@@ -170,9 +170,10 @@
 
 @*@Html.Partial("_FileUpload")*@
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+@if (Request.QueryString.Count > 0 && Request.QueryString["styp"] == "H")
+{
+    @Html.ActionLink("Back to List", "Index", "Home")}
+else {@Html.ActionLink("Back to List", "Index")}
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

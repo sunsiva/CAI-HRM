@@ -64,30 +64,6 @@
     <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
     <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
   </EntityType>
-  <EntityType Name="CANDIDATE">
-    <Key>
-      <PropertyRef Name="CANDIDATE_ID" />
-    </Key>
-    <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
-    <Property Name="CANDIDATE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="JOB_ID" Type="Guid" Nullable="false" />
-    <Property Name="YEARS_OF_EXP_TOTAL" Type="Int32" Nullable="false" />
-    <Property Name="YEARS_OF_EXP_RELEVANT" Type="Int32" />
-    <Property Name="MOBILE_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="ALTERNATE_MOBILE_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-    <Property Name="EMAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="ALTERNATE_EMAIL_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="DOB" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="CURRENT_COMPANY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="NOTICE_PERIOD" Type="Int32" Nullable="false" />
-    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="ISINNOTICEPERIOD" Type="Boolean" />
-    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
-    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-    <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-  </EntityType>
   <EntityType Name="ERROR_LOG">
     <Key>
       <PropertyRef Name="ERR_ID" />
@@ -102,28 +78,6 @@
     <Property Name="ERR_EVENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-  </EntityType>
-  <EntityType Name="JOBPOSTING">
-    <Key>
-      <PropertyRef Name="JOB_ID" />
-    </Key>
-    <Property Name="JOB_ID" Type="Guid" Nullable="false" />
-    <Property Name="JOB_CODE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="JOB_DESCRIPTION" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="POSITION_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="NO_OF_VACANCIES" Type="Int32" Nullable="false" />
-    <Property Name="YEARS_OF_EXP_TOTAL" Type="Int32" Nullable="false" />
-    <Property Name="YEARS_OF_EXP_RELEVANT" Type="Int32" />
-    <Property Name="CLOSE_DATE" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="ISIMMEDIATEPOSITION" Type="Boolean" Nullable="false" />
-    <Property Name="WORK_LOCATOIN" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="OTHER_BENEFITS" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
-    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-    <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
   </EntityType>
   <EntityType Name="STATUS_MASTER_HISTORY">
     <Key>
@@ -192,9 +146,7 @@
     <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
     <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
     <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
-    <EntitySet Name="CANDIDATES" EntityType="Self.CANDIDATE" />
     <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" />
-    <EntitySet Name="JOBPOSTINGs" EntityType="Self.JOBPOSTING" />
     <EntitySet Name="STATUS_MASTER_HISTORY" EntityType="Self.STATUS_MASTER_HISTORY" />
     <EntitySet Name="VENDOR_MASTER" EntityType="Self.VENDOR_MASTER" />
     <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
@@ -209,5 +161,69 @@
       <End Role="AspNetRoles" EntitySet="AspNetRoles" />
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
     </AssociationSet>
+    <EntitySet Name="CANDIDATES" EntityType="HRPortalModel.CANDIDATE" />
+    <EntitySet Name="JOBPOSTINGs" EntityType="HRPortalModel.JOBPOSTING" />
+    <EntitySet Name="UserLogs" EntityType="HRPortalModel.UserLog" />
   </EntityContainer>
+  <EntityType Name="CANDIDATE">
+    <Key>
+      <PropertyRef Name="CANDIDATE_ID" />
+    </Key>
+    <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
+    <Property Name="CANDIDATE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="JOB_ID" Type="Guid" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_TOTAL" Type="Int32" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_RELEVANT" Type="Int32" />
+    <Property Name="MOBILE_NO" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="ALTERNATE_MOBILE_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ALTERNATE_EMAIL_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DOB" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CURRENT_COMPANY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NOTICE_PERIOD" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ANY_OTHER_OFFER" Type="Boolean" />
+    <Property Name="LAST_WORKING_DATE" Type="DateTime" Precision="3" />
+    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ISINNOTICEPERIOD" Type="Boolean" />
+    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="JOBPOSTING">
+    <Key>
+      <PropertyRef Name="JOB_ID" />
+    </Key>
+    <Property Name="JOB_ID" Type="Guid" Nullable="false" />
+    <Property Name="JOB_CODE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="JOB_DESCRIPTION" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="POSITION_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NO_OF_VACANCIES" Type="Int32" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_TOTAL" Type="Int32" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_RELEVANT" Type="Int32" />
+    <Property Name="WORK_LOCATION" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="OTHER_BENEFITS" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="UserLog">
+    <Key>
+      <PropertyRef Name="UserLogId" />
+    </Key>
+    <Property Name="UserLogId" Type="Int32" Nullable="false" />
+    <Property Name="UserLogName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UserLogDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LoggedInBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="LoggedInOn" Type="DateTime" Precision="3" />
+    <Property Name="LoggedOutOn" Type="DateTime" Precision="3" />
+    <Property Name="IsOnline" Type="Boolean" />
+    <Property Name="UserIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="UserMAC" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
 </Schema>

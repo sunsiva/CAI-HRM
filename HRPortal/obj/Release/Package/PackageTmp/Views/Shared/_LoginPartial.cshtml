@@ -5,13 +5,25 @@
     {
     @Html.AntiForgeryToken()
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink("You logged in as " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+    <ul class="nav navbar-nav dropdown">
+        <li >
+            @Html.ActionLink("Logged in as " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage Account"})
+       @*<span class="col-sm-offset-12 glyphicon glyphicon-user"></span>*@
+         </li>
+        <li><a class="glyphicon glyphicon-log-out" title="Click To Log Off" href="javascript:document.getElementById('logoutForm').submit()"></a></li>
     </ul>
     }
+    <br />
+    <div class="row">
+        <div class="col-sm-offset-5">
+            <div class="input-group col-lg-5">
+                <input type="text" class="form-control" placeholder="Search for...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default glyphicon-serach-home glyphicon-search" type="submit"></button>
+                </span>
+            </div>
+        </div>
+    </div>
 }
 else
 {
@@ -23,14 +35,4 @@ else
         @*<li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>*@
     </ul>
 }
-<br />
-    @*<div class="row" align="right">
-            <div class="col-lg-7">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                </div>
-            </div>
-        </div>*@
+

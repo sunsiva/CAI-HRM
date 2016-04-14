@@ -34,18 +34,46 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script lang="ja" type="text/javascript">
     $(document).ready(function () {
-         $(function () {
+        $(function () {
             // This will make every element with the class "date-picker" into a DatePicker element
             $('.date-picker').datepicker();
-         })
+        })
 
          $('#CollapseMe').click(function () {
              $(this).hasClass('glyphicon-triangle-bottom') ? $(this).removeClass('glyphicon-triangle-bottom') && $(this).addClass('glyphicon-triangle-top') : $(this).removeClass('glyphicon-triangle-top') && $(this).addClass('glyphicon-triangle-bottom');
          });
-        
+       
+         $("#btnSearchCriteria").click(function () {
+             $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), status: $("#txtCriteriaStatus").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
+                 //alert(data);
+                 //var src = data.find("#SearchCriteriaPartial").remove().end();
+                 $("#CandidatesPartial").html(data);
+             });
+         });
+
+         @*$("#btnSearchCriteria").click(function () {
+             alert($("#txtCriteriaCanName").val());
+             $.ajax({
+                 url: '@Url.Action("SearchCriteria", "Home")',
+                 data: { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), status: $("#txtCriteriaStatus").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() },
+                 type: "GET",
+                 contentType: "application/json; charset=utf-8",
+                 datatype: "json",
+                 async: true,
+                 cache: false,
+                 processData: false,
+                 traditional: true,
+                 success: function () {
+                     alert("Ok");
+                 },
+                 error: function (jqXhr, textStatus, errorThrown) {
+                     alert("Error:Action is aborted.Please try again later.");
+                 }
+             });
+         });*@
+
     });
 </script>
 }

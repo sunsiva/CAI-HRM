@@ -91,6 +91,7 @@
           <Property Name="LAST_WORKING_DATE" Type="datetime" />
           <Property Name="COMMENTS" Type="nvarchar(max)" />
           <Property Name="ISINNOTICEPERIOD" Type="bit" />
+          <Property Name="STATUS" Type="nvarchar" MaxLength="50" />
           <Property Name="ISACTIVE" Type="bit" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
           <Property Name="MODIFIED_ON" Type="datetime" />
@@ -455,6 +456,7 @@
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="JOBPOSTING">
           <Key>
@@ -614,6 +616,7 @@
           <EntitySetMapping Name="CANDIDATES">
             <EntityTypeMapping TypeName="HRPortalModel.CANDIDATE">
               <MappingFragment StoreEntitySet="CANDIDATES">
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
                 <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />

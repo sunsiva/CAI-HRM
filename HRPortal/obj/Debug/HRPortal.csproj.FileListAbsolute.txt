@@ -85,6 +85,6 @@ D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\bin\Microsoft.Owin.
 D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\bin\Microsoft.Owin.Security.Google.xml
 D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\bin\Microsoft.Owin.Security.Twitter.xml
 D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.csprojResolveAssemblyReference.cache
 D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.dll
 D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.pdb
-D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.csprojResolveAssemblyReference.cache

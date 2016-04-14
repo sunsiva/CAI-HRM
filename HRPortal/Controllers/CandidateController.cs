@@ -156,45 +156,6 @@ namespace HRPortal.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<ActionResult> ExportToExcel()
-        {
-            System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
-            JobAndCandidateViewModels obj = new JobAndCandidateViewModels();
-            var dbCan = await db.CANDIDATES.ToListAsync();
-            var dbJobs = await db.JOBPOSTINGs.ToListAsync();
-            gv.DataSource = (from c in dbCan
-                             join j in dbJobs on c.JOB_ID equals j.JOB_ID
-                             select new { Candidate = c, Job = j }).Select(i => new 
-                             {
-                                 CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
-                                 CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
-                                 VENDOR_NAME = "Viruntha",//TODO:change vendor name.
-                                      POSITION = i.Job.POSITION_NAME,
-                                      NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
-                                      YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
-                                      LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
-                                      CREATED_ON = i.Candidate.CREATED_ON,
-                                      MODIFIED_ON = i.Candidate.MODIFIED_ON,
-                                      MODIFIED_BY = i.Candidate.MODIFIED_BY,
-                                      CREATED_BY=i.Candidate.CREATED_BY
-                                  }).ToList();
-            gv.DataBind();
-            Response.ClearContent();
-            Response.Buffer = true;
-            string fileName = "Candidates_" + DateTime.Now.Month +"_"+ DateTime.Now.Day + "_" + DateTime.Now.Hour + "_" + DateTime.Now.Minute + "_" + DateTime.Now.Second + ".xls";
-            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-            Response.ContentType = "application/ms-excel";
-            Response.Charset = "";
-            StringWriter sw = new StringWriter();
-            System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
-            gv.RenderControl(htw);
-           // Response.WriteFile("CandidateSearchList");
-            Response.Output.Write(sw.ToString());
-            Response.Flush();
-            Response.End();
-            return RedirectToAction("Index","Home");
-        }
-
         /// <summary>
         /// Check if Candidates mobile number and DOB are exist.
         /// </summary>

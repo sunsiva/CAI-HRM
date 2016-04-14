@@ -119,6 +119,7 @@
     <EntitySetMapping Name="CANDIDATES">
       <EntityTypeMapping TypeName="HRPortalModel.CANDIDATE">
         <MappingFragment StoreEntitySet="CANDIDATES">
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
           <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
           <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
           <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />

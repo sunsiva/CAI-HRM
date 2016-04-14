@@ -3,11 +3,12 @@
 
 <div class="container">
     <br />
-    @Html.Partial("_SearchCriteria")
+    <br />
+    @*@Html.Partial("_SearchCriteria")*@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table table-striped table-hover">
+                <table class="table table-striped table-hover table-condensed table-bordered">
                     <tr>
                         <th>#</th>
                         <th>
@@ -39,7 +40,7 @@
                         <tr class="text-center">
                             <td>@(sl = sl + 1) </td>
                             <td>
-                                @Html.ActionLink(item.JOB_CODE.ToString(), "Create","Candidate", new { JCode=item.JOB_CODE,JID=item.JOB_ID }, htmlAttributes: new {@title="Click To Map Profile" })
+                                @Html.ActionLink(item.JOB_CODE.ToString(), "Create","Candidate", new { JCode=item.JOB_CODE,JID=item.JOB_ID, styp = "H" }, htmlAttributes: new {@title="Click To Map Profile" })
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.JOB_DESCRIPTION)

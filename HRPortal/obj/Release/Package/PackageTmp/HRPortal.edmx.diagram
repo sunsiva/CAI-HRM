@@ -10,14 +10,15 @@
         <EntityTypeShape EntityType="HRPortalModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1.125" IsExpanded="true" />
         <EntityTypeShape EntityType="HRPortalModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="HRPortalModel.AspNetUser" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="HRPortalModel.CANDIDATE" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="HRPortalModel.ERROR_LOG" Width="1.5" PointX="4.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="HRPortalModel.JOBPOSTING" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="HRPortalModel.STATUS_MASTER_HISTORY" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="HRPortalModel.VENDOR_MASTER" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
         <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="HRPortalModel.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="HRPortalModel.CANDIDATE" Width="1.5" PointX="7.75" PointY="8.75" />
+        <EntityTypeShape EntityType="HRPortalModel.JOBPOSTING" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="HRPortalModel.UserLog" Width="1.5" PointX="10.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

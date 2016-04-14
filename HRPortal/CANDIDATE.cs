@@ -35,5 +35,6 @@ namespace HRPortal
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_ON { get; set; }
+        public string STATUS { get; set; }
     }
 }

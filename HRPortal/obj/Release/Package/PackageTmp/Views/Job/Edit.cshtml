@@ -66,28 +66,10 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.CLOSE_DATE, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.WORK_LOCATION, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.CLOSE_DATE, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CLOSE_DATE, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ISIMMEDIATEPOSITION, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.ISIMMEDIATEPOSITION)
-                    @Html.ValidationMessageFor(model => model.ISIMMEDIATEPOSITION, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.WORK_LOCATOIN, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.WORK_LOCATOIN, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.WORK_LOCATOIN, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.WORK_LOCATION, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.WORK_LOCATION, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -104,6 +86,9 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.OTHER_BENEFITS, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.OTHER_BENEFITS, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.CREATED_BY, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.HiddenFor(model => model.CREATED_ON, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.HiddenFor(model => model.ISACTIVE, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
 

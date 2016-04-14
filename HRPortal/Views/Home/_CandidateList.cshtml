@@ -2,14 +2,14 @@
 
 @{ int sl = 0;}
 
-<div class="container">
+<div class="container"  id="CandidatesPartial">
         <br />
     @Html.Partial("_SearchCriteria")
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
                 <div id="gridView">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover table-condensed table-bordered">
                         <tr>
                             <th>#</th>
                             <th>
@@ -93,8 +93,15 @@
                             </tr>
                     }
                         <tr>
-                            <td align="left"><a href="@Url.Action("ExportToExcel","Candidate")" title="Export To Excel" id="btnExport"><img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a></td>
-                            <td align="right" colspan="11" class="">@Model.Count() Record(s) found.</td>
+                            <td align="left"><a href="@Url.Action("ExportToExcel","Home")" title="Export To Excel" id="btnExport"><img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a></td>
+                            <td colspan="2">Show <select class="pagesize">
+                                <option selected="selected" value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>
+                            </select> per page</td>
+                            <td align="right" colspan="9" class="">@Model.Count() Record(s) found.</td>
                         </tr>
                     </table>
                 </div>
@@ -108,25 +115,5 @@
                     <li><a href="#">5</a></li>
                     <li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
                 </ul>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-menu-1">
-
-                    <li role="presentation">
-                        <a role="menuitem" tabindex="-1" href="#" data-number="3">3 per page</a>
-                    </li>
-
-                    <li role="presentation">
-                        <a role="menuitem" tabindex="-1" href="#" data-number="5" data-default="true">5 per page</a>
-                    </li>
-
-                    <li role="presentation">
-                        <a role="menuitem" tabindex="-1" href="#" data-number="10">10 per page</a>
-                    </li>
-
-                    <li role="presentation" class="divider"></li>
-
-                    <li role="presentation">
-                        <a role="menuitem" tabindex="-1" href="#" data-number="all">View All</a>
-                    </li>
-                </ul>	
             </div>
-            </div></div></div>
+        </div></div></div>
