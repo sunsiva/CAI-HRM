@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<HRPortal.VENDOR_MASTER>
 
 @{
-    ViewBag.Title = "Vendor Master";
+    ViewBag.Title = "Staffing Partner";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Vendor Master</h2>
+<h2>Staffing Partner</h2>
 <br />
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -13,16 +13,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.VENDOR_NAME)
+            PARTNER_NAME
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.VENDOR_SPOC)
+            PARTNER_SPOC
         </th>
         <th>
             @Html.DisplayNameFor(model => model.EMAIL)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.VENDOR_CONTACT_NO)
+            CONTACT_NO
         </th>
         <th>
             @Html.DisplayNameFor(model => model.ISACTIVE)

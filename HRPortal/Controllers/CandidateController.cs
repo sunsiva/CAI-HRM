@@ -9,7 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using HRPortal;
 using System.IO;
-using HRPortal.Models;
+using HRPortal.Helper;
 
 namespace HRPortal.Controllers
 {
@@ -20,7 +20,8 @@ namespace HRPortal.Controllers
         // GET: Candidate
         public async Task<ActionResult> Index()
         {
-            return View(await db.CANDIDATES.ToListAsync());
+            var uid = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+            return View(await db.CANDIDATES.Where(i => i.CREATED_BY == uid && i.ISACTIVE == true).ToListAsync());
         }
 
         // GET: Candidate/Details/5
@@ -31,6 +32,11 @@ namespace HRPortal.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
+            var owner = (from j in db.CANDIDATES.ToList()
+                         join u in db.AspNetUsers.ToList() on j.CREATED_BY equals u.Id
+                         where j.CANDIDATE_ID == id
+                         select u.FirstName + " " + u.LastName).FirstOrDefault();
+            cANDIDATE.CREATED_BY = owner.ToString();
             if (cANDIDATE == null)
             {
                 return HttpNotFound();
@@ -49,12 +55,9 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "CANDIDATE_ID,CANDIDATE_NAME,JOB_ID,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON,File")] CANDIDATE cANDIDATE)
+        public async Task<ActionResult> Create([Bind(Include = "CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,LAST_WORKING_DATE")] CANDIDATE cANDIDATE, HttpPostedFileBase file,FormCollection frm)
         {
-            /*BEGIN: FILE UPLOAD */
-            //var fil = Request.Files;
-            //byte[] uploadedFile = new byte[cANDIDATE.File.InputStream.Length];
-            /*END*/
+            var jid = Request.UrlReferrer.Query.ToString().Split('&').Count()>1? Request.UrlReferrer.Query.ToString().Split('&')[1]: cANDIDATE.JOB_ID.ToString();
             if (IsCandidateDuplicate(cANDIDATE.MOBILE_NO, cANDIDATE.DOB.ToShortDateString()))
             {
                 ViewBag.IsExist = "Candidate is already exist.";
@@ -63,37 +66,42 @@ namespace HRPortal.Controllers
             if (ModelState.IsValid)
             {
                 cANDIDATE.CANDIDATE_ID = Guid.NewGuid();
+                cANDIDATE.JOB_ID = new Guid(jid.Replace("JID=",string.Empty));
                 cANDIDATE.ISACTIVE = true;
-                cANDIDATE.CREATED_BY = Guid.NewGuid().ToString();
+                cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes")?true:false;
+                cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
+                cANDIDATE.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
                 cANDIDATE.CREATED_ON = DateTime.Now;
+                cANDIDATE.RESUME_FILE_PATH = FileUpload(file);
                 db.CANDIDATES.Add(cANDIDATE);
-               await db.SaveChangesAsync();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             }
+            ModelState.AddModelError("FILD", "Failed to Insert");
             return View(cANDIDATE);
         }
 
-        [HttpGet]
-        public EmptyResult _FileUpload(HttpPostedFileBase file)
+        private string FileUpload(HttpPostedFileBase file)
         {
+            string filename = string.Empty;
             if (file != null && file.ContentLength > 0)
                 try
                 {
-                    string path = Path.Combine(Server.MapPath("~/UploadDocument"),
-                                               Path.GetFileName(file.FileName));
+                    filename = Path.GetFileName(file.FileName); //TODO:filename should be with vendorname appended.
+                    string path = Path.Combine(Server.MapPath("~/UploadDocument"), filename);
                     file.SaveAs(path);
-                    ViewBag.Message = "File uploaded successfully";
+                    ViewBag.FileMessage = "File uploaded successfully";
                 }
                 catch (Exception ex)
                 {
-                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                    ViewBag.FileMessage = "ERROR:" + ex.Message.ToString();
                 }
             else
             {
-                ViewBag.Message = "You have not specified a file.";
+                ViewBag.FileMessage = "You have not specified a file.";
             }
-            return null;
+            return filename;
         }
 
         // GET: Candidate/Edit/5
@@ -116,11 +124,13 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,CANDIDATE_NAME,JOB_ID,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] CANDIDATE cANDIDATE)
+        public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,JOB_ID,CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] CANDIDATE cANDIDATE, FormCollection frm)
         {
             if (ModelState.IsValid)
             {
-                cANDIDATE.MODIFIED_BY = Session["EMail"]!=null? Session["EMail"].ToString():User.Identity.Name;// Guid.NewGuid().ToString();
+                cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
+                cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
+                cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
                 cANDIDATE.MODIFIED_ON = DateTime.Now;
                 db.Entry(cANDIDATE).State = EntityState.Modified;
                 await db.SaveChangesAsync();
@@ -168,6 +178,20 @@ namespace HRPortal.Controllers
             bool isDupli = dupli != null && dupli.DOB.ToShortDateString() == dob ? true : false;
             return isDupli;
         }
+
+        //private string GetErrMsg(FormCollection frm, HttpPostedFileBase file)
+        //{
+        //    string errMsg = string.Empty;
+        //    if (frm["ISINNOTICEPERIOD"] == "Yes" && string.IsNullOrEmpty(frm["LAST_WORKING_DATE"]))
+        //        errMsg = "Last working date is required.";
+        //    else if (frm["ISINNOTICEPERIOD"] == "No" && string.IsNullOrEmpty(frm["NOTICE_PERIOD"]))
+        //        errMsg = "Notice Period is required.";
+        //    else if (file == null)
+        //        errMsg = "Please upload a resume.";
+        //    else
+        //        errMsg = "Required field is empty.";
+        //    return errMsg;
+        //}
 
         protected override void Dispose(bool disposing)
         {

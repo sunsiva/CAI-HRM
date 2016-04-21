@@ -1,4 +1,5 @@
 ﻿@model HRPortal.Models.IndexViewModel
+@using HRPortal.Helper;
 @{
     ViewBag.Title = "Manage System";
 }
@@ -21,17 +22,20 @@
             {
                 @Html.ActionLink("Create", "SetPassword")
             }
-            
+            <br />
         </dd>
-        @if (User.Identity.Name.ToUpper().Contains("ADMIN"))
+        
+        @if (HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("ADMIN"))
         {
         <dt>Register User:</dt>
         <dd>
+            @*@Html.ActionLink("User List", "UserList", "Manage")*@
                 @Html.ActionLink("New User", "Register", "Account")
+            <br />
         </dd>
-        <dt>Vendor Master:</dt>
+        <dt>Staffing Master:</dt>
         <dd>
-            @Html.ActionLink("Vendor", "Index", "Vendor")
+            @Html.ActionLink("Staffing Partner", "Index", "Vendor")
         </dd>
         }
      @*   <dt>External Logins:</dt>

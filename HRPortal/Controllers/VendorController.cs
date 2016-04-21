@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HRPortal.Helper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -16,6 +17,7 @@ namespace HRPortal
         // GET: Vendor
         public ActionResult Index()
         {
+
             return View(db.VENDOR_MASTER.ToList());
         }
 
@@ -50,6 +52,8 @@ namespace HRPortal
             if (ModelState.IsValid)
             {
                 vENDOR_MASTER.VENDOR_ID = Guid.NewGuid();
+                vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+                vENDOR_MASTER.CREATED_ON = DateTime.Now;
                 db.VENDOR_MASTER.Add(vENDOR_MASTER);
                 db.SaveChanges();
                 return RedirectToAction("Index");

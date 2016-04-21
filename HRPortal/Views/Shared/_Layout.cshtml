@@ -1,9 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
-@{  var isAdmin = User.Identity.Name.ToUpper().Contains("ADMIN") ? "True" : "False";}
+@using HRPortal.Helper;
+@{  var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("ADMIN") ? "True" : "False";
+    var dashboardTxt = isSuperAdmin == "True" ? "Candidates" : "Jobs";
+    }
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="~/Content/images/CAI.ico" type="image/x-icon" />
     <title>@ViewBag.Title - HR - Recruitment Process</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -23,15 +27,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="@Url.Action("Index","Home",new { @class="navbar-brand" })"> <img src="~/Content/images/CAI_Logo1.gif" alt="CAI" /> </a>
-                @*@Html.ActionLink("HR - Recruitment Process", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+                <a href="@Url.Action("Index","Home",new { @class="navbar-brand" })"> <img src="~/Content/images/CAI_Logo2.gif" alt="CAI" /> </a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li>@Html.ActionLink("Home", "Index", "Home")@*<span class="badge">42</span>*@</li>
-                        if (User.Identity.Name.ToUpper().Contains("ADMIN"))
+                        <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
+                        if (isSuperAdmin == "True")
                         {
                         <li>@Html.ActionLink("Job", "Index", "Job")</li>}
                         else {<li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>}

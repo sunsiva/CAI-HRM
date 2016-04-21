@@ -14,20 +14,32 @@ namespace HRPortal
     
     public partial class JOBPOSTING
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public JOBPOSTING()
+        {
+            this.CANDIDATES = new HashSet<CANDIDATE>();
+        }
+    
         public System.Guid JOB_ID { get; set; }
         public string JOB_CODE { get; set; }
         public string JOB_DESCRIPTION { get; set; }
         public string POSITION_NAME { get; set; }
         public int NO_OF_VACANCIES { get; set; }
-        public int YEARS_OF_EXP_TOTAL { get; set; }
-        public Nullable<int> YEARS_OF_EXP_RELEVANT { get; set; }
+        public string YEARS_OF_EXP_TOTAL { get; set; }
+        public string YEARS_OF_EXP_RELEVANT { get; set; }
         public string WORK_LOCATION { get; set; }
         public string COMMENTS { get; set; }
-        public string OTHER_BENEFITS { get; set; }
+        public string JD_FILE_PATH { get; set; }
+        public string JD_SOURCE { get; set; }
+        public string CUSTOMER_NAME { get; set; }
+        public string STATUS { get; set; }
         public bool ISACTIVE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_ON { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CANDIDATE> CANDIDATES { get; set; }
     }
 }

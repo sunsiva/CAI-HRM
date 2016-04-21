@@ -3,8 +3,6 @@
 @{ int sl = 0;}
 
 <div class="container"  id="CandidatesPartial">
-        <br />
-    @Html.Partial("_SearchCriteria")
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
@@ -15,7 +13,7 @@
                             <th>
                                 @Html.DisplayNameFor(model => model.CANDIDATE_NAME)
                             </th>
-                            <th>VENDOR</th>
+                            <th>PARTNER</th>
                             <th>
                                 POSITION/SKILL
                             </th>
@@ -46,10 +44,9 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.CANDIDATE_NAME)
                                 </td>
-                                <td>Viruntha</td>
+                                <td>@Html.DisplayFor(modelItem => item.VENDOR_NAME)</td>
                                 <td>@Html.DisplayFor(modelItem => item.POSITION)</td>
                                 <td>
-
                                     @(item.LAST_WORKING_DATE != null ? (item.LAST_WORKING_DATE.Value.ToString("dd-MMM-yyyy")) : item.NOTICE_PERIOD)
                                 </td>
                                 <td>
@@ -60,10 +57,10 @@
                                     <span style="font-size:x-small">@HRPortal.Helper.HelperFuntions.TimeAgo(item.CREATED_ON)</span>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.MODIFIED_BY)/ <br />@(item.MODIFIED_ON != null ? item.MODIFIED_ON.Value.ToString("dd-MMM-yyyy") : "Empty")
+                                    @Html.DisplayFor(modelItem => item.MODIFIED_BY)/ <br />@(item.MODIFIED_ON != null ? item.MODIFIED_ON.Value.ToString("dd-MMM-yyyy") : "")
                                 </td>
                                 <td>
-                                    <a href="#" title="Click To Download Candidate CV">Download</a>
+                                    <a href="@item.RESUME_FILE_PATH" target="_self" title="Click To Download Candidate CV">Download</a>
                                 </td>
                                 <td>
                                     <a href="#" title="Click To Change The Status">SCH-R2</a>

@@ -1,8 +1,16 @@
 ﻿
-@using (Html.BeginForm("_FileUpload", "Candidate", FormMethod.Get, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("_FileUpload", "Candidate", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <label for="file">Resume Upload :</label> <input type="file" name="file" id="file" />
+    <div class="form-group form-group-required">
+        <label for="file" class="control-label col-md-2">RESUME UPLOAD :</label>
+        <div class="col-md-10">
+            <input class="form-control" type="file" name="file" id="file" />
+        </div>
+        @*<input type="button" id="fileupload" value="upload" />*@
+    </div>
+
+    @*<label for="file">Resume Upload :</label> <input type="file" name="file" id="file" />
     <br /><input type="submit" value="Upload" />
-            <br><br>
+            <br><br>*@
             @ViewBag.Message
 }

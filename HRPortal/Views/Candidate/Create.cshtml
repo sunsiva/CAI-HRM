@@ -1,4 +1,4 @@
-﻿@model HRPortal.CANDIDATE
+﻿@model CANDIDATE
 
 @{
     ViewBag.Title = "Create";
@@ -8,21 +8,23 @@
 
 <h2 align="center">Create Candidate Profile</h2>
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
+@using (Html.BeginForm("Create", "Candidate", FormMethod.Post, new { enctype = "multipart/form-data",@Id="CandidateForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <span align="right" id="errMsg" class="text-danger col-lg-offset-4"></span>
+        <div class="form-horizontal">
         <h4>@*CANDIDATE*@</h4>
         <hr />
+        
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
              <div class="form-group">
                 <span align="right" class="text-danger">@ViewBag.IsExist</span>
+                
             </div>
             <div class="form-group">
                 @Html.Label("JOB CODE", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.Label(JCod, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                    @Html.Label(JCod, new { htmlAttributes = new { @class = "form-control"} })
                 </div>
             </div>
 
@@ -74,10 +76,18 @@
                 </div>
             </div>
 
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.CURRENT_LOCATION, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CURRENT_LOCATION, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
+                    @Html.ValidationMessageFor(model => model.CURRENT_LOCATION, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
             <div class="form-group">
                 @Html.LabelFor(model => model.COMMENTS, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.COMMENTS, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.TextAreaFor(model => model.COMMENTS, new { @class = "textarea-input-custom" })
                     @Html.ValidationMessageFor(model => model.COMMENTS, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -106,27 +116,29 @@
                 </div>
             </div>
 
-            <div class="form-group form-group-required">
-                @Html.LabelFor(model => model.ANY_OTHER_OFFER, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10 checkbox">
-                    <span><input type="radio" id="rdoOfferYes" name="rdoOffer" value="Yes" checked="checked" required />Yes</span>
-                    <span><input type="radio" id="rdoOfferNo" name="rdoOffer" value="No" />No</span>
-                        @Html.ValidationMessageFor(model => model.ANY_OTHER_OFFER, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.ISINNOTICEPERIOD, "IS_IN_NOTICE_PERIOD", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        <span><input type="radio" id="rdoIsNPYes" name="IsNP" checked="checked" value="Yes" />Yes</span>
+                        <span><input type="radio" id="rdoIsNPNo" name="IsNP" value="No" />No</span>
+                    </div>
+                    
                 </div>
             </div>
-        
+
             <div class="form-group form-group-required" id="txtLWD">
                 @Html.LabelFor(model => model.LAST_WORKING_DATE, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.LAST_WORKING_DATE, new { htmlAttributes = new { @class = "form-control date-picker", placeholder = "Select a date..." } })
-                    @Html.ValidationMessageFor(model => model.LAST_WORKING_DATE, "", new { @class = "text-danger" })
+                    <span align="right" id="errMsgLWD" class="text-danger"></span>
                 </div>
             </div>
 
         <div class="form-group form-group-required hide" id="txtNP">
             @Html.LabelFor(model => model.NOTICE_PERIOD, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <select id="NoticePeriod" name="NoticePeriod" class="form-control">
+                <select id="ddlNoticePeriod" name="ddlNoticePeriod" class="form-control">
                     <option value="">Select Notice Period</option>
                     <option value="1W">1 WEEK</option>
                     <option value="15D">15 DAYS</option>
@@ -135,40 +147,26 @@
                     <option value="60D">60 DAYS</option>
                     <option value="90D">90 DAYS</option>
                 </select>
-                @*@Html.DropDownList(new SelectListItem, new { htmlAttributes = new { @class = "form-control" } })*@
-                @Html.ValidationMessageFor(model => model.NOTICE_PERIOD, "", new { @class = "text-danger" })
+                <span align="right" id="errMsgNP" class="text-danger"></span>
             </div>
         </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ISINNOTICEPERIOD, "IS_IN_NOTICE_PERIOD", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="checkbox">
-                        <span><input type="radio" id="rdoIsNPYes" name="rdoIsNP" value="Yes" />Yes</span>
-                        <span><input type="radio" id="rdoIsNPrNo" name="rdoIsNP" value="No" />No</span>
-                        @Html.ValidationMessageFor(model => model.ISINNOTICEPERIOD, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
+       
         <div class="form-group form-group-required">
             <label for="file" class="control-label col-md-2">RESUME UPLOAD :</label>
             <div class="col-md-10">
                 <input class="form-control" type="file" name="file" id="file" />
+                <span align="right" id="errMsgCVUpload" class="text-danger"></span>
             </div>
         </div>
-            @*<div class="cv"> Would you like to attach you CV? <a href='@Url.Content("_FilieUpload")' id="resume_link">Click here</a></div>
-            <input type="file" id="resume" style="visibility: hidden">*@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
+                    <input type="submit" id="btnCandiCreate" value="Create" class="btn btn-default" />
                     <input type="button" value="Clear" onclick="this.form.reset()" class="btn btn-default" />
                 </div>
             </div>
         </div>
 }
-
-@*@Html.Partial("_FileUpload")*@
 
 @if (Request.QueryString.Count > 0 && Request.QueryString["styp"] == "H")
 {
@@ -179,31 +177,31 @@ else {@Html.ActionLink("Back to List", "Index")}
     @Scripts.Render("~/bundles/jqueryval")
     <script lang="ja" type="text/javascript">
         $(document).ready(function () {
-            var myfile = "";
 
-            $('#resume_link').click(function (e) {
-                e.preventDefault();
-                $('#resume').trigger('click');
-            });
-
-            $('#resume').on('change', function () {
-                myfile = $(this).val();
-                var ext = myfile.split('.').pop();
-                if (ext == "pdf" || ext == "docx" || ext == "doc") {
-                    alert(ext);
-                } else {
-                    alert(ext);
-                }
-            });
-
-            $('#rdoOfferYes').click(function () {
+            $('#rdoIsNPYes').click(function () {
                 $('#txtNP').hasClass('hide') ? "" : $('#txtNP').removeClass('show') && $('#txtNP').addClass('hide');
                 $('#txtLWD').hasClass('hide') ? $('#txtLWD').removeClass('hide') && $('#txtLWD').addClass('show'):"";
             });
 
-            $('#rdoOfferNo').click(function () {
+            $('#rdoIsNPNo').click(function () {
                 $('#txtNP').hasClass('hide') ? $('#txtNP').removeClass('hide') && $('#txtNP').addClass('show'):"";
                 $('#txtLWD').hasClass('hide') ? "" : $('#txtLWD').removeClass('show') && $('#txtLWD').addClass('hide');
+            });
+
+            $("#btnCandiCreate").click(function () {
+                if ($("#CandidateForm").validate()) { // Not Valid
+                    if ($("#rdoIsNPYes").is(":Checked") && $("#LAST_WORKING_DATE").val() == "")
+                        $("#errMsgLWD").text("Last working date is required.");
+                    else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "")
+                        $("#errMsgNP").text("Notice Period is required.");
+                    else if ($("#file").val() == "")
+                        $("#errMsgCVUpload").text("Please upload a resume.");
+                    else
+                        $("#errMsg").text("Required field is empty.");
+                    return false;
+                } else {
+                    $("#CandidateForm").submit()
+                }
             });
 
         $(function () {

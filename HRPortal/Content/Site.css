@@ -40,3 +40,7 @@ textarea {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.textarea-input-custom {
+    width: 100%; margin: 0px; height: 46px;
+}

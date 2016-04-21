@@ -1,6 +1,13 @@
-﻿using System;
+﻿using HRPortal.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
 
 namespace HRPortal.Models
 {
@@ -55,6 +62,9 @@ namespace HRPortal.Models
 
     public class LoginViewModel
     {
+        private HRPortalEntities db = new HRPortalEntities();
+        ApplicationDbContext dbContext = new ApplicationDbContext();
+
         [Required]
         [Display(Name = "Email")]
         [EmailAddress]
@@ -67,6 +77,57 @@ namespace HRPortal.Models
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+
+        public void SetUserToCache(string email)
+        {
+            var user = db.AspNetUsers.ToList().Where(m => m.Email == email).FirstOrDefault();
+            var rolename = (from usr in db.AspNetUsers.ToList()
+                            join rlx in db.UserXRoles.ToList() on Guid.Parse(usr.Id) equals rlx.UserId
+                            join rle in db.AspNetRoles.ToList() on rlx.RoleId equals Guid.Parse(rle.Id)
+                            where usr.Id == user.Id
+                            select rle.Name).FirstOrDefault();
+            HttpRuntime.Cache.Insert("rolename", rolename);
+            HttpRuntime.Cache.Insert("user", user.Id);
+            HttpRuntime.Cache.Insert("userName", user.FirstName + " " + user.LastName);
+        }
+
+        public void UserLogs(bool isIn,string email)
+        {
+            UserLog ulog = new UserLog();
+            if (isIn)
+            {
+                ulog.UserLogName = HttpContext.Current.User.Identity.Name;
+                ulog.LoggedInBy = email;// HttpRuntime.Cache.Get("LogInEmail") != null ? HttpRuntime.Cache.Get("LogInEmail").ToString() : string.Empty;
+                ulog.LoggedInOn = DateTime.Now;
+                ulog.UserLogDesc = "Computer Name is-" + System.Net.Dns.GetHostEntry(HttpContext.Current.Request.UserHostAddress).HostName;
+                ulog.IsOnline = true;
+                ulog.UserIP = GetLocalIPAddress();// System.Net.Dns.GetHostName();
+                db.UserLogs.Add(ulog);
+            }
+            else {
+                ulog = db.UserLogs.Where(u => u.LoggedInBy == email && u.IsOnline == true).FirstOrDefault();
+                if (ulog != null)
+                {
+                    ulog.LoggedOutOn = DateTime.Now;
+                    ulog.IsOnline = false;
+                    db.Entry(ulog).State = EntityState.Modified;
+                }
+            }
+            db.SaveChanges();
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("Local IP Address Not Found!");
+        }
     }
 
     public class RegisterViewModel
@@ -76,17 +137,22 @@ namespace HRPortal.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        //[Required]
-        //[StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 5)]
-        //[Display(Name = "User Name*")]
-        //public string UserName { get; set; }
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
 
         [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 9)]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 5)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }

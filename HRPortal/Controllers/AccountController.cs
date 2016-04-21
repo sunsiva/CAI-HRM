@@ -21,6 +21,7 @@ namespace HRPortal.Controllers
         private ApplicationUserManager _userManager;
         private HRPortalEntities db = new HRPortalEntities();
         ApplicationDbContext dbContext = new ApplicationDbContext();
+        LoginViewModel loginVM = new LoginViewModel();
         public AccountController()
         {
         }
@@ -82,10 +83,8 @@ namespace HRPortal.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    var ss = dbContext.Users.FirstOrDefault(u => u.Email == model.Email);
-                    Session["IsAdmin"] = IsAdmin(model.Email);
-                    Session["EMail"] = model.Email;
-                    UserLogs(true);
+                    loginVM.SetUserToCache(model.Email);
+                    loginVM.UserLogs(true,model.Email);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -146,6 +145,12 @@ namespace HRPortal.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            //var query = db.VENDOR_MASTER.Select(i=> new SelectListItem {
+            //     Text = i.VENDOR_NAME,
+            //     Value = i.VENDOR_ID.ToString()
+            // });
+            SetRoleList();
+            SetVendorList();
             return View();
         }
 
@@ -154,41 +159,58 @@ namespace HRPortal.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model,FormCollection frm)
         {
+            SetVendorList();
+            SetRoleList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber };
-                var result = await UserManager.CreateAsync(user, model.Password);
-
-                //AspNetUser objUser = new AspNetUser();
-                //objUser.Id=user.Id;
-                //db.AspNetUsers.Attach(objUser);
-                //objUser.CreatedOn = DateTime.Today;
-                //objUser.CreatedBy = user.Id;
-                //objUser.IsAdmin = model.IsAdmin;
-                //objUser.Vendor_Id = model.Vendor_Id;
-                //db.Entry(objUser).State = EntityState.Modified;
-                //await db.SaveChangesAsync();
-
-                string sqlqry = "UPDATE[dbo].[AspNetUsers] SET[Vendor_Id] = '"+Guid.NewGuid()+"',[IsAdmin] = 0,[CreatedBy] ='" + user.Id + "',[CreatedOn] = GETDATE() WHERE Id = '" + user.Id+"'";
-                await db.Database.ExecuteSqlCommandAsync(sqlqry);
-
-                if (result.Succeeded)
+                using (var dbContextTransaction = db.Database.BeginTransaction())
                 {
-                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber };
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    //string sqlqry = "UPDATE[dbo].[AspNetUsers] SET[Vendor_Id] = '"+Guid.NewGuid()+"',[IsAdmin] = 0,[CreatedBy] ='" + user.Id + "',[CreatedOn] = GETDATE() WHERE Id = '" + user.Id+"'";
+                    //await db.Database.ExecuteSqlCommandAsync(sqlqry);
+                    try
+                    {
+                        if (result.Succeeded)
+                        {
+                            //Update the miscellanous columns
+                            AspNetUser objUser = await db.AspNetUsers.FindAsync(user.Id);
+                            objUser.FirstName = model.FirstName;
+                            objUser.LastName = model.LastName;
+                            objUser.CreatedOn = DateTime.Now;
+                            objUser.CreatedBy = user.Id; //TODO:Change to logged in id
+                            objUser.IsAdmin = model.IsAdmin;
+                            objUser.Vendor_Id = !string.IsNullOrEmpty(frm["ddlVendorList"]) ? Guid.Parse(frm["ddlVendorList"]) : Guid.Empty;// model.Vendor_Id;
+                            db.Entry(objUser).State = EntityState.Modified;
+                            await db.SaveChangesAsync();
 
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                            //Mapping user to the role..
+                            string roleid = !string.IsNullOrEmpty(frm["ddlRoleList"]) ? frm["ddlRoleList"] : string.Empty;
+                            UserXRole role = new UserXRole();
+                            role.UserId = Guid.Parse(user.Id);
+                            role.RoleId = Guid.Parse(roleid);
+                            db.UserXRoles.Add(role);
+                            await db.SaveChangesAsync();
+                            dbContextTransaction.Commit();
+                            // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                            // Send an email with this link
+                            // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                            // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    //return RedirectToAction("Index", "Home");
-                    ViewBag.RegSuccess = "User registered successfully.";
-                    return View(model);
+                            ViewBag.RegSuccess = "User registered successfully.";
+                            return View(model);
+                       
+                         }
+                        AddErrors(result);
+                    }
+                    catch (Exception) {
+                        dbContextTransaction.Rollback();
+                        AddErrors(result);
+                    }
                 }
-                AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
@@ -415,7 +437,7 @@ namespace HRPortal.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            UserLogs(false);
+            loginVM.UserLogs(false, User.Identity.Name);
             return RedirectToAction("Login");
         }
 
@@ -426,6 +448,22 @@ namespace HRPortal.Controllers
         {
             return View();
         }
+
+        #region "private methods"
+        private void SetVendorList()
+        {
+            var query = db.VENDOR_MASTER.Select(i => new { i.VENDOR_ID, i.VENDOR_NAME });
+            ViewBag.VendorList = new SelectList(query.AsEnumerable(), "VENDOR_ID", "VENDOR_NAME", 3);
+        }
+
+        private void SetRoleList()
+        {
+            var query = db.AspNetRoles.Select(i => new { i.Id, i.Name });
+            ViewBag.RoleList = new SelectList(query.AsEnumerable(), "Id", "Name", 3);
+        }
+        #endregion
+
+
 
         protected override void Dispose(bool disposing)
         {
@@ -517,39 +555,6 @@ namespace HRPortal.Controllers
             }
         }
 
-        private void UserLogs(bool isIn)
-        {
-            UserLog ulog = new UserLog();
-            if (isIn)
-            {
-                ulog.LoggedInBy = Session["EMail"] != null? Session["EMail"].ToString():string.Empty;
-                ulog.LoggedInOn = DateTime.Now;
-                ulog.UserLogDesc = "Computer Name is-" + System.Net.Dns.GetHostEntry(Request.UserHostAddress).HostName;
-                ulog.IsOnline = true;
-                ulog.UserIP = GetLocalIPAddress();// System.Net.Dns.GetHostName();
-                db.UserLogs.Add(ulog);
-            }
-            else {
-                ulog = db.UserLogs.Where(u => u.LoggedInBy == User.Identity.Name && u.IsOnline==true).FirstOrDefault();
-                ulog.LoggedOutOn = DateTime.Now;
-                ulog.IsOnline = false;
-                db.Entry(ulog).State = EntityState.Modified;
-            }
-            db.SaveChanges();
-        }
-
-        public static string GetLocalIPAddress()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            throw new Exception("Local IP Address Not Found!");
-        }
 
         #endregion
     }

@@ -26,5 +26,11 @@ namespace HRPortal.Helper
             if (timeSince.TotalDays < 730) return "last year"; //last but not least...
             return string.Format("{0} years ago", Math.Round(timeSince.TotalDays / 365));
         }
+
+        public static string HasValue(object obj)
+        {
+            string usr = obj != null ? Convert.ToString(obj) : string.Empty;
+            return usr;
+        }
     }
 }

@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using HRPortal;
 using HRPortal.Models;
 using System.IO;
+using HRPortal.Helper;
 
 namespace HRPortal.Controllers
 {
@@ -21,7 +22,7 @@ namespace HRPortal.Controllers
         // GET: Job
         public async Task<ActionResult> Index()
         {
-            return View(await dbContext.JOBPOSTINGs.ToListAsync());
+            return View(await dbContext.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync());
         }
 
         // GET: Job/Details/5
@@ -32,6 +33,11 @@ namespace HRPortal.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             JOBPOSTING jOBPOSTING = await dbContext.JOBPOSTINGs.FindAsync(id);
+            var owner = (from j in dbContext.JOBPOSTINGs.ToList()
+                          join u in dbContext.AspNetUsers.ToList() on j.CREATED_BY equals u.Id
+                          where j.JOB_ID == id
+                          select u.FirstName+" "+u.LastName).FirstOrDefault();
+            jOBPOSTING.CREATED_BY = owner.ToString();
             if (jOBPOSTING == null)
             {
                 return HttpNotFound();
@@ -50,14 +56,14 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATOIN,COMMENTS,OTHER_BENEFITS,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING)
+        public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING)
         {
             if (ModelState.IsValid)
             {
                 jOBPOSTING.JOB_ID = Guid.NewGuid();
                 jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
                 jOBPOSTING.ISACTIVE = true;
-                jOBPOSTING.CREATED_BY = Guid.NewGuid().ToString();
+                jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
                 jOBPOSTING.CREATED_ON = DateTime.Now;
                 dbContext.JOBPOSTINGs.Add(jOBPOSTING);
                 await dbContext.SaveChangesAsync();
@@ -87,11 +93,11 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,COMMENTS,OTHER_BENEFITS,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_ON,CREATED_BY")] JOBPOSTING jOBPOSTING)
+        public async Task<ActionResult> Edit([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_ON,CREATED_BY")] JOBPOSTING jOBPOSTING)
         {
             if (ModelState.IsValid)
             {
-                jOBPOSTING.MODIFIED_BY = Session["EMail"] != null ? Session["EMail"].ToString() : User.Identity.Name;// Guid.NewGuid().ToString();
+                jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
                 jOBPOSTING.MODIFIED_ON = DateTime.Now;
                 dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
@@ -197,10 +203,17 @@ namespace HRPortal.Controllers
         {
             string obj = string.Empty;
             Random rnd = new Random();
+            posName = posName.ToUpper();
             if (posName.Contains("JAVA")) //TODO:has to be changed with switch case.
                 obj = "JVA";
             else if(posName.Contains("ASP"))
                 obj = "ASP";
+            else if (posName.Contains("SQL"))
+                obj = "SQL";
+            else if (posName.Contains("CONTENT"))
+                obj = "CTN";
+            else if (posName.Contains("MOBILE"))
+                obj = "MBL";
             else
                 obj = "GNL";
             obj = obj + rnd.Next().ToString();

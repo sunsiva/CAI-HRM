@@ -36,5 +36,10 @@ namespace HRPortal
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_ON { get; set; }
         public string STATUS { get; set; }
+        public string RESUME_FILE_PATH { get; set; }
+        public string RESUME_SOURCE { get; set; }
+        public string CURRENT_LOCATION { get; set; }
+    
+        public virtual JOBPOSTING JOBPOSTING { get; set; }
     }
 }

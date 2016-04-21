@@ -23,6 +23,7 @@ namespace HRPortal.Models
             public string NOTICE_PERIOD { get; set; }
             public Nullable<bool> ANY_OTHER_OFFER { get; set; }
             public Nullable<System.DateTime> LAST_WORKING_DATE { get; set; }
+            public string RESUME_FILE_PATH { get; set; }
             public string COMMENTS { get; set; }
             public Nullable<bool> ISINNOTICEPERIOD { get; set; }
             public bool ISACTIVE { get; set; }

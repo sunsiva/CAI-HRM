@@ -7,6 +7,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using HRPortal.Models;
+using System.Data.Entity;
+using HRPortal.Helper;
 
 namespace HRPortal.Controllers
 {
@@ -15,6 +17,7 @@ namespace HRPortal.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private HRPortalEntities dbContext = new HRPortalEntities();
 
         public ManageController()
         {
@@ -319,6 +322,29 @@ namespace HRPortal.Controllers
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
         }
+
+        public ActionResult UserList()
+        {
+            return View(dbContext.AspNetUsers.ToList());
+        }
+
+        // POST: USer/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,CANDIDATE_NAME,JOB_ID,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] AspNetUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                //cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+                //cANDIDATE.MODIFIED_ON = DateTime.Now;
+                dbContext.Entry(user).State = EntityState.Modified;
+                await dbContext.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+            return View(user);
+        }
+
 
         protected override void Dispose(bool disposing)
         {
