@@ -10,10 +10,8 @@
         <EntityTypeShape EntityType="HRPortalModel.VENDOR_MASTER" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="HRPortalModel.CANDIDATE" Width="1.5" PointX="7.75" PointY="8.75" />
         <EntityTypeShape EntityType="HRPortalModel.UserLog" Width="1.5" PointX="10.375" PointY="0.75" />
-        <EntityTypeShape EntityType="HRPortalModel.STATUS_HISTORY" Width="1.5" PointX="12.625" PointY="9.25" />
         <EntityTypeShape EntityType="HRPortalModel.STATUS_MASTER" Width="1.5" PointX="10.375" PointY="9" />
         <EntityTypeShape EntityType="HRPortalModel.sysdiagram" Width="1.5" PointX="3.375" PointY="10.75" />
-        <AssociationConnector Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" />
         <EntityTypeShape EntityType="HRPortalModel.JOBPOSTING" Width="1.5" PointX="5.5" PointY="14.375" />
         <AssociationConnector Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING" />
         <EntityTypeShape EntityType="HRPortalModel.UserXRole" Width="1.5" PointX="7.375" PointY="0.75" />
@@ -24,6 +22,8 @@
         <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="HRPortalModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="HRPortalModel.STATUS_HISTORY" Width="1.5" PointX="12.625" PointY="9.25" />
+        <AssociationConnector Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

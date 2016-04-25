@@ -142,10 +142,11 @@
         </EntityType>
         <EntityType Name="STATUS_HISTORY">
           <Key>
-            <PropertyRef Name="STATUS_ID" />
+            <PropertyRef Name="ID" />
           </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="STATUS_ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="CANDIDATE_ID" Type="uniqueidentifier" />
+          <Property Name="CANDIDATE_ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="COMMENTS" Type="nvarchar(max)" />
           <Property Name="ISACTIVE" Type="bit" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
@@ -158,6 +159,7 @@
           <Property Name="STATUS_ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="STATUS_NAME" Type="nvarchar" MaxLength="25" Nullable="false" />
           <Property Name="STATUS_DESCRIPTION" Type="nvarchar" MaxLength="250" />
+          <Property Name="STATUS_ORDER" Type="int" />
           <Property Name="ISACTIVE" Type="bit" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
           <Property Name="MODIFIED_ON" Type="datetime" />
@@ -276,7 +278,7 @@
         </Association>
         <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
           <End Role="STATUS_MASTER" Type="Self.STATUS_MASTER" Multiplicity="1" />
-          <End Role="STATUS_HISTORY" Type="Self.STATUS_HISTORY" Multiplicity="0..1" />
+          <End Role="STATUS_HISTORY" Type="Self.STATUS_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="STATUS_MASTER">
               <PropertyRef Name="STATUS_ID" />
@@ -377,13 +379,8 @@
           <EntitySet Name="VENDOR_MASTER" EntityType="Self.VENDOR_MASTER" />
           <EntitySet Name="CANDIDATES" EntityType="HRPortalModel.CANDIDATE" />
           <EntitySet Name="UserLogs" EntityType="HRPortalModel.UserLog" />
-          <EntitySet Name="STATUS_HISTORY" EntityType="HRPortalModel.STATUS_HISTORY" />
           <EntitySet Name="STATUS_MASTER" EntityType="HRPortalModel.STATUS_MASTER" />
           <EntitySet Name="sysdiagrams" EntityType="HRPortalModel.sysdiagram" />
-          <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER">
-            <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
-            <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
-          </AssociationSet>
           <EntitySet Name="JOBPOSTINGs" EntityType="HRPortalModel.JOBPOSTING" />
           <AssociationSet Name="FK_CANDIDATES_JOBPOSTING" Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING">
             <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
@@ -405,6 +402,11 @@
           <AssociationSet Name="AspNetUserRoles" Association="HRPortalModel.AspNetUserRoles">
             <End Role="AspNetRole" EntitySet="AspNetRoles" />
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <EntitySet Name="STATUS_HISTORY" EntityType="HRPortalModel.STATUS_HISTORY" />
+          <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER">
+            <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
+            <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="CANDIDATE">
@@ -452,18 +454,6 @@
           <Property Name="UserIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UserMAC" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="STATUS_HISTORY">
-          <Key>
-            <PropertyRef Name="STATUS_ID" />
-          </Key>
-          <Property Name="STATUS_ID" Type="Guid" Nullable="false" />
-          <Property Name="CANDIDATE_ID" Type="Guid" />
-          <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="STATUS_MASTER" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
-          <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="STATUS_MASTER">
           <Key>
             <PropertyRef Name="STATUS_ID" />
@@ -476,6 +466,7 @@
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="STATUS_ORDER" Type="Int32" />
           <NavigationProperty Name="STATUS_HISTORY" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_MASTER" ToRole="STATUS_HISTORY" />
         </EntityType>
         <EntityType Name="sysdiagram">
@@ -488,18 +479,6 @@
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
-        <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
-          <End Type="HRPortalModel.STATUS_MASTER" Role="STATUS_MASTER" Multiplicity="1" />
-          <End Type="HRPortalModel.STATUS_HISTORY" Role="STATUS_HISTORY" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="STATUS_MASTER">
-              <PropertyRef Name="STATUS_ID" />
-            </Principal>
-            <Dependent Role="STATUS_HISTORY">
-              <PropertyRef Name="STATUS_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="JOBPOSTING">
           <Key>
             <PropertyRef Name="JOB_ID" />
@@ -631,6 +610,31 @@
           <End Type="HRPortalModel.AspNetRole" Role="AspNetRole" Multiplicity="0..1" />
           <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
         </Association>
+        <EntityType Name="STATUS_HISTORY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="STATUS_ID" Type="Guid" Nullable="false" />
+          <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
+          <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="STATUS_MASTER" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
+        </EntityType>
+        <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
+          <End Type="HRPortalModel.STATUS_MASTER" Role="STATUS_MASTER" Multiplicity="1" />
+          <End Type="HRPortalModel.STATUS_HISTORY" Role="STATUS_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STATUS_MASTER">
+              <PropertyRef Name="STATUS_ID" />
+            </Principal>
+            <Dependent Role="STATUS_HISTORY">
+              <PropertyRef Name="STATUS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -725,21 +729,10 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="STATUS_HISTORY">
-            <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
-              <MappingFragment StoreEntitySet="STATUS_HISTORY">
-                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
-                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="STATUS_MASTER">
             <EntityTypeMapping TypeName="HRPortalModel.STATUS_MASTER">
               <MappingFragment StoreEntitySet="STATUS_MASTER">
+                <ScalarProperty Name="STATUS_ORDER" ColumnName="STATUS_ORDER" />
                 <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
@@ -855,6 +848,19 @@
             </EndProperty>
             <Condition ColumnName="RoleId" IsNull="false" />
           </AssociationSetMapping>
+          <EntitySetMapping Name="STATUS_HISTORY">
+            <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
+              <MappingFragment StoreEntitySet="STATUS_HISTORY">
+                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+                <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

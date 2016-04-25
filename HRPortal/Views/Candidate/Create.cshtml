@@ -189,6 +189,25 @@ else {@Html.ActionLink("Back to List", "Index")}
             });
 
             $("#btnCandiCreate").click(function () {
+                if ($("#rdoIsNPYes").is(":Checked") && $("#LAST_WORKING_DATE").val() == "")
+                {
+                    $("#errMsgLWD").text("Last working date is required.");
+                    return false;
+                }else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "")
+                {
+                    $("#errMsgNP").text("Notice Period is required.");
+                    return false;
+                }else if ($("#file").val() == "") 
+                {
+                    $("#errMsgCVUpload").text("Please upload a resume.");
+                    return false;
+                }
+                else {
+                    $("#CandidateForm").submit()
+                }
+            });
+
+            $("#btnCandiCreate1").click(function () {
                 if ($("#CandidateForm").validate()) { // Not Valid
                     if ($("#rdoIsNPYes").is(":Checked") && $("#LAST_WORKING_DATE").val() == "")
                         $("#errMsgLWD").text("Last working date is required.");

@@ -10,13 +10,14 @@ using System.Web.Mvc;
 using HRPortal;
 using System.IO;
 using HRPortal.Helper;
+using HRPortal.Models;
 
 namespace HRPortal.Controllers
 {
     public class CandidateController : Controller
     {
         private HRPortalEntities db = new HRPortalEntities();
-
+        private CandidateViewModels vmodel = new CandidateViewModels();
         // GET: Candidate
         public async Task<ActionResult> Index()
         {
@@ -75,6 +76,8 @@ namespace HRPortal.Controllers
                 cANDIDATE.RESUME_FILE_PATH = FileUpload(file);
                 db.CANDIDATES.Add(cANDIDATE);
                 await db.SaveChangesAsync();
+
+                vmodel.UpdateStatus(Guid.Empty, cANDIDATE.CANDIDATE_ID, string.Empty);
                 return RedirectToAction("Index");
             }
             }

@@ -30,7 +30,6 @@ namespace HRPortal
         public virtual DbSet<VENDOR_MASTER> VENDOR_MASTER { get; set; }
         public virtual DbSet<CANDIDATE> CANDIDATES { get; set; }
         public virtual DbSet<UserLog> UserLogs { get; set; }
-        public virtual DbSet<STATUS_HISTORY> STATUS_HISTORY { get; set; }
         public virtual DbSet<STATUS_MASTER> STATUS_MASTER { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<JOBPOSTING> JOBPOSTINGs { get; set; }
@@ -39,5 +38,6 @@ namespace HRPortal
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public virtual DbSet<STATUS_HISTORY> STATUS_HISTORY { get; set; }
     }
 }

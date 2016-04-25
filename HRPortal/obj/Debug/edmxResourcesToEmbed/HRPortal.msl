@@ -89,21 +89,10 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="STATUS_HISTORY">
-      <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
-        <MappingFragment StoreEntitySet="STATUS_HISTORY">
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
-          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="STATUS_MASTER">
       <EntityTypeMapping TypeName="HRPortalModel.STATUS_MASTER">
         <MappingFragment StoreEntitySet="STATUS_MASTER">
+          <ScalarProperty Name="STATUS_ORDER" ColumnName="STATUS_ORDER" />
           <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
           <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
           <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
@@ -219,5 +208,18 @@
       </EndProperty>
       <Condition ColumnName="RoleId" IsNull="false" />
     </AssociationSetMapping>
+    <EntitySetMapping Name="STATUS_HISTORY">
+      <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
+        <MappingFragment StoreEntitySet="STATUS_HISTORY">
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

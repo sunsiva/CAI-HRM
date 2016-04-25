@@ -137,10 +137,11 @@
   </EntityType>
   <EntityType Name="STATUS_HISTORY">
     <Key>
-      <PropertyRef Name="STATUS_ID" />
+      <PropertyRef Name="ID" />
     </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="STATUS_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="CANDIDATE_ID" Type="uniqueidentifier" />
+    <Property Name="CANDIDATE_ID" Type="uniqueidentifier" Nullable="false" />
     <Property Name="COMMENTS" Type="nvarchar(max)" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
@@ -153,6 +154,7 @@
     <Property Name="STATUS_ID" Type="uniqueidentifier" Nullable="false" />
     <Property Name="STATUS_NAME" Type="nvarchar" MaxLength="25" Nullable="false" />
     <Property Name="STATUS_DESCRIPTION" Type="nvarchar" MaxLength="250" />
+    <Property Name="STATUS_ORDER" Type="int" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
@@ -271,7 +273,7 @@
   </Association>
   <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
     <End Role="STATUS_MASTER" Type="Self.STATUS_MASTER" Multiplicity="1" />
-    <End Role="STATUS_HISTORY" Type="Self.STATUS_HISTORY" Multiplicity="0..1" />
+    <End Role="STATUS_HISTORY" Type="Self.STATUS_HISTORY" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="STATUS_MASTER">
         <PropertyRef Name="STATUS_ID" />

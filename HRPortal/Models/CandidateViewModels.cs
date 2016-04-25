@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace HRPortal.Models
 {
     public class CandidateViewModels
     {
+        HRPortalEntities dbContext = new HRPortalEntities();
+
             public System.Guid CANDIDATE_ID { get; set; }
             public string CANDIDATE_NAME { get; set; }
             public string VENDOR_NAME { get; set; }
@@ -31,5 +35,38 @@ namespace HRPortal.Models
             public Nullable<System.DateTime> MODIFIED_ON { get; set; }
             public string CREATED_BY { get; set; }
             public System.DateTime CREATED_ON { get; set; }
+            public string STATUS { get; set; }
+            public PaginationViewModels PageIndex { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stid"></param>
+        /// <param name="cId"></param>
+        /// <param name="cmnts"></param>
+        /// <returns></returns>
+        public string UpdateStatus(Guid stid, Guid cId, string cmnts)
+        {
+            STATUS_HISTORY stsHist = new STATUS_HISTORY();
+            var stsId = dbContext.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID;
+            var uid = HttpRuntime.Cache.Get("user") == null ? Guid.NewGuid() : HttpRuntime.Cache.Get("user");
+
+            //stsHist.CANDIDATE_ID = cId;
+            //stsHist.ISACTIVE = false;
+            //dbContext.Entry(stsHist).State = EntityState.Modified;
+            //dbContext.SaveChangesAsync();
+
+            stsHist = new STATUS_HISTORY();
+            stsHist.STATUS_ID = ((stid == null || stid == Guid.Empty) ? stsId : stid);
+            stsHist.CANDIDATE_ID = cId;
+            stsHist.COMMENTS = string.IsNullOrEmpty(cmnts) ? "Initial Status - SCR-SBM" : cmnts;
+            stsHist.ISACTIVE = true;
+            stsHist.MODIFIED_BY = HttpRuntime.Cache.Get("user") == null ? string.Empty : HttpRuntime.Cache.Get("user").ToString();
+            stsHist.MODIFIED_ON = DateTime.Now;
+            dbContext.STATUS_HISTORY.Add(stsHist);
+            dbContext.SaveChanges();
+
+            return "OK";
+        }
     }
 }

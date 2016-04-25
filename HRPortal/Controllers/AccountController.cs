@@ -452,7 +452,7 @@ namespace HRPortal.Controllers
         #region "private methods"
         private void SetVendorList()
         {
-            var query = db.VENDOR_MASTER.Select(i => new { i.VENDOR_ID, i.VENDOR_NAME });
+            var query = db.VENDOR_MASTER.Where(s=>s.ISACTIVE==true).Select(i => new { i.VENDOR_ID, i.VENDOR_NAME });
             ViewBag.VendorList = new SelectList(query.AsEnumerable(), "VENDOR_ID", "VENDOR_NAME", 3);
         }
 

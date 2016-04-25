@@ -3,7 +3,6 @@
 
 @{
     ViewBag.Title = "Home Page";
-    //var isAdmin = Session["IsAdmin"] != null ? Session["IsAdmin"].ToString():string.Empty;
     var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("ADMIN") ? "True" : "False";
 }
 
@@ -27,6 +26,24 @@
         $(function () {
             // This will make every element with the class "date-picker" into a DatePicker element
             $('.date-picker').datepicker();
+        });
+
+        window.myPanel = function (data) {
+            $(".candidate-name").text(data.dataset.customName);
+            $("#hdnCandidateId").val(data.dataset.customValue);
+            var currentSts = $("#btnStsPnl_" + data.dataset.customValue + "").text();
+            $("#ddlStatusList option:contains(" + currentSts + ")").attr("selected", true);
+            $("#txtStsComments").val("");
+        };
+
+        $("#btnStatus").click(function () {
+            if ($("#ddlStatusList").val() == "") { $("#errMsgModal").text("Please select a status to change."); return false; }
+            else if ($("#txtStsComments").val() == "") { $("#errMsgModal").text("Please write a comments to change."); return false; }
+            else {
+                $.get("/Home/StatusUpdate", { id: $("#hdnCandidateId").val(), status: $("#ddlStatusList").val(), comments: $("#txtStsComments").val() }, function (data) {
+                    $("#btnStsPnl_" + $("#hdnCandidateId").val() + "").text($("#ddlStatusList option:selected").text());
+                });
+            }
         });
 
          $('#CollapseMe').click(function () {

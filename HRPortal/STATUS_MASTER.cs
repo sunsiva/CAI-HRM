@@ -14,6 +14,12 @@ namespace HRPortal
     
     public partial class STATUS_MASTER
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public STATUS_MASTER()
+        {
+            this.STATUS_HISTORY = new HashSet<STATUS_HISTORY>();
+        }
+    
         public System.Guid STATUS_ID { get; set; }
         public string STATUS_NAME { get; set; }
         public string STATUS_DESCRIPTION { get; set; }
@@ -22,7 +28,9 @@ namespace HRPortal
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_ON { get; set; }
+        public Nullable<int> STATUS_ORDER { get; set; }
     
-        public virtual STATUS_HISTORY STATUS_HISTORY { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STATUS_HISTORY> STATUS_HISTORY { get; set; }
     }
 }

@@ -14,12 +14,13 @@ namespace HRPortal
     
     public partial class STATUS_HISTORY
     {
+        public int ID { get; set; }
         public System.Guid STATUS_ID { get; set; }
-        public Nullable<System.Guid> CANDIDATE_ID { get; set; }
+        public System.Guid CANDIDATE_ID { get; set; }
+        public string COMMENTS { get; set; }
         public bool ISACTIVE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
-        public string COMMENTS { get; set; }
     
         public virtual STATUS_MASTER STATUS_MASTER { get; set; }
     }
