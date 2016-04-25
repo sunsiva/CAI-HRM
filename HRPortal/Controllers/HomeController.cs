@@ -47,7 +47,7 @@ namespace HRPortal.Controllers
                                               YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
                                               LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
                                               VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
-                                              STATUS = GetStatusNameById(i.Candidate.CANDIDATE_ID),
+                                              STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
                                               CREATED_ON = i.Candidate.CREATED_ON,
                                               MODIFIED_ON = i.Candidate.MODIFIED_ON,
                                               MODIFIED_BY = GetModifiedById(i.Candidate.CANDIDATE_ID),
@@ -187,18 +187,7 @@ namespace HRPortal.Controllers
                           select v.VENDOR_NAME).FirstOrDefault();
             return vendor.ToString();
         }
-
-        private string GetStatusNameById(Guid id)
-        {
-            string stsName = "SCR-SBM";
-            var stsSrc = db.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).ToList();
-            if (stsSrc.Count>0) {
-                var stsH = stsSrc.OrderByDescending(j => j.MODIFIED_ON).FirstOrDefault().STATUS_ID;
-                stsName = db.STATUS_MASTER.Where(i => i.STATUS_ID == stsH).FirstOrDefault().STATUS_NAME;
-            } 
-            return stsName;
-        }
-
+                
        private string GetModifiedById(Guid id)
         {
             string strUser = string.Empty;

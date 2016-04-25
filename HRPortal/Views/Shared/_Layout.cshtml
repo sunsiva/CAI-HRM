@@ -2,6 +2,7 @@
 <html>
 @using HRPortal.Helper;
 @{  var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("ADMIN") ? "True" : "False";
+    var isSuperUser = HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("SUPERUSER") ? "True" : "False";
     var dashboardTxt = isSuperAdmin == "True" ? "Candidates" : "Jobs";
     }
 <head>
@@ -18,8 +19,7 @@
     <script src="@Url.Content("http://code.jquery.com/jquery-1.11.0.min.js")"></script> @*TODO:move to script folder.This is for having $ in the script file.*@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
-<body>
-    
+<body> 
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -39,6 +39,11 @@
                         if (isSuperAdmin == "True")
                         {
                         <li>@Html.ActionLink("Job", "Index", "Job")</li>}
+                        else if (isSuperUser == "True")
+                        {
+                            <li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>
+                            <li>@Html.ActionLink("Squads", "SquadJobs", "Candidate")</li>
+                        }
                         else {<li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>}
                     }
                 </ul>

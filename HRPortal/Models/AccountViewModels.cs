@@ -86,6 +86,7 @@ namespace HRPortal.Models
                             join rle in db.AspNetRoles.ToList() on rlx.RoleId equals Guid.Parse(rle.Id)
                             where usr.Id == user.Id
                             select rle.Name).FirstOrDefault();
+            HttpRuntime.Cache.Insert("vendorid", user.Vendor_Id);
             HttpRuntime.Cache.Insert("rolename", rolename);
             HttpRuntime.Cache.Insert("user", user.Id);
             HttpRuntime.Cache.Insert("userName", user.FirstName + " " + user.LastName);
@@ -128,6 +129,12 @@ namespace HRPortal.Models
             }
             throw new Exception("Local IP Address Not Found!");
         }
+        
+        public string GetUserNameById(string id)
+        {
+            return db.AspNetUsers.Where(i => i.Id == id).Select(s=> s.FirstName + " " + s.LastName).FirstOrDefault();
+        }
+
     }
 
     public class RegisterViewModel

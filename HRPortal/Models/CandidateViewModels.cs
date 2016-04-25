@@ -50,12 +50,6 @@ namespace HRPortal.Models
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
             var stsId = dbContext.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID;
             var uid = HttpRuntime.Cache.Get("user") == null ? Guid.NewGuid() : HttpRuntime.Cache.Get("user");
-
-            //stsHist.CANDIDATE_ID = cId;
-            //stsHist.ISACTIVE = false;
-            //dbContext.Entry(stsHist).State = EntityState.Modified;
-            //dbContext.SaveChangesAsync();
-
             stsHist = new STATUS_HISTORY();
             stsHist.STATUS_ID = ((stid == null || stid == Guid.Empty) ? stsId : stid);
             stsHist.CANDIDATE_ID = cId;
@@ -68,5 +62,18 @@ namespace HRPortal.Models
 
             return "OK";
         }
+
+        public string GetStatusNameById(Guid id)
+        {
+            string stsName = "SCR-SBM";
+            var stsSrc = dbContext.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).ToList();
+            if (stsSrc.Count > 0)
+            {
+                var stsH = stsSrc.OrderByDescending(j => j.MODIFIED_ON).FirstOrDefault().STATUS_ID;
+                stsName = dbContext.STATUS_MASTER.Where(i => i.STATUS_ID == stsH).FirstOrDefault().STATUS_NAME;
+            }
+            return stsName;
+        }
+
     }
 }

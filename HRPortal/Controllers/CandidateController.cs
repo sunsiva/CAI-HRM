@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using HRPortal;
 using System.IO;
 using HRPortal.Helper;
 using HRPortal.Models;
@@ -18,13 +17,56 @@ namespace HRPortal.Controllers
     {
         private HRPortalEntities db = new HRPortalEntities();
         private CandidateViewModels vmodel = new CandidateViewModels();
+        private LoginViewModel logvmodel = new LoginViewModel();
+        private string _uid;
+
+        public CandidateController()
+        {
+            _uid = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+        }
+
         // GET: Candidate
         public async Task<ActionResult> Index()
         {
-            var uid = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
-            return View(await db.CANDIDATES.Where(i => i.CREATED_BY == uid && i.ISACTIVE == true).ToListAsync());
+            var canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == _uid && c.ISACTIVE == true).ToListAsync();
+            var canLst = canDb.Select(i => new CandidateViewModels
+            {
+                CANDIDATE_ID = i.CANDIDATE_ID,
+                CANDIDATE_NAME = i.CANDIDATE_NAME,
+                MOBILE_NO = i.MOBILE_NO,
+                EMAIL = i.EMAIL,
+                CURRENT_COMPANY = i.CURRENT_COMPANY,
+                NOTICE_PERIOD = i.NOTICE_PERIOD,
+                YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
+                LAST_WORKING_DATE = i.LAST_WORKING_DATE,
+                STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
+            }).ToList();
+
+            return View(canLst);
         }
 
+        // GET: Squads Candidates
+        public async Task<ActionResult> SquadJobs()
+        {
+            var vendorId = Guid.Parse(HelperFuntions.HasValue(HttpRuntime.Cache.Get("vendorid")));
+            var squadsLst = await db.CANDIDATES.ToListAsync();
+            var usrs = await db.AspNetUsers.Where(i => i.Vendor_Id == vendorId && i.Id != _uid).Select(s=>s.Id).ToListAsync();
+            var canLst = squadsLst.Where(c => usrs.Contains(c.CREATED_BY) && c.ISACTIVE == true).Select(i => new CandidateViewModels
+                {
+                    CANDIDATE_ID = i.CANDIDATE_ID,
+                    CANDIDATE_NAME = i.CANDIDATE_NAME,
+                    MOBILE_NO = i.MOBILE_NO,
+                    EMAIL = i.EMAIL,
+                    CURRENT_COMPANY=i.CURRENT_COMPANY,
+                    NOTICE_PERIOD = i.NOTICE_PERIOD,
+                    YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
+                    LAST_WORKING_DATE = i.LAST_WORKING_DATE,
+                    STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
+                    CREATED_BY = logvmodel.GetUserNameById(i.CREATED_BY),
+                }).ToList();
+            return View(canLst);
+        }
+        
         // GET: Candidate/Details/5
         public async Task<ActionResult> Details(Guid? id)
         {

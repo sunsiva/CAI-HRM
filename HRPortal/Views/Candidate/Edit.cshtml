@@ -164,7 +164,12 @@
 }
 
 <div>
+    @if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "S")
+    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate")
+    }
+    else { 
     @Html.ActionLink("Back to List", "Index")
+    }
 </div>
 
 @section Scripts {

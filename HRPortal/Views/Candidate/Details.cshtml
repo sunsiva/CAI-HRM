@@ -178,11 +178,12 @@
     </dl>
 </div>
 <p>
-    @*@Html.ActionLink("Edit", "Edit", new { id = Model.CANDIDATE_ID }) |*@
     @if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "H")
     {
-        @Html.ActionLink("Back to List", "Index", "Home")}
-    else {@Html.ActionLink("Back to List", "Index")}
-    @*@Html.ActionLink("Edit", "Edit", new { id = Model.JOB_ID }) |*@
-    
+        @Html.ActionLink("Back to List", "Index", "Home") 
+    }
+    else if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "S")
+    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate")
+    }
+    else { @Html.ActionLink("Back to List", "Index")}
 </p>
