@@ -230,6 +230,7 @@
     </Compile>
     <Compile Include="Helper\Cookie.cs" />
     <Compile Include="Helper\HelperFuntions.cs" />
+    <Compile Include="Helper\Keys.cs" />
     <Compile Include="HRPortal.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -285,7 +286,6 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Gridmvc.css" />
     <Content Include="Content\images\CAI.ico" />
-    <Content Include="Content\images\CAI_Logo.gif" />
     <Content Include="Content\images\CAI_Logo1.GIF" />
     <Content Include="Content\images\CAI_Logo2.gif" />
     <Content Include="Content\images\Excel-icon.png" />

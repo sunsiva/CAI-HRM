@@ -63,7 +63,7 @@ namespace HRPortal.Controllers
                 jOBPOSTING.JOB_ID = Guid.NewGuid();
                 jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
                 jOBPOSTING.ISACTIVE = true;
-                jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+                jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
                 jOBPOSTING.CREATED_ON = DateTime.Now;
                 dbContext.JOBPOSTINGs.Add(jOBPOSTING);
                 await dbContext.SaveChangesAsync();
@@ -97,7 +97,7 @@ namespace HRPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+                jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
                 jOBPOSTING.MODIFIED_ON = DateTime.Now;
                 dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();

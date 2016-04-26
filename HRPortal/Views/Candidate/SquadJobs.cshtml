@@ -6,35 +6,34 @@
     int sl = 0;
 }
 
-<h2>Squad Jobs</h2>
+<h2>Profile Submissions by Squad</h2>
 
 <table class="table table-striped table-hover table-condensed table-bordered">
     <tr>
         <th>#</th>
         <th>
-            @Html.DisplayNameFor(model => model.CANDIDATE_NAME)
+            @Html.DisplayName("CANDIDATE NAME")
         </th>
         <th>
             YEARS OF EXP.
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.MOBILE_NO)
+            @Html.DisplayName("MOBILE NO")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.EMAIL)
+            @Html.DisplayName("EMAIL")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CURRENT_COMPANY)
+            @Html.DisplayName("CURRENT COMPANY")
         </th>
         <th>
-            NOTICE_PERIOD
-            /LWD
+            @Html.DisplayName("NOTICE PERIOD/LWD")
         </th>
-        <th>CREATED BY</th>
+        <th>@Html.DisplayName("SUBMITTED BY")</th>
         <th>
             @Html.DisplayName("STATUS")
         </th>
-        <th colspan="3">ACTION</th>
+        <th colspan="3">@Html.DisplayName("ACTION")</th>
     </tr>
 
     @foreach (var item in Model)

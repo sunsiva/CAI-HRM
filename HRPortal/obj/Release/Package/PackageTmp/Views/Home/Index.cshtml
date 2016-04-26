@@ -1,30 +1,17 @@
 ﻿@model HRPortal.Models.JobAndCandidateViewModels
+@using HRPortal.Helper;
 
 @{
     ViewBag.Title = "Home Page";
-    //var isAdmin = Session["IsAdmin"] != null ? Session["IsAdmin"].ToString():string.Empty;
-    var isAdmin = User.Identity.Name.ToUpper().Contains("ADMIN") ? "True" : "False";@*@TODO:Need to remove once role done*@
+    var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? "True" : "False";
 }
-
-@*<div class="jumbotron">
-    <h4>Search Criteria:</h4>
-    <div class="form-horizontal">
-        <div class="form-group">
-            <div class="col-md-12">
-                <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
-                <input type="text" id="txtCriteriaVendor" placeholder="Vendor" />
-                <input type="text" id="txtCriteriaStatus" placeholder="Status" />
-                <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
-                <input type="text" id="txtCriteriaEndDate" class="date-picker" placeholder="Uploaded End Date" />
-            </div>
-        </div>
-    </div>
-</div>*@
 
 <div class="row">
     <div class="col-md-4">
-        @if (isAdmin == "True")
+        @if (isSuperAdmin == "True")
         {
+            <br />
+            @Html.Partial("_SearchCriteria")
             @Html.Partial("_CandidateList", Model.CandidateItems)
         }
             else {@Html.Partial("_JobList", Model.JobItems) }
@@ -39,7 +26,25 @@
         $(function () {
             // This will make every element with the class "date-picker" into a DatePicker element
             $('.date-picker').datepicker();
-        })
+        });
+
+        window.myPanel = function (data) {
+            $(".candidate-name").text(data.dataset.customName);
+            $("#hdnCandidateId").val(data.dataset.customValue);
+            var currentSts = $("#btnStsPnl_" + data.dataset.customValue + "").text();
+            $("#ddlStatusList option:contains(" + currentSts + ")").attr("selected", true);
+            $("#txtStsComments").val("");
+        };
+
+        $("#btnStatus").click(function () {
+            if ($("#ddlStatusList").val() == "") { $("#errMsgModal").text("Please select a status to change."); return false; }
+            else if ($("#txtStsComments").val() == "") { $("#errMsgModal").text("Please write a comments to change."); return false; }
+            else {
+                $.get("/Home/StatusUpdate", { id: $("#hdnCandidateId").val(), status: $("#ddlStatusList").val(), comments: $("#txtStsComments").val() }, function (data) {
+                    $("#btnStsPnl_" + $("#hdnCandidateId").val() + "").text($("#ddlStatusList option:selected").text());
+                });
+            }
+        });
 
          $('#CollapseMe').click(function () {
              $(this).hasClass('glyphicon-triangle-bottom') ? $(this).removeClass('glyphicon-triangle-bottom') && $(this).addClass('glyphicon-triangle-top') : $(this).removeClass('glyphicon-triangle-top') && $(this).addClass('glyphicon-triangle-bottom');
@@ -47,33 +52,9 @@
        
          $("#btnSearchCriteria").click(function () {
              $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), status: $("#txtCriteriaStatus").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
-                 //alert(data);
-                 //var src = data.find("#SearchCriteriaPartial").remove().end();
                  $("#CandidatesPartial").html(data);
              });
          });
-
-         @*$("#btnSearchCriteria").click(function () {
-             alert($("#txtCriteriaCanName").val());
-             $.ajax({
-                 url: '@Url.Action("SearchCriteria", "Home")',
-                 data: { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), status: $("#txtCriteriaStatus").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() },
-                 type: "GET",
-                 contentType: "application/json; charset=utf-8",
-                 datatype: "json",
-                 async: true,
-                 cache: false,
-                 processData: false,
-                 traditional: true,
-                 success: function () {
-                     alert("Ok");
-                 },
-                 error: function (jqXhr, textStatus, errorThrown) {
-                     alert("Error:Action is aborted.Please try again later.");
-                 }
-             });
-         });*@
-
     });
 </script>
 }

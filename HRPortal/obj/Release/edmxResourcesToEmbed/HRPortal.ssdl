@@ -40,7 +40,6 @@
   <EntityType Name="AspNetUserRoles">
     <Key>
       <PropertyRef Name="UserId" />
-      <PropertyRef Name="RoleId" />
     </Key>
     <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
@@ -51,6 +50,8 @@
     </Key>
     <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="Email" Type="nvarchar" MaxLength="256" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="100" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="100" />
     <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
     <Property Name="PasswordHash" Type="nvarchar(max)" />
     <Property Name="SecurityStamp" Type="nvarchar(max)" />
@@ -80,11 +81,14 @@
     <Property Name="EMAIL" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="ALTERNATE_EMAIL_ID" Type="nvarchar" MaxLength="50" />
     <Property Name="DOB" Type="datetime" Nullable="false" />
-    <Property Name="CURRENT_COMPANY" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="CURRENT_COMPANY" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="CURRENT_LOCATION" Type="nvarchar" MaxLength="150" />
     <Property Name="NOTICE_PERIOD" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="ANY_OTHER_OFFER" Type="bit" />
     <Property Name="LAST_WORKING_DATE" Type="datetime" />
     <Property Name="COMMENTS" Type="nvarchar(max)" />
+    <Property Name="RESUME_FILE_PATH" Type="nvarchar" MaxLength="150" />
+    <Property Name="RESUME_SOURCE" Type="nvarchar(max)" />
     <Property Name="ISINNOTICEPERIOD" Type="bit" />
     <Property Name="STATUS" Type="nvarchar" MaxLength="50" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
@@ -117,30 +121,55 @@
     <Property Name="JOB_DESCRIPTION" Type="nvarchar(max)" Nullable="false" />
     <Property Name="POSITION_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="NO_OF_VACANCIES" Type="int" Nullable="false" />
-    <Property Name="YEARS_OF_EXP_TOTAL" Type="int" Nullable="false" />
-    <Property Name="YEARS_OF_EXP_RELEVANT" Type="int" />
+    <Property Name="YEARS_OF_EXP_TOTAL" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_RELEVANT" Type="nvarchar" MaxLength="50" />
     <Property Name="WORK_LOCATION" Type="varchar" MaxLength="25" Nullable="false" />
     <Property Name="COMMENTS" Type="nvarchar(max)" />
-    <Property Name="OTHER_BENEFITS" Type="nvarchar" MaxLength="128" />
+    <Property Name="JD_FILE_PATH" Type="nvarchar" MaxLength="128" />
+    <Property Name="JD_SOURCE" Type="nvarchar(max)" />
+    <Property Name="CUSTOMER_NAME" Type="nvarchar" MaxLength="150" />
+    <Property Name="STATUS" Type="nvarchar" MaxLength="50" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
     <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
   </EntityType>
-  <EntityType Name="STATUS_MASTER_HISTORY">
+  <EntityType Name="STATUS_HISTORY">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="STATUS_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CANDIDATE_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="COMMENTS" Type="nvarchar(max)" />
+    <Property Name="ISACTIVE" Type="bit" Nullable="false" />
+    <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
+    <Property Name="MODIFIED_ON" Type="datetime" />
+  </EntityType>
+  <EntityType Name="STATUS_MASTER">
     <Key>
       <PropertyRef Name="STATUS_ID" />
     </Key>
     <Property Name="STATUS_ID" Type="uniqueidentifier" Nullable="false" />
     <Property Name="STATUS_NAME" Type="nvarchar" MaxLength="25" Nullable="false" />
     <Property Name="STATUS_DESCRIPTION" Type="nvarchar" MaxLength="250" />
-    <Property Name="JOB_ID" Type="uniqueidentifier" />
+    <Property Name="STATUS_ORDER" Type="int" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
     <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
   </EntityType>
   <EntityType Name="UserLog">
     <Key>
@@ -155,6 +184,13 @@
     <Property Name="UserIP" Type="nvarchar" MaxLength="100" />
     <Property Name="UserMAC" Type="nvarchar" MaxLength="100" />
     <Property Name="IsOnline" Type="bit" />
+  </EntityType>
+  <EntityType Name="UserXRole">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="RoleId" Type="uniqueidentifier" />
   </EntityType>
   <EntityType Name="VENDOR_MASTER">
     <Key>
@@ -171,6 +207,42 @@
     <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
   </EntityType>
+  <Association Name="FK_AspNetUserRoles_AspNetRoles">
+    <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1" />
+    <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetRoles">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserRoles">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AspNetUserRoles_AspNetUsers">
+    <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+    <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserRoles">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CANDIDATES_JOBPOSTING">
+    <End Role="JOBPOSTING" Type="Self.JOBPOSTING" Multiplicity="1" />
+    <End Role="CANDIDATES" Type="Self.CANDIDATES" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="JOBPOSTING">
+        <PropertyRef Name="JOB_ID" />
+      </Principal>
+      <Dependent Role="CANDIDATES">
+        <PropertyRef Name="JOB_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
     <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
       <OnDelete Action="Cascade" />
@@ -199,31 +271,15 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
-    <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+  <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
+    <End Role="STATUS_MASTER" Type="Self.STATUS_MASTER" Multiplicity="1" />
+    <End Role="STATUS_HISTORY" Type="Self.STATUS_HISTORY" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="AspNetRoles">
-        <PropertyRef Name="Id" />
+      <Principal Role="STATUS_MASTER">
+        <PropertyRef Name="STATUS_ID" />
       </Principal>
-      <Dependent Role="AspNetUserRoles">
-        <PropertyRef Name="RoleId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
-    <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetUsers">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AspNetUserRoles">
-        <PropertyRef Name="UserId" />
+      <Dependent Role="STATUS_HISTORY">
+        <PropertyRef Name="STATUS_ID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -237,9 +293,24 @@
     <EntitySet Name="CANDIDATES" EntityType="Self.CANDIDATES" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="JOBPOSTING" EntityType="Self.JOBPOSTING" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="STATUS_MASTER_HISTORY" EntityType="Self.STATUS_MASTER_HISTORY" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserLog" EntityType="Self.UserLog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserXRole" EntityType="Self.UserXRole" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="VENDOR_MASTER" EntityType="Self.VENDOR_MASTER" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_AspNetUserRoles_AspNetRoles" Association="Self.FK_AspNetUserRoles_AspNetRoles">
+      <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+      <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AspNetUserRoles_AspNetUsers" Association="Self.FK_AspNetUserRoles_AspNetUsers">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CANDIDATES_JOBPOSTING" Association="Self.FK_CANDIDATES_JOBPOSTING">
+      <End Role="JOBPOSTING" EntitySet="JOBPOSTING" />
+      <End Role="CANDIDATES" EntitySet="CANDIDATES" />
+    </AssociationSet>
     <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -248,13 +319,9 @@
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
     </AssociationSet>
-    <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
-      <End Role="AspNetRoles" EntitySet="AspNetRoles" />
-      <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
-    </AssociationSet>
-    <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
-      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-      <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+    <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="Self.FK_STATUS_HISTORY_STATUS_MASTER">
+      <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
+      <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
     </AssociationSet>
   </EntityContainer>
 </Schema>

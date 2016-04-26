@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE html>
 <html>
 @using HRPortal.Helper;
-@{  var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("ADMIN") ? "True" : "False";
-    var isSuperUser = HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("SUPERUSER") ? "True" : "False";
+@{  var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? "True" : "False";
+    var isSuperUser = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("SUPERUSER") ? "True" : "False";
     var dashboardTxt = isSuperAdmin == "True" ? "Candidates" : "Jobs";
     }
 <head>

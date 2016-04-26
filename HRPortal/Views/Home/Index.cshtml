@@ -3,7 +3,7 @@
 
 @{
     ViewBag.Title = "Home Page";
-    var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("ADMIN") ? "True" : "False";
+    var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? "True" : "False";
 }
 
 <div class="row">

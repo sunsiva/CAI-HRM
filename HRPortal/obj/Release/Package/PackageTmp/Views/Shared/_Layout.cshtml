@@ -1,19 +1,25 @@
 ﻿<!DOCTYPE html>
 <html>
-@{  var isAdmin = User.Identity.Name.ToUpper().Contains("ADMIN") ? "True" : "False";}
+@using HRPortal.Helper;
+@{  var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? "True" : "False";
+    var isSuperUser = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("SUPERUSER") ? "True" : "False";
+    var dashboardTxt = isSuperAdmin == "True" ? "Candidates" : "Jobs";
+    }
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="~/Content/images/CAI.ico" type="image/x-icon" />
     <title>@ViewBag.Title - HR - Recruitment Process</title>
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
         @*.navbar-inverse { -changed to #337AB7
     .navbar-inverse .navbar-nav > -changed to #F5F5F5
      .navbar-inverse .navbar-nav > li > a:hover, -changed to #000 : These styles has customized for blue color from bootstrap.css*@
     <script src="@Url.Content("http://code.jquery.com/jquery-1.11.0.min.js")"></script> @*TODO:move to script folder.This is for having $ in the script file.*@
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
-<body>
-    
+<body> 
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -23,17 +29,21 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="@Url.Action("Index","Home",new { @class="navbar-brand" })"> <img src="~/Content/images/CAI_Logo1.gif" alt="CAI" /> </a>
-                @*@Html.ActionLink("HR - Recruitment Process", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+                <a href="@Url.Action("Index","Home",new { @class="navbar-brand" })"> <img src="~/Content/images/CAI_Logo2.gif" alt="CAI" /> </a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li>@Html.ActionLink("Home", "Index", "Home")@*<span class="badge">42</span>*@</li>
-                        if (User.Identity.Name.ToUpper().Contains("ADMIN"))
+                        <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
+                        if (isSuperAdmin == "True")
                         {
                         <li>@Html.ActionLink("Job", "Index", "Job")</li>}
+                        else if (isSuperUser == "True")
+                        {
+                            <li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>
+                            <li>@Html.ActionLink("Squads", "SquadJobs", "Candidate")</li>
+                        }
                         else {<li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>}
                     }
                 </ul>

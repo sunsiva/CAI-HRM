@@ -9,6 +9,7 @@ using System.Web;
 using Microsoft.AspNet.Identity;
 using System.Threading.Tasks;
 using System.Net.Mail;
+using HRPortal.Helper;
 
 namespace HRPortal.Models
 {
@@ -111,10 +112,10 @@ namespace HRPortal.Models
                             join rle in db.AspNetRoles.ToList() on rlx.RoleId equals Guid.Parse(rle.Id)
                             where usr.Id == user.Id
                             select rle.Name).FirstOrDefault();
-            HttpRuntime.Cache.Insert("vendorid", user.Vendor_Id);
-            HttpRuntime.Cache.Insert("rolename", rolename);
-            HttpRuntime.Cache.Insert("user", user.Id);
-            HttpRuntime.Cache.Insert("userName", user.FirstName + " " + user.LastName);
+            HttpRuntime.Cache.Insert(CacheKey.VendorId.ToString(), user.Vendor_Id);
+            HttpRuntime.Cache.Insert(CacheKey.RoleName.ToString(), rolename);
+            HttpRuntime.Cache.Insert(CacheKey.Uid.ToString(), user.Id);
+            HttpRuntime.Cache.Insert(CacheKey.UserName.ToString(), user.FirstName + " " + user.LastName);
         }
 
         public void UserLogs(bool isIn,string email)

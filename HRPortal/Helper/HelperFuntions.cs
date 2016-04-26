@@ -29,8 +29,7 @@ namespace HRPortal.Helper
 
         public static string HasValue(object obj)
         {
-            string usr = obj != null ? Convert.ToString(obj) : string.Empty;
-            return usr;
+            return obj != null ? Convert.ToString(obj) : string.Empty;
         }
     }
 }

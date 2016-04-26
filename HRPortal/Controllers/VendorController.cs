@@ -52,7 +52,7 @@ namespace HRPortal
             if (ModelState.IsValid)
             {
                 vENDOR_MASTER.VENDOR_ID = Guid.NewGuid();
-                vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+                vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
                 vENDOR_MASTER.CREATED_ON = DateTime.Now;
                 db.VENDOR_MASTER.Add(vENDOR_MASTER);
                 db.SaveChanges();

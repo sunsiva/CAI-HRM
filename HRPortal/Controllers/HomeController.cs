@@ -29,10 +29,10 @@ namespace HRPortal.Controllers
             {
                 int page = 1;
                 GetStatusList();
-                if (HttpRuntime.Cache.Get("user") == null)
+                if (HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null)
                     loginVM.SetUserToCache(User.Identity.Name);
                 var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
-                if (HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("ADMIN"))
+                if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                 {
                     var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                     jobCanObj.CandidateItems = (from c in dbCan
@@ -68,7 +68,7 @@ namespace HRPortal.Controllers
         public async Task<ActionResult> SearchCriteria(string name, string vendor, string status, string stdt, string edt)
         {
             var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
-            if (HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("ADMIN"))
+            if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
             {
                 CookieStore.SetCookie("CANSEARCHHOME", name + "|" + vendor + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(4));
                 var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
@@ -109,7 +109,7 @@ namespace HRPortal.Controllers
             sHist.COMMENTS = comments;
             sHist.CANDIDATE_ID = Guid.Parse(id);
             sHist.ISACTIVE = true;
-            sHist.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+            sHist.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
             sHist.MODIFIED_ON = DateTime.Now;
             db.STATUS_HISTORY.Add(sHist);
             await db.SaveChangesAsync();
@@ -120,7 +120,7 @@ namespace HRPortal.Controllers
 
         private JobAndCandidateViewModels GetCandidateSearchResults(List<CANDIDATE> dbCan, List<JOBPOSTING> dbJobs)
         {
-            var cookie = CookieStore.GetCookie("CANSEARCHHOME");
+            var cookie = CookieStore.GetCookie(CacheKey.CANSearchHome.ToString());
             string name = string.Empty, vendor = string.Empty, status = string.Empty, stdt = string.Empty, edt = string.Empty;
             if (!string.IsNullOrEmpty(cookie))
             {
@@ -205,7 +205,7 @@ namespace HRPortal.Controllers
         private void GetStatusList()
         {
             var sts = db.STATUS_MASTER.Where(i => i.ISACTIVE == true).Select(s=> new { s.STATUS_ID,s.STATUS_NAME,s.STATUS_DESCRIPTION,s.STATUS_ORDER }).OrderBy(v=>v.STATUS_ORDER).ToList();
-            ViewBag.StatusList = new SelectList(sts.AsEnumerable(), "STATUS_ID", "STATUS_NAME", 1);
+            ViewBag.StatusList = new SelectList(sts.AsEnumerable(), "STATUS_ID", "STATUS_DESCRIPTION", 1);
         }
 
         public ActionResult About()

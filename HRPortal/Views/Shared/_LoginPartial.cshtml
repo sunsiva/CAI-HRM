@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@using HRPortal.Helper
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
@@ -7,7 +7,7 @@
 
     <ul class="nav navbar-nav dropdown">
         <li >
-            @Html.ActionLink("Logged in as : " + (HttpRuntime.Cache.Get("userName") != null ? HttpRuntime.Cache.Get("userName").ToString() : User.Identity.Name), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage Account"})
+            @Html.ActionLink("Logged in as : " + (HttpRuntime.Cache.Get(CacheKey.UserName.ToString()) != null ? HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString() : User.Identity.Name), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage Account"})
        @*<span class="col-sm-offset-12 glyphicon glyphicon-user"></span>*@
          </li>
         <li><a class="glyphicon glyphicon-log-out" title="Click To Log Off" href="javascript:document.getElementById('logoutForm').submit()"></a></li>

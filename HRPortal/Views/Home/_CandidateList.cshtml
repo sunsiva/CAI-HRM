@@ -11,14 +11,14 @@
                         <tr>
                             <th>#</th>
                             <th>
-                                @Html.DisplayNameFor(model => model.CANDIDATE_NAME)
+                                CANDIDATE NAME
                             </th>
                             <th>PARTNER</th>
                             <th>
                                 POSITION/SKILL
                             </th>
                             <th>
-                                NOTICE_PERIOD
+                                NOTICE PERIOD
                                 /LWD
                             </th>
                             <th>
@@ -62,7 +62,7 @@
                                 <td>
                                     <a href="@item.RESUME_FILE_PATH" target="_self" title="Click To Download Candidate CV">Download</a>
                                 </td>
-                                <td>
+                                <td width="150px">
                                     
                                     <a href="#StatusModal" id="btnStsPnl_@item.CANDIDATE_ID" data-toggle="modal" onclick='myPanel(this); return false;' data-custom-name="@item.CANDIDATE_NAME" data-custom-value="@item.CANDIDATE_ID" title="Click To Change The Status">@item.STATUS</a>
                                 </td>
@@ -163,7 +163,7 @@
                     <div class="form-group form-group-required">
                         @Html.Label("Status", new { @class = "col-md-2 control-label" })
                         <div class="col-md-10">
-                            @Html.DropDownList("ddlStatusList", (SelectList)ViewBag.StatusList, "Select a Status", htmlAttributes: new { @class = "form-control" })
+                            @Html.DropDownList("ddlStatusList", (SelectList)ViewBag.StatusList, "-- Select a Status --", htmlAttributes: new { @class = "form-control" })
                         </div>
                     </div><br /><br />
                     <div class="form-group form-group-required">

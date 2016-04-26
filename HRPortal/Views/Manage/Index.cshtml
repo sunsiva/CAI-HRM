@@ -25,7 +25,7 @@
             <br />
         </dd>
         
-        @if (HelperFuntions.HasValue(HttpRuntime.Cache.Get("rolename")).ToUpper().Contains("ADMIN"))
+        @if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
         {
         <dt>Register User:</dt>
         <dd>

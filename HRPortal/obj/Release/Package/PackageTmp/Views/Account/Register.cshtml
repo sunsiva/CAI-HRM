@@ -17,13 +17,18 @@
             @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @required = "mandatory" })
         </div>
     </div>
-    @*<div class="form-group">
-        @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+    <div class="form-group form-group-required">
+        @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @required = "mandatory" })
         </div>
-    </div>*@
-
+    </div>
+    <div class="form-group form-group-required">
+        @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @required = "mandatory" })
+        </div>
+    </div>
     <div class="form-group form-group-required">
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
@@ -42,16 +47,22 @@
             @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
         </div>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.IsAdmin, htmlAttributes: new { @class = "col-md-2 control-label" })
+    <div class="form-group form-group-required">
+        @Html.Label("Staffing Partner", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-             @Html.EditorFor(model => model.IsAdmin, new { @class = "checkbox" } )
+            @Html.DropDownList("ddlVendorList", (SelectList)ViewBag.VendorList, "Select a staffing partner..", htmlAttributes:new { @class= "form-control", @required = "mandatory" })
+        </div>
+    </div>
+    <div class="form-group form-group-required">
+        @Html.Label("User Role", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownList("ddlRoleList", (SelectList)ViewBag.RoleList, "Select a Role..", htmlAttributes: new { @class = "form-control", @required = "mandatory" })
         </div>
     </div>
     @*<div class="form-group">
-        @Html.LabelFor(m => m., new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.IsAdmin, htmlAttributes: new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.Vendor_Id, Model.Vendor_Id, "Please select a Country", new { @class = "form-control" })
+             @Html.EditorFor(model => model.IsAdmin, new { @class = "checkbox" } )
         </div>
     </div>*@
     <div class="form-group">
@@ -61,7 +72,7 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <span class="text-danger">@ViewBag.RegSuccess</span>
+            <span class="text-success">@ViewBag.RegSuccess</span>
         </div>
     </div>
     

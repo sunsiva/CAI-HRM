@@ -22,13 +22,13 @@ namespace HRPortal.Controllers
 
         public CandidateController()
         {
-            _uid = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+            _uid = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
         }
 
         // GET: Candidate
         public async Task<ActionResult> Index()
         {
-            bool isAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user")).ToUpper().Contains("ADMIN");
+            bool isAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN");
             List<CANDIDATE> canDb = new List<CANDIDATE>();
             if (isAdmin) {
                 canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == _uid && c.ISACTIVE == true).ToListAsync(); }
@@ -55,7 +55,7 @@ namespace HRPortal.Controllers
         // GET: Squads Candidates
         public async Task<ActionResult> SquadJobs()
         {
-            var vendorId = Guid.Parse(HelperFuntions.HasValue(HttpRuntime.Cache.Get("vendorid")));
+            var vendorId = Guid.Parse(HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.VendorId.ToString())));
             var squadsLst = await db.CANDIDATES.ToListAsync();
             var usrs = await db.AspNetUsers.Where(i => i.Vendor_Id == vendorId && i.Id != _uid).Select(s=>s.Id).ToListAsync();
             var canLst = squadsLst.Where(c => usrs.Contains(c.CREATED_BY) && c.ISACTIVE == true).Select(i => new CandidateViewModels
@@ -120,7 +120,7 @@ namespace HRPortal.Controllers
                 cANDIDATE.ISACTIVE = true;
                 cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes")?true:false;
                 cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
-                cANDIDATE.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+                cANDIDATE.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
                 cANDIDATE.CREATED_ON = DateTime.Now;
                 cANDIDATE.RESUME_FILE_PATH = FileUpload(file);
                 db.CANDIDATES.Add(cANDIDATE);
@@ -182,7 +182,7 @@ namespace HRPortal.Controllers
             {
                 cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
                 cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
-                cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
+                cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
                 cANDIDATE.MODIFIED_ON = DateTime.Now;
                 db.Entry(cANDIDATE).State = EntityState.Modified;
                 await db.SaveChangesAsync();

@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var isActive = (Model.ISACTIVE == true ? "Active" : "In-Active");
     var dob = (Model.DOB.ToString("dd-MMM-yyyy"));
+    var isNP = Model.ISINNOTICEPERIOD == true ? "Yes" : "No";
 }
 
 <h2 align="center">Candidate Details</h2>
@@ -20,29 +21,13 @@
         <dd>
             @Html.DisplayFor(model => model.CANDIDATE_NAME)
         </dd>
-
-        @*<dt>
-        @Html.DisplayNameFor(model => model.JOB_ID)
-    </dt>
-
-    <dd>
-        @Html.DisplayFor(model => model.JOB_ID)
-    </dd>*@
-
+        
         <dt>
             @Html.DisplayNameFor(model => model.YEARS_OF_EXP_TOTAL)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.YEARS_OF_EXP_TOTAL)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.YEARS_OF_EXP_RELEVANT)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.YEARS_OF_EXP_RELEVANT)
         </dd>
 
         <dt>
@@ -54,27 +39,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ALTERNATE_MOBILE_NO)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ALTERNATE_MOBILE_NO)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.EMAIL)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.EMAIL)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ALTERNATE_EMAIL_ID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ALTERNATE_EMAIL_ID)
         </dd>
 
         <dt>
@@ -93,12 +62,37 @@
             @Html.DisplayFor(model => model.CURRENT_COMPANY)
         </dd>
 
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CURRENT_LOCATION)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CURRENT_LOCATION)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ISINNOTICEPERIOD)
+        </dt>
+
+        <dd>
+            @isNP
+        </dd>
+
         <dt>
             @Html.DisplayNameFor(model => model.NOTICE_PERIOD)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.NOTICE_PERIOD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LAST_WORKING_DATE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LAST_WORKING_DATE)
         </dd>
 
         <dt>
@@ -110,11 +104,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ISINNOTICEPERIOD)
+            @Html.DisplayNameFor(model => model.STATUS)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ISINNOTICEPERIOD)
+            @Html.DisplayFor(model => model.STATUS)
         </dd>
 
         <dt>
@@ -123,6 +117,30 @@
 
         <dd>
             @isActive
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YEARS_OF_EXP_RELEVANT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YEARS_OF_EXP_RELEVANT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ALTERNATE_EMAIL_ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ALTERNATE_EMAIL_ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ALTERNATE_MOBILE_NO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ALTERNATE_MOBILE_NO)
         </dd>
 
         <dt>
@@ -160,11 +178,12 @@
     </dl>
 </div>
 <p>
-    @*@Html.ActionLink("Edit", "Edit", new { id = Model.CANDIDATE_ID }) |*@
     @if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "H")
     {
-        @Html.ActionLink("Back to List", "Index", "Home")}
-    else {@Html.ActionLink("Back to List", "Index")}
-    @*@Html.ActionLink("Edit", "Edit", new { id = Model.JOB_ID }) |*@
-    
+        @Html.ActionLink("Back to List", "Index", "Home") 
+    }
+    else if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "S")
+    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate")
+    }
+    else { @Html.ActionLink("Back to List", "Index")}
 </p>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HRPortal.CANDIDATE>
+﻿@model IEnumerable<HRPortal.Models.CandidateViewModels>
 
 @{
     ViewBag.Title = "Index";
@@ -34,7 +34,8 @@
                             @Html.DisplayNameFor(model => model.CURRENT_COMPANY)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.NOTICE_PERIOD)
+                            NOTICE_PERIOD
+                            /LWD
                         </th>
                         <th>
                             @Html.DisplayName("STATUS")
@@ -62,10 +63,10 @@
             @Html.DisplayFor(modelItem => item.CURRENT_COMPANY)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.NOTICE_PERIOD)
+            @(item.LAST_WORKING_DATE != null ? (item.LAST_WORKING_DATE.Value.ToString("dd-MMM-yyyy")) : item.NOTICE_PERIOD)
         </td>
         <td>
-            SCH-R2
+            @Html.DisplayFor(modelItem => item.STATUS)
         </td>
         <td>
             <p data-placement="top" data-toggle="tooltip" title="Details">

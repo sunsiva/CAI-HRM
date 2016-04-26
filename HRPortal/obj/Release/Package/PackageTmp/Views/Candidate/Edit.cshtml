@@ -3,21 +3,21 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var hideNp = "hide"; var hideLWD = "hide"; var npYes = false; var npNo = false;
 }
 
 <h2 align="center">Edit Candidate</h2>
 
-
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Candidate", FormMethod.Post, new { @Id = "CandidateFormEdit" }))
 {
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
+        @Html.AntiForgeryToken()
+    <span align="right" id="errMsg" class="text-danger col-lg-offset-4"></span>
+        <div class="form-horizontal">
         @*<h4>CANDIDATE</h4>*@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.CANDIDATE_ID)
-
+        @Html.HiddenFor(model=>model.JOB_ID)
         @*<div class="form-group">
         @Html.Label("JOB CODE", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
@@ -26,53 +26,77 @@
         </div>
         </div>*@
 
-        <div class="form-group">
+        <div class="form-group form-group-required">
             @Html.LabelFor(model => model.CANDIDATE_NAME, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.CANDIDATE_NAME, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.CANDIDATE_NAME, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
                 @Html.ValidationMessageFor(model => model.CANDIDATE_NAME, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group form-group-required">
             @Html.LabelFor(model => model.YEARS_OF_EXP_TOTAL, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.YEARS_OF_EXP_TOTAL, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_TOTAL, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_TOTAL, "", new { @class = "text-danger", @required = "mandatory" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.YEARS_OF_EXP_RELEVANT, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.YEARS_OF_EXP_RELEVANT, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_RELEVANT, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
+        <div class="form-group form-group-required">
             @Html.LabelFor(model => model.MOBILE_NO, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.MOBILE_NO, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.MOBILE_NO, "", new { @class = "text-danger", @required = "mandatory" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ALTERNATE_MOBILE_NO, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ALTERNATE_MOBILE_NO, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ALTERNATE_MOBILE_NO, "", new { @class = "text-danger" })
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.EMAIL, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EMAIL, "", new { @class = "text-danger", @required = "mandatory" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.EMAIL, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EMAIL, "", new { @class = "text-danger" })
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control date-picker", @required = "mandatory", placeholder = "Select a date..." } })
+                    @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
+
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.CURRENT_COMPANY, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CURRENT_COMPANY, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
+                    @Html.ValidationMessageFor(model => model.CURRENT_COMPANY, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group form-group-required">
+                @Html.LabelFor(model => model.CURRENT_LOCATION, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CURRENT_LOCATION, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
+                    @Html.ValidationMessageFor(model => model.CURRENT_LOCATION, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.YEARS_OF_EXP_RELEVANT, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.YEARS_OF_EXP_RELEVANT, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_RELEVANT, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ALTERNATE_MOBILE_NO, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ALTERNATE_MOBILE_NO, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ALTERNATE_MOBILE_NO, "", new { @class = "text-danger" })
+                </div>
+            </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.ALTERNATE_EMAIL_ID, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -82,48 +106,51 @@
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
+
+        @if (Model.ISINNOTICEPERIOD == true) { hideLWD = "show";npYes = true; }
+        else { hideNp = "show"; npNo = true; }
+        <div class="form-group form-group-required">
+            @Html.LabelFor(model => model.ISINNOTICEPERIOD, "IS_IN_NOTICE_PERIOD", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control date-picker", placeholder = "Select a date..." } })
-                @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+                <div class="checkbox">
+                    <span><input type="radio" id="rdoIsNPYes" name="IsNP" checked="@npYes" value="Yes" />Yes</span>
+                    <span><input type="radio" id="rdoIsNPNo" name="IsNP" checked="@npNo" value="No" />No</span>
+                </div>
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CURRENT_COMPANY, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CURRENT_COMPANY, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CURRENT_COMPANY, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
+        <div class="form-group form-group-required @hideNp" id="txtNP">
             @Html.LabelFor(model => model.NOTICE_PERIOD, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.NOTICE_PERIOD, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.NOTICE_PERIOD, "", new { @class = "text-danger" })
+                <select id="ddlNoticePeriod" name="ddlNoticePeriod" class="form-control">
+                    <option value="">Select Notice Period</option>
+                    <option value="1W">1 WEEK</option>
+                    <option value="15D">15 DAYS</option>
+                    <option value="30D">30 DAYS</option>
+                    <option value="45D">45 DAYS</option>
+                    <option value="60D">60 DAYS</option>
+                    <option value="90D">90 DAYS</option>
+                </select>
+                <span align="right" id="errMsgNP" class="text-danger"></span>
             </div>
         </div>
-
+            <div class="form-group form-group-required @hideLWD" id="txtLWD">
+                @Html.LabelFor(model => model.LAST_WORKING_DATE, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.LAST_WORKING_DATE, new { htmlAttributes = new { @class = "form-control date-picker", @required = "mandatory", placeholder = "Select a date..." } })
+                    
+                    <span align="right" id="errMsgLWD" class="text-danger"></span>
+                </div>
+            </div>
+       
         <div class="form-group">
             @Html.LabelFor(model => model.COMMENTS, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.COMMENTS, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextAreaFor(model => model.COMMENTS, new { @class = "textarea-input-custom" })
                 @Html.ValidationMessageFor(model => model.COMMENTS, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ISINNOTICEPERIOD, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.ISINNOTICEPERIOD)
-                    @Html.ValidationMessageFor(model => model.ISINNOTICEPERIOD, "", new { @class = "text-danger" })
-                    @Html.HiddenFor(model => model.CREATED_BY, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.HiddenFor(model => model.CREATED_ON, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.HiddenFor(model => model.ISACTIVE, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
+                @Html.HiddenFor(model => model.CREATED_BY, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.HiddenFor(model => model.CREATED_ON, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.HiddenFor(model => model.ISACTIVE, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
 
@@ -137,7 +164,12 @@
 }
 
 <div>
+    @if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "S")
+    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate")
+    }
+    else { 
     @Html.ActionLink("Back to List", "Index")
+    }
 </div>
 
 @section Scripts {
@@ -148,6 +180,34 @@
             // This will make every element with the class "date-picker" into a DatePicker element
             $('.date-picker').datepicker();
         })
+        
+        $('#rdoIsNPYes').click(function () {
+            $('#txtNP').hasClass('hide') ? "" : $('#txtNP').removeClass('show') && $('#txtNP').addClass('hide');
+            $('#txtLWD').hasClass('hide') ? $('#txtLWD').removeClass('hide') && $('#txtLWD').addClass('show') : "";
+        });
+
+        $('#rdoIsNPNo').click(function () {
+            $('#txtNP').hasClass('hide') ? $('#txtNP').removeClass('hide') && $('#txtNP').addClass('show') : "";
+            $('#txtLWD').hasClass('hide') ? "" : $('#txtLWD').removeClass('show') && $('#txtLWD').addClass('hide');
+        });
+
+
+        $("#btnCandiEdit").click(function () {
+            if ($("#CandidateFormEdit").validate()) { // Not Valid
+                if ($("#rdoIsNPYes").is(":Checked") && $("#LAST_WORKING_DATE").val() == "")
+                    $("#errMsgLWD").text("Last working date is required.");
+                else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "")
+                    $("#errMsgNP").text("Notice Period is required.");
+                //else if ($("#file").val() == "")
+                //    $("#errMsgCVUpload").text("Please upload a resume.");
+                else
+                    $("#errMsg").text("Required field is empty.");
+                return false;
+            } else {
+                $("#CandidateFormEdit").submit()
+            }
+        });
+
     });
 </script>
 }

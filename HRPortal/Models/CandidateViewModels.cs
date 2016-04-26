@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HRPortal.Helper;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -49,13 +50,13 @@ namespace HRPortal.Models
         {
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
             var stsId = dbContext.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID;
-            var uid = HttpRuntime.Cache.Get("user") == null ? Guid.NewGuid() : HttpRuntime.Cache.Get("user");
+            var uid = HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null ? Guid.NewGuid() : HttpRuntime.Cache.Get(CacheKey.Uid.ToString());
             stsHist = new STATUS_HISTORY();
             stsHist.STATUS_ID = ((stid == null || stid == Guid.Empty) ? stsId : stid);
             stsHist.CANDIDATE_ID = cId;
             stsHist.COMMENTS = string.IsNullOrEmpty(cmnts) ? "Initial Status - SCR-SBM" : cmnts;
             stsHist.ISACTIVE = true;
-            stsHist.MODIFIED_BY = HttpRuntime.Cache.Get("user") == null ? string.Empty : HttpRuntime.Cache.Get("user").ToString();
+            stsHist.MODIFIED_BY = uid.ToString();
             stsHist.MODIFIED_ON = DateTime.Now;
             dbContext.STATUS_HISTORY.Add(stsHist);
             dbContext.SaveChanges();
@@ -65,12 +66,12 @@ namespace HRPortal.Models
 
         public string GetStatusNameById(Guid id)
         {
-            string stsName = "SCR-SBM";
+            string stsName = "Screening–Submitted";// "SCR -SBM";
             var stsSrc = dbContext.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).ToList();
             if (stsSrc.Count > 0)
             {
                 var stsH = stsSrc.OrderByDescending(j => j.MODIFIED_ON).FirstOrDefault().STATUS_ID;
-                stsName = dbContext.STATUS_MASTER.Where(i => i.STATUS_ID == stsH).FirstOrDefault().STATUS_NAME;
+                stsName = dbContext.STATUS_MASTER.Where(i => i.STATUS_ID == stsH).FirstOrDefault().STATUS_DESCRIPTION;
             }
             return stsName;
         }
