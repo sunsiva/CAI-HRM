@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -10,7 +8,6 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using HRPortal.Models;
 using System.Data.Entity;
-using System.Net;
 
 namespace HRPortal.Controllers
 {
@@ -462,8 +459,6 @@ namespace HRPortal.Controllers
             ViewBag.RoleList = new SelectList(query.AsEnumerable(), "Id", "Name", 3);
         }
         #endregion
-
-
 
         protected override void Dispose(bool disposing)
         {

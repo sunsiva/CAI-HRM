@@ -28,7 +28,14 @@ namespace HRPortal.Controllers
         // GET: Candidate
         public async Task<ActionResult> Index()
         {
-            var canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == _uid && c.ISACTIVE == true).ToListAsync();
+            bool isAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user")).ToUpper().Contains("ADMIN");
+            List<CANDIDATE> canDb = new List<CANDIDATE>();
+            if (isAdmin) {
+                canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == _uid && c.ISACTIVE == true).ToListAsync(); }
+            else { 
+                canDb = await db.CANDIDATES.Where(c => c.ISACTIVE == true).ToListAsync();
+            }
+
             var canLst = canDb.Select(i => new CandidateViewModels
             {
                 CANDIDATE_ID = i.CANDIDATE_ID,

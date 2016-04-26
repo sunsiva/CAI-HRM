@@ -93,14 +93,14 @@
                             <td align="left">
                                 <input type="hidden" id="hdnCandidateId" />
                             <a href="@Url.Action("ExportToExcel", "Home")" title="Export To Excel" id="btnExport"><img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a></td>
-                            <td colspan="2">Show <select class="pagesize">
+                            @*<td colspan="2">Show <select class="pagesize">
                                 <option selected="selected" value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="20">20</option>
                                 <option value="30">30</option>
                                 <option value="40">40</option>
-                            </select> per page</td>
-                            <td align="right" colspan="9" class="">@Model.Count() Record(s) found.</td>
+                            </select> per page</td>*@
+                            <td align="right" colspan="11" class="">@Model.Count() Record(s) found.</td>
                         </tr>
                     </table>
                 </div>
