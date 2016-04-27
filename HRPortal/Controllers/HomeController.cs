@@ -35,23 +35,24 @@ namespace HRPortal.Controllers
                 if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                 {
                     var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
-                    jobCanObj.CandidateItems = (from c in dbCan
-                                             join j in dbJobs on c.JOB_ID equals j.JOB_ID
-                                          select new { Candidate = c, Job = j}).Select(i => new CandidateViewModels
-                                          {
-                                              CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
-                                              CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
-                                              POSITION = i.Job.POSITION_NAME,
-                                              RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH)? string.Empty: Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
-                                              NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
-                                              YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
-                                              LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
-                                              VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
-                                              STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
-                                              CREATED_ON = i.Candidate.CREATED_ON,
-                                              MODIFIED_ON = i.Candidate.MODIFIED_ON,
-                                              MODIFIED_BY = GetModifiedById(i.Candidate.CANDIDATE_ID),
-                                          }).Skip((page-1)*pageSize).Take(pageSize).ToList();
+                    jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                    //jobCanObj.CandidateItems = (from c in dbCan
+                    //                      join j in dbJobs on c.JOB_ID equals j.JOB_ID
+                    //                      select new { Candidate = c, Job = j}).Select(i => new CandidateViewModels
+                    //                      {
+                    //                          CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
+                    //                          CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
+                    //                          POSITION = i.Job.POSITION_NAME,
+                    //                          RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH)? string.Empty: Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
+                    //                          NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
+                    //                          YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
+                    //                          LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
+                    //                          VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
+                    //                          STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
+                    //                          CREATED_ON = i.Candidate.CREATED_ON,
+                    //                          MODIFIED_ON = i.Candidate.MODIFIED_ON,
+                    //                          MODIFIED_BY = GetModifiedById(i.Candidate.CANDIDATE_ID),
+                    //                      }).Skip((page-1)*pageSize).Take(pageSize).ToList();
 
                     ViewBag.CurrentPage = page;
                     ViewBag.PageSize = pageSize;
@@ -73,6 +74,7 @@ namespace HRPortal.Controllers
                 CookieStore.SetCookie("CANSEARCHHOME", name + "|" + vendor + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(4));
                 var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                 jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                GetStatusList();
             }
             else {
                 jobCanObj.JobItems = dbJobs;
@@ -114,6 +116,12 @@ namespace HRPortal.Controllers
             db.STATUS_HISTORY.Add(sHist);
             await db.SaveChangesAsync();
 
+            var cId = Guid.Parse(id);
+            CANDIDATE cANDIDATE = db.CANDIDATES.Where(i => i.CANDIDATE_ID == cId).FirstOrDefault();
+            cANDIDATE.STATUS =  status;
+            db.Entry(cANDIDATE).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+
             //vmodelCan.UpdateStatus(Guid.Parse(status), Guid.Parse(id), comments);
             return new EmptyResult();
         }
@@ -128,32 +136,60 @@ namespace HRPortal.Controllers
                 name = val[0]; vendor = val[1]; status = val[2]; stdt = val[3]; edt = val[4];
             }
             jobCanObj.CandidateItems = (from c in dbCan
-                                  join j in dbJobs on c.JOB_ID equals j.JOB_ID
-                                  join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id into tempUsr1
-                                  from u1 in tempUsr1.DefaultIfEmpty()
-                                  join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID into tempVendor
-                                  from v in tempVendor.DefaultIfEmpty()
-                                  join u in db.AspNetUsers.ToList() on c.MODIFIED_BY equals u.Id into tempUsr
-                                  from u in tempUsr.DefaultIfEmpty()
-                                  where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
-                                  && (status != string.Empty ? c.STATUS == status : true)
-                                  && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
-                                  && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
-                                  && v.VENDOR_NAME.ToUpper().Contains(vendor.ToUpper())
-                                  select new { Candidate = c, Job = j, Users = u, Users1 = u1, Vendor = v }).Select(i => new CandidateViewModels
-                                  {
-                                      CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
-                                      CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
-                                      POSITION = i.Job.POSITION_NAME,
-                                      NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
-                                      YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
-                                      VENDOR_NAME = i.Vendor == null ? string.Empty : i.Vendor.VENDOR_NAME,
-                                      LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
-                                      CREATED_ON = i.Candidate.CREATED_ON,
-                                      MODIFIED_ON = i.Candidate.MODIFIED_ON,
-                                      MODIFIED_BY = i.Users == null ? string.Empty : i.Users.FirstName + " " + i.Users.LastName,
-                                      CREATED_BY = i.Users1 == null ? string.Empty : i.Users1.FirstName + " " + i.Users1.LastName,
-                                  }).ToList();
+                                        join j in dbJobs on c.JOB_ID equals j.JOB_ID
+                                        join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id into tempUsr1
+                                        from u1 in tempUsr1.DefaultIfEmpty()
+                                        join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID into tempVendor
+                                        from v in tempVendor.DefaultIfEmpty()
+                                        where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
+                                        && (status != string.Empty ? c.STATUS == status : true)
+                                        && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
+                                        && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
+                                        && v.VENDOR_NAME.ToUpper().Contains(vendor.ToUpper())
+                                        select new { Candidate = c, Job = j }).Select(i => new CandidateViewModels
+                                        {
+                                            CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
+                                            CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
+                                            POSITION = i.Job.POSITION_NAME,
+                                            RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH) ? string.Empty : Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
+                                            NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
+                                            YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
+                                            LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
+                                            VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
+                                            STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
+                                            CREATED_ON = i.Candidate.CREATED_ON,
+                                            MODIFIED_ON = i.Candidate.MODIFIED_ON,
+                                            MODIFIED_BY = GetModifiedById(i.Candidate.CANDIDATE_ID),
+                                        }).ToList();
+
+            //jobCanObj.CandidateItems = (from c in dbCan
+            //                      join j in dbJobs on c.JOB_ID equals j.JOB_ID
+            //                      join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id into tempUsr1
+            //                      from u1 in tempUsr1.DefaultIfEmpty()
+            //                      join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID into tempVendor
+            //                      from v in tempVendor.DefaultIfEmpty()
+            //                      join u in db.AspNetUsers.ToList() on c.MODIFIED_BY equals u.Id into tempUsr
+            //                      from u in tempUsr.DefaultIfEmpty()
+            //                      where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
+            //                      && (status != string.Empty ? c.STATUS == status : true)
+            //                      && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
+            //                      && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
+            //                      && v.VENDOR_NAME.ToUpper().Contains(vendor.ToUpper())
+            //                      select new { Candidate = c, Job = j, Users = u, Users1 = u1, Vendor = v }).Select(i => new CandidateViewModels
+            //                      {
+            //                          CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
+            //                          CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
+            //                          POSITION = i.Job.POSITION_NAME,
+            //                          NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
+            //                          YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
+            //                          VENDOR_NAME = i.Vendor == null ? string.Empty : i.Vendor.VENDOR_NAME,
+            //                          LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
+            //                          CREATED_ON = i.Candidate.CREATED_ON,
+            //                          MODIFIED_ON = i.Candidate.MODIFIED_ON,
+            //                          MODIFIED_BY = i.Users == null ? string.Empty : i.Users.FirstName + " " + i.Users.LastName,
+            //                          CREATED_BY = i.Users1 == null ? string.Empty : i.Users1.FirstName + " " + i.Users1.LastName,
+            //                      }).ToList();
+
             return jobCanObj;
         }
 

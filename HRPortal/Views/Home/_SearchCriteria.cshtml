@@ -12,7 +12,8 @@
                         <br />
                         <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
                         <input type="text" id="txtCriteriaVendor" placeholder="Partner" />
-                        <input type="text" id="txtCriteriaStatus" placeholder="Status" />
+                        @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, "-- Select a Status --")
+                        @*<input type="text" id="txtCriteriaStatus" placeholder="Status" />*@
                         <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
                         <input type="text" id="txtCriteriaEndDate" class="date-picker" placeholder="Uploaded End Date" />
                         <a class="btn btn-danger btn-xs" id="btnSearchCriteria">

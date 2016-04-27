@@ -27,6 +27,11 @@ namespace HRPortal.Helper
             return string.Format("{0} years ago", Math.Round(timeSince.TotalDays / 365));
         }
 
+        /// <summary>
+        /// Check the object whether has value or not...
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static string HasValue(object obj)
         {
             return obj != null ? Convert.ToString(obj) : string.Empty;

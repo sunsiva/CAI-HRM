@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using HRPortal.Models;
 using System.Data.Entity;
+using HRPortal.Helper;
 
 namespace HRPortal.Controllers
 {
@@ -450,12 +451,21 @@ namespace HRPortal.Controllers
         private void SetVendorList()
         {
             var query = db.VENDOR_MASTER.Where(s=>s.ISACTIVE==true).Select(i => new { i.VENDOR_ID, i.VENDOR_NAME });
+            if(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
+            {
+                var vendorId = Guid.Parse(HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.VendorId.ToString())));
+                query = query.Where(i => i.VENDOR_ID == vendorId);
+            }
             ViewBag.VendorList = new SelectList(query.AsEnumerable(), "VENDOR_ID", "VENDOR_NAME", 3);
         }
 
         private void SetRoleList()
         {
             var query = db.AspNetRoles.Select(i => new { i.Id, i.Name });
+            if (HttpRuntime.Cache.Get(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
+            {
+                query = query.Where(i => i.Name == "User");
+            }
             ViewBag.RoleList = new SelectList(query.AsEnumerable(), "Id", "Name", 3);
         }
         #endregion
