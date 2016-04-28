@@ -175,6 +175,8 @@ else {@Html.ActionLink("Back to List", "Index")}
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/moment.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.js"></script>
     <script lang="ja" type="text/javascript">
         $(document).ready(function () {
 
@@ -186,6 +188,7 @@ else {@Html.ActionLink("Back to List", "Index")}
             $('#rdoIsNPNo').click(function () {
                 $('#txtNP').hasClass('hide') ? $('#txtNP').removeClass('hide') && $('#txtNP').addClass('show'):"";
                 $('#txtLWD').hasClass('hide') ? "" : $('#txtLWD').removeClass('show') && $('#txtLWD').addClass('hide');
+                $("#LAST_WORKING_DATE").val('');
             });
 
             $("#btnCandiCreate").click(function () {
@@ -223,10 +226,10 @@ else {@Html.ActionLink("Back to List", "Index")}
                 }
             });
 
-        $(function () {
-            // This will make every element with the class "date-picker" into a DatePicker element
-            $('.date-picker').datepicker();
-        })
+        $('.date-picker').datetimepicker({
+            format: 'MM/DD/YYYY'
+        });
+
     });
     </script>
 }

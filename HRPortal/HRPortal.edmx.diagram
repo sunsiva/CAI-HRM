@@ -22,7 +22,7 @@
         <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="HRPortalModel.AspNetUserRoles" />
-        <EntityTypeShape EntityType="HRPortalModel.STATUS_HISTORY" Width="1.5" PointX="12.625" PointY="9.25" />
+        <EntityTypeShape EntityType="HRPortalModel.STATUS_HISTORY" Width="1.5" PointX="12.625" PointY="9.125" />
         <AssociationConnector Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" />
       </Diagram>
     </edmx:Diagrams>

@@ -286,6 +286,7 @@
     <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
     <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="SCHEDULED_TO" Type="DateTime" Precision="3" />
     <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
     <NavigationProperty Name="STATUS_MASTER" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />

@@ -183,12 +183,13 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/moment.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.js"></script>
 <script lang="ja" type="text/javascript">
     $(document).ready(function () {
-        $(function () {
-            // This will make every element with the class "date-picker" into a DatePicker element
-            $('.date-picker').datepicker();
-        })
+        $('.date-picker').datetimepicker({
+            format: 'MM/DD/YYYY'
+        });
 
         //$("#mytable #checkall").click(function () {
         //    if ($("#mytable #checkall").is(':checked')) {

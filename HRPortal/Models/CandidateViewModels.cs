@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Mvc;
 
 namespace HRPortal.Models
 {
@@ -12,10 +13,10 @@ namespace HRPortal.Models
     {
         HRPortalEntities dbContext = new HRPortalEntities();
 
-            public System.Guid CANDIDATE_ID { get; set; }
+            public Guid CANDIDATE_ID { get; set; }
             public string CANDIDATE_NAME { get; set; }
             public string VENDOR_NAME { get; set; }
-            public System.Guid JOB_ID { get; set; }
+            public Guid JOB_ID { get; set; }
             public string POSITION { get; set; }
             public int YEARS_OF_EXP_TOTAL { get; set; }
             public Nullable<int> YEARS_OF_EXP_RELEVANT { get; set; }
@@ -23,7 +24,7 @@ namespace HRPortal.Models
             public string ALTERNATE_MOBILE_NO { get; set; }
             public string EMAIL { get; set; }
             public string ALTERNATE_EMAIL_ID { get; set; }
-            public System.DateTime DOB { get; set; }
+            public DateTime DOB { get; set; }
             public string CURRENT_COMPANY { get; set; }
             public string NOTICE_PERIOD { get; set; }
             public Nullable<bool> ANY_OTHER_OFFER { get; set; }
@@ -35,12 +36,13 @@ namespace HRPortal.Models
             public string MODIFIED_BY { get; set; }
             public Nullable<System.DateTime> MODIFIED_ON { get; set; }
             public string CREATED_BY { get; set; }
-            public System.DateTime CREATED_ON { get; set; }
+            public DateTime CREATED_ON { get; set; }
             public string STATUS { get; set; }
+            public string STATUS_ID { get; set; }
             public PaginationViewModels PageIndex { get; set; }
 
         /// <summary>
-        /// 
+        /// Update the candidate status on creating the canidate profile
         /// </summary>
         /// <param name="stid"></param>
         /// <param name="cId"></param>
@@ -60,8 +62,40 @@ namespace HRPortal.Models
             stsHist.MODIFIED_ON = DateTime.Now;
             dbContext.STATUS_HISTORY.Add(stsHist);
             dbContext.SaveChanges();
-
             return "OK";
+        }
+
+        /// <summary>
+        /// Update the candidate status on creating the canidate profile
+        /// </summary>
+        public void AutoUpdateStatus()
+        {
+            STATUS_HISTORY stsHist = new STATUS_HISTORY();
+            var sHist = dbContext.STATUS_HISTORY.Where(i => i.SCHEDULED_TO <= DateTime.Now).ToList();
+            if (sHist.Count > 0) { 
+            var uid = HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null ? Guid.NewGuid() : HttpRuntime.Cache.Get(CacheKey.Uid.ToString());
+            var stsLst = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).ToList();
+
+            foreach (var item in sHist)
+            {
+                int stsOrdr = stsLst.Where(i => i.STATUS_ID == item.STATUS_ID).FirstOrDefault().STATUS_ORDER.GetValueOrDefault();
+                stsHist = new STATUS_HISTORY();
+                stsHist.STATUS_ID = stsLst.Where(i => i.STATUS_ORDER == stsOrdr+1).FirstOrDefault().STATUS_ID; ;
+                stsHist.CANDIDATE_ID = item.CANDIDATE_ID;
+                stsHist.COMMENTS = "Auto updated the status to Feedback Pending due to passed the due.";
+                stsHist.ISACTIVE = true;
+                stsHist.MODIFIED_BY = uid.ToString();
+                stsHist.MODIFIED_ON = DateTime.Now;
+                dbContext.STATUS_HISTORY.Add(stsHist);
+                dbContext.SaveChanges();
+            }
+            }
+        }
+
+        public SelectList GetStatusList()
+        {
+            var sts = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).Select(s => new { s.STATUS_ID, s.STATUS_NAME, s.STATUS_DESCRIPTION, s.STATUS_ORDER }).OrderBy(v => v.STATUS_ORDER).ToList();
+           return new SelectList(sts.AsEnumerable(), "STATUS_ID", "STATUS_DESCRIPTION", 1);
         }
 
         public string GetStatusNameById(Guid id)

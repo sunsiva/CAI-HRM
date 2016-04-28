@@ -7,6 +7,11 @@ namespace HRPortal.Helper
 {
     public static class HelperFuntions
     {
+        /// <summary>
+        /// Get in words of the day's duration
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public static string TimeAgo(this DateTime date)
         {
             TimeSpan timeSince = DateTime.Now.Subtract(date);

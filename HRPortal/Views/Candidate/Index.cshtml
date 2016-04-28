@@ -66,7 +66,10 @@
             @(item.LAST_WORKING_DATE != null ? (item.LAST_WORKING_DATE.Value.ToString("dd-MMM-yyyy")) : item.NOTICE_PERIOD)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.STATUS)
+            @if (item.STATUS.ToUpper().ToString().Contains("TOBESCHEDULED"))
+            {<a href="#StatusModal" id="btnStsPnl_@item.CANDIDATE_ID" data-toggle="modal" onclick='myPanel(this); return false;' data-custom-name="@item.CANDIDATE_NAME" data-custom-value="@item.CANDIDATE_ID" data-custom-statusid="@item.STATUS_ID" title="Click To Change The Status">@item.STATUS</a>
+            <span id="stsSecondTxt_@item.CANDIDATE_ID"></span>
+            } else { @Html.DisplayFor(modelItem => item.STATUS) }
         </td>
         <td>
             <p data-placement="top" data-toggle="tooltip" title="Details">
@@ -97,7 +100,7 @@
         </td>*@
     </tr>
     }
-                    <tr><td align="right" class="" colspan="11">@Model.Count() Record(s) found.</td></tr>
+                    <tr><td><input type="hidden" id="hdnCandidateId" /><input type="hidden" id="hdnStatusId" /></td><td align="right" class="" colspan="10">@Model.Count() Record(s) found.</td></tr>
                 </table>
                 <div class="clearfix"></div>
                 <ul class="pagination pull-right">
@@ -113,3 +116,80 @@
             </div>
         </div>
     </div>
+
+<div class="modal fade" id="StatusModal" tabindex="-1" role="dialog" aria-labelledby="StatusModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Schedule Interview for - <b><span class="candidate-name"></span></b> </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group form-group-required">
+                        @Html.Label("Date", new { @class = "col-md-2 control-label" })
+                        <div class='col-sm-6'>
+                            <input type='text' class="form-control" id='datetimepicker' />
+                        </div>
+                </div>
+                <br /><br />
+                <div class="form-group form-group-required">
+                    @Html.Label("Comments", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextArea("Comments", new { @id = "txtStsComments", @class = "textarea-input-custom", @required = "mandatory" })
+                    </div>
+                </div>
+                <span class="text-danger" id="errMsgModal"><small>If you don't save, your changes will be lost.</small></span>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Close</button>
+                    <button type="button" id="btnStatus" class="btn btn-success" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/moment.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+
+    <script lang="ja" type="text/javascript">
+        $(document).ready(function () {
+
+            $(function () {
+                $('#datetimepicker').datetimepicker();
+            });
+
+        window.myPanel = function (data) {
+            $(".candidate-name").text(data.dataset.customName);
+            $("#hdnCandidateId").val(data.dataset.customValue);
+            $("#hdnStatusId").val(data.dataset.customStatusid);
+            $("#txtStsComments").val('');
+        };
+
+        $("#btnStatus").click(function () {
+            if ($("#txtSchDate").val() == "") {
+                $("#errMsgModal").text("Please schedule a candidate.");
+                $("#txtSchDate").focus();
+                return false;
+            }
+            else if ($("#txtStsComments").val() == "") {
+                $("#errMsgModal").text("Please write a comments to change.");
+                $("#txtStsComments").focus();
+                return false;
+            }
+            else {
+                $.get("/Candidate/ScheduleCandidate", { id: $("#hdnCandidateId").val(), date: $("#datetimepicker").val(), comments: $("#txtStsComments").val(),statusId:$("#hdnStatusId").val() },
+                    function (data) {
+                        var id = $("#hdnCandidateId").val();
+                        $("#stsSecondTxt_" + id).text(data);
+                        $("#btnStsPnl_" + id).addClass("hide");
+                });
+            }
+        });
+
+    });
+    </script>
+}

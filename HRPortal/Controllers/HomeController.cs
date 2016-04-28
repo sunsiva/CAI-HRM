@@ -28,9 +28,12 @@ namespace HRPortal.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 int page = 1;
-                GetStatusList();
+                ViewBag.StatusList = vmodelCan.GetStatusList();
                 if (HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null)
                     loginVM.SetUserToCache(User.Identity.Name);
+
+                vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
+
                 var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
                 if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                 {
@@ -71,10 +74,10 @@ namespace HRPortal.Controllers
             var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
             if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
             {
-                CookieStore.SetCookie("CANSEARCHHOME", name + "|" + vendor + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(4));
+                CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(4));
                 var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                 jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                GetStatusList();
+                ViewBag.StatusList = vmodelCan.GetStatusList();
             }
             else {
                 jobCanObj.JobItems = dbJobs;
@@ -104,6 +107,13 @@ namespace HRPortal.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// Update the status on change by the position owners
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <param name="comments"></param>
+        /// <returns></returns>
         public async Task<ActionResult> StatusUpdate(string id, string status, string comments)
         {
             STATUS_HISTORY sHist = new STATUS_HISTORY();
@@ -119,10 +129,11 @@ namespace HRPortal.Controllers
             var cId = Guid.Parse(id);
             CANDIDATE cANDIDATE = db.CANDIDATES.Where(i => i.CANDIDATE_ID == cId).FirstOrDefault();
             cANDIDATE.STATUS =  status;
+            cANDIDATE.MODIFIED_BY= HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+            cANDIDATE.MODIFIED_ON = DateTime.Now;
             db.Entry(cANDIDATE).State = EntityState.Modified;
             await db.SaveChangesAsync();
-
-            //vmodelCan.UpdateStatus(Guid.Parse(status), Guid.Parse(id), comments);
+            
             return new EmptyResult();
         }
 
@@ -159,37 +170,8 @@ namespace HRPortal.Controllers
                                             STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
                                             CREATED_ON = i.Candidate.CREATED_ON,
                                             MODIFIED_ON = i.Candidate.MODIFIED_ON,
-                                            MODIFIED_BY = GetModifiedById(i.Candidate.CANDIDATE_ID),
+                                            MODIFIED_BY = GetModifiedById(i.Candidate),
                                         }).ToList();
-
-            //jobCanObj.CandidateItems = (from c in dbCan
-            //                      join j in dbJobs on c.JOB_ID equals j.JOB_ID
-            //                      join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id into tempUsr1
-            //                      from u1 in tempUsr1.DefaultIfEmpty()
-            //                      join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID into tempVendor
-            //                      from v in tempVendor.DefaultIfEmpty()
-            //                      join u in db.AspNetUsers.ToList() on c.MODIFIED_BY equals u.Id into tempUsr
-            //                      from u in tempUsr.DefaultIfEmpty()
-            //                      where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
-            //                      && (status != string.Empty ? c.STATUS == status : true)
-            //                      && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
-            //                      && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
-            //                      && v.VENDOR_NAME.ToUpper().Contains(vendor.ToUpper())
-            //                      select new { Candidate = c, Job = j, Users = u, Users1 = u1, Vendor = v }).Select(i => new CandidateViewModels
-            //                      {
-            //                          CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
-            //                          CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
-            //                          POSITION = i.Job.POSITION_NAME,
-            //                          NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
-            //                          YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
-            //                          VENDOR_NAME = i.Vendor == null ? string.Empty : i.Vendor.VENDOR_NAME,
-            //                          LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
-            //                          CREATED_ON = i.Candidate.CREATED_ON,
-            //                          MODIFIED_ON = i.Candidate.MODIFIED_ON,
-            //                          MODIFIED_BY = i.Users == null ? string.Empty : i.Users.FirstName + " " + i.Users.LastName,
-            //                          CREATED_BY = i.Users1 == null ? string.Empty : i.Users1.FirstName + " " + i.Users1.LastName,
-            //                      }).ToList();
-
             return jobCanObj;
         }
 
@@ -224,24 +206,20 @@ namespace HRPortal.Controllers
             return vendor.ToString();
         }
                 
-       private string GetModifiedById(Guid id)
+       private string GetModifiedById(CANDIDATE objCan)
         {
             string strUser = string.Empty;
-            var stsSrc = db.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).ToList();
-            if (stsSrc.Count > 0) { 
-            var usr = (from c in stsSrc
-                           join u in db.AspNetUsers.ToList() on c.MODIFIED_BY equals u.Id
-                          select new { Name = u.FirstName+" "+u.LastName+" / "+c.MODIFIED_ON.Value.ToString("dd-MMM") }).FirstOrDefault();
-                strUser = usr.Name;
+            if (!string.IsNullOrEmpty(objCan.STATUS)) //is to check first time candidates-to show admin modified as empty
+            { 
+                var stsSrc = db.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == objCan.CANDIDATE_ID).ToList();
+                if (stsSrc.Count > 0) { 
+                var usr = (from c in stsSrc
+                               join u in db.AspNetUsers.ToList() on c.MODIFIED_BY equals u.Id
+                              select new { Name = u.FirstName+" "+u.LastName+" / "+c.MODIFIED_ON.Value.ToString("dd-MMM") }).FirstOrDefault();
+                    strUser = usr.Name;
+                }
             }
-            
             return strUser;
-        }
-
-        private void GetStatusList()
-        {
-            var sts = db.STATUS_MASTER.Where(i => i.ISACTIVE == true).Select(s=> new { s.STATUS_ID,s.STATUS_NAME,s.STATUS_DESCRIPTION,s.STATUS_ORDER }).OrderBy(v=>v.STATUS_ORDER).ToList();
-            ViewBag.StatusList = new SelectList(sts.AsEnumerable(), "STATUS_ID", "STATUS_DESCRIPTION", 1);
         }
 
         public ActionResult About()

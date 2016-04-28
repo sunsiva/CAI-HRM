@@ -144,6 +144,7 @@
     <Property Name="CANDIDATE_ID" Type="uniqueidentifier" Nullable="false" />
     <Property Name="COMMENTS" Type="nvarchar(max)" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
+    <Property Name="SCHEDULED_TO" Type="datetime" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
   </EntityType>

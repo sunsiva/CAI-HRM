@@ -28,13 +28,13 @@ namespace HRPortal.Controllers
         // GET: Candidate
         public async Task<ActionResult> Index()
         {
-            bool isAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN");
+            //bool isAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN");
             List<CANDIDATE> canDb = new List<CANDIDATE>();
-            if (isAdmin) {
-                canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == _uid && c.ISACTIVE == true).ToListAsync(); }
-            else { 
-                canDb = await db.CANDIDATES.Where(c => c.ISACTIVE == true).ToListAsync();
-            }
+            //if (isAdmin) {
+                canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == _uid && c.ISACTIVE == true).ToListAsync();
+            //} else { 
+            //    canDb = await db.CANDIDATES.Where(c => c.ISACTIVE == true).ToListAsync();
+            //}
 
             var canLst = canDb.Select(i => new CandidateViewModels
             {
@@ -46,6 +46,7 @@ namespace HRPortal.Controllers
                 NOTICE_PERIOD = i.NOTICE_PERIOD,
                 YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
                 LAST_WORKING_DATE = i.LAST_WORKING_DATE,
+                STATUS_ID = i.STATUS,
                 STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
             }).ToList();
 
@@ -68,6 +69,7 @@ namespace HRPortal.Controllers
                     NOTICE_PERIOD = i.NOTICE_PERIOD,
                     YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
                     LAST_WORKING_DATE = i.LAST_WORKING_DATE,
+                    STATUS_ID = i.STATUS,
                     STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
                     CREATED_BY = logvmodel.GetUserNameById(i.CREATED_BY),
                 }).ToList();
@@ -133,6 +135,27 @@ namespace HRPortal.Controllers
             ModelState.AddModelError("FILD", "Failed to Insert");
             return View(cANDIDATE);
         }
+        
+        public async Task<ActionResult> ScheduleCandidate(string id, string date, string comments,string statusId)
+        {
+            var stsLst = db.STATUS_MASTER.ToList();
+            var sOrdr = stsLst.Where(i => i.STATUS_ID == Guid.Parse(statusId)).FirstOrDefault();
+            int stsOrdr = sOrdr.STATUS_NAME.Contains("TBS-F") ? 2 : 1;
+            var stsId = stsLst.Where(i => i.STATUS_ORDER == sOrdr.STATUS_ORDER + stsOrdr).FirstOrDefault();
+
+            STATUS_HISTORY sHist = new STATUS_HISTORY();
+            sHist.STATUS_ID = stsId.STATUS_ID;
+            sHist.CANDIDATE_ID= Guid.Parse(id);
+            sHist.ISACTIVE = true;
+            sHist.SCHEDULED_TO = Convert.ToDateTime(date);
+            sHist.COMMENTS = comments;
+            sHist.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+            sHist.MODIFIED_ON = DateTime.Now;
+            db.STATUS_HISTORY.Add(sHist);
+            await db.SaveChangesAsync();
+            
+            return Json(stsId.STATUS_DESCRIPTION.ToString(), JsonRequestBehavior.AllowGet);
+        } 
 
         private string FileUpload(HttpPostedFileBase file)
         {

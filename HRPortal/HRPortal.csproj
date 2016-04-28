@@ -409,6 +409,8 @@
     <Content Include="Views\Manage\Edit.cshtml" />
     <Content Include="Views\Manage\Delete.cshtml" />
     <Content Include="Views\Candidate\SquadJobs.cshtml" />
+    <Content Include="UploadDocument\Herds_Clarifications.xlsx" />
+    <Content Include="UploadDocument\License_MovementPermityEquine.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

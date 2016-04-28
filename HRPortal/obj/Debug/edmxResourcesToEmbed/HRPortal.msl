@@ -213,6 +213,7 @@
         <MappingFragment StoreEntitySet="STATUS_HISTORY">
           <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
           <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="SCHEDULED_TO" ColumnName="SCHEDULED_TO" />
           <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
           <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
           <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
