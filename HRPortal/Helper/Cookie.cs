@@ -23,6 +23,7 @@ namespace HRPortal.Helper
                 HttpContext.Current.Response.Cookies.Add(encodedCookie);
             }
         }
+
         public static string GetCookie(string key)
         {
             string value = string.Empty;
@@ -38,5 +39,19 @@ namespace HRPortal.Helper
             return value;
         }
 
+        public static void ClearCookie(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+            { 
+                string[] myCookies = HttpContext.Current.Request.Cookies.AllKeys;
+                foreach (string cookie in myCookies)
+                    HttpContext.Current.Response.Cookies[cookie].Expires = DateTime.Now.AddDays(-1);
+            }
+            else {
+                var cookie = HttpContext.Current.Request.Cookies[key];
+                if(cookie!=null)
+                    cookie.Expires = DateTime.Now.AddDays(-1d);
+            }
+        }
     }
 }

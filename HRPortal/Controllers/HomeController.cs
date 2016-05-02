@@ -20,14 +20,13 @@ namespace HRPortal.Controllers
         LoginViewModel loginVM = new LoginViewModel();
         JobAndCandidateViewModels jobCanObj = new JobAndCandidateViewModels();
         private CandidateViewModels vmodelCan = new CandidateViewModels();
+        const int pageSize = 1;
 
-        const int pageSize = 10;
-
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sOdr, int? page)
         {
             if (User.Identity.IsAuthenticated)
             {
-                int page = 1;
+                CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
                 ViewBag.StatusList = vmodelCan.GetStatusList();
                 if (HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null)
                     loginVM.SetUserToCache(User.Identity.Name);
@@ -39,27 +38,8 @@ namespace HRPortal.Controllers
                 {
                     var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                     jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                    //jobCanObj.CandidateItems = (from c in dbCan
-                    //                      join j in dbJobs on c.JOB_ID equals j.JOB_ID
-                    //                      select new { Candidate = c, Job = j}).Select(i => new CandidateViewModels
-                    //                      {
-                    //                          CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
-                    //                          CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
-                    //                          POSITION = i.Job.POSITION_NAME,
-                    //                          RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH)? string.Empty: Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
-                    //                          NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
-                    //                          YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
-                    //                          LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
-                    //                          VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
-                    //                          STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
-                    //                          CREATED_ON = i.Candidate.CREATED_ON,
-                    //                          MODIFIED_ON = i.Candidate.MODIFIED_ON,
-                    //                          MODIFIED_BY = GetModifiedById(i.Candidate.CANDIDATE_ID),
-                    //                      }).Skip((page-1)*pageSize).Take(pageSize).ToList();
-
-                    ViewBag.CurrentPage = page;
-                    ViewBag.PageSize = pageSize;
-                    ViewBag.TotalPages = Math.Ceiling((double)dbCan.Count() / pageSize);
+                    jobCanObj = GetPagination(jobCanObj, sOdr, page);
+                    return View(jobCanObj);
                 }
                 else {
                     jobCanObj.JobItems = dbJobs;
@@ -74,9 +54,10 @@ namespace HRPortal.Controllers
             var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
             if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
             {
-                CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(4));
+                CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
                 var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                 jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
                 ViewBag.StatusList = vmodelCan.GetStatusList();
             }
             else {
@@ -135,6 +116,54 @@ namespace HRPortal.Controllers
             await db.SaveChangesAsync();
             
             return new EmptyResult();
+        }
+
+        private JobAndCandidateViewModels GetPagination(JobAndCandidateViewModels jobCanObj, string sOdr, int? page)
+        {
+            ViewBag.CurrentSort = sOdr;
+            ViewBag.CNameSort = string.IsNullOrEmpty(sOdr) ? "Name_desc" : "";
+            ViewBag.PartnerSort = sOdr == "Partner_desc" ? "Partner_asc" : "Partner_desc";
+            ViewBag.PDateSort = sOdr == "SubDate_desc" ? "SubDate_asc" : "SubDate_desc";
+            ViewBag.SkillSort = sOdr == "Skill_desc" ? "Skill_asc" : "Skill_desc";
+            ViewBag.StatusSort = sOdr == "Sts_desc" ? "Sts_asc" : "Sts_desc";
+
+            switch (sOdr)
+            {
+                case "Name_desc":
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.CANDIDATE_NAME).ToList();
+                    break;
+                case "Partner_desc":
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.VENDOR_NAME).ToList();
+                    break;
+                case "Partner_asc":
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.VENDOR_NAME).ToList();
+                    break;
+                case "SubDate_desc":
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.CREATED_ON).ToList();
+                    break;
+                case "SubDate_asc":
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.CREATED_ON).ToList();
+                    break;
+                case "Skill_desc":
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.POSITION).ToList();
+                    break;
+                case "Skill_asc":
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.POSITION).ToList();
+                    break;
+                case "Sts_desc":
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.STATUS).ToList();
+                    break;
+                case "Sts_asc":
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.STATUS).ToList();
+                    break;
+                default:
+                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.CANDIDATE_NAME).ToList();
+                    break;
+            }
+
+            ViewBag.PageSize = pageSize;
+            ViewBag.PageNo = (page ?? 1);
+            return jobCanObj;
         }
 
         private JobAndCandidateViewModels GetCandidateSearchResults(List<CANDIDATE> dbCan, List<JOBPOSTING> dbJobs)

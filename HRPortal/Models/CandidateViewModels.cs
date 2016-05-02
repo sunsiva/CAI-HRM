@@ -39,7 +39,7 @@ namespace HRPortal.Models
             public DateTime CREATED_ON { get; set; }
             public string STATUS { get; set; }
             public string STATUS_ID { get; set; }
-            public PaginationViewModels PageIndex { get; set; }
+        // public PaginationViewModels PageIndex { get; set; }
 
         /// <summary>
         /// Update the candidate status on creating the canidate profile
