@@ -117,16 +117,17 @@ namespace HRPortal.Controllers
             else { 
             if (ModelState.IsValid)
             {
-                cANDIDATE.CANDIDATE_ID = Guid.NewGuid();
-                cANDIDATE.JOB_ID = new Guid(jid.Replace("JID=",string.Empty));
-                cANDIDATE.ISACTIVE = true;
-                cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes")?true:false;
-                cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
-                cANDIDATE.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
-                cANDIDATE.CREATED_ON = DateTime.Now;
-                cANDIDATE.RESUME_FILE_PATH = FileUpload(file);
-                db.CANDIDATES.Add(cANDIDATE);
-                await db.SaveChangesAsync();
+                    cANDIDATE.CANDIDATE_ID = Guid.NewGuid();
+                    cANDIDATE.JOB_ID = new Guid(jid.Replace("JID=",string.Empty));
+                    cANDIDATE.ISACTIVE = true;
+                    cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes")?true:false;
+                    cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
+                    cANDIDATE.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                    cANDIDATE.CREATED_ON = DateTime.Now;
+                    cANDIDATE.STATUS = db.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID.ToString();
+                    cANDIDATE.RESUME_FILE_PATH = FileUpload(file);
+                    db.CANDIDATES.Add(cANDIDATE);
+                    await db.SaveChangesAsync();
 
                 vmodel.UpdateStatus(Guid.Empty, cANDIDATE.CANDIDATE_ID, string.Empty);
                 return RedirectToAction("Index");

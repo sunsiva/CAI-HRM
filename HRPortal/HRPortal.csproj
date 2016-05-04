@@ -286,8 +286,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Gridmvc.css" />
     <Content Include="Content\images\CAI.ico" />
+    <Content Include="Content\images\CAI_HROps.gif" />
     <Content Include="Content\images\CAI_Logo1.GIF" />
-    <Content Include="Content\images\CAI_Logo2.gif" />
     <Content Include="Content\images\Excel-icon.png" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />

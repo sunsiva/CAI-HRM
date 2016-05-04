@@ -163,24 +163,20 @@ namespace HRPortal.Controllers
             var dbJobs = await dbContext.JOBPOSTINGs.ToListAsync();
             gv.DataSource = dbJobs.Select(i => new
                              {
-                                JOB_CODE = i.JOB_CODE,
-                                JOB_DESCRIPTION = i.JOB_DESCRIPTION,
-                                POSITION = i.POSITION_NAME,
-                                YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
-                                WORK_LOCATION = i.WORK_LOCATION,
-                                NO_OF_VACANCIES = i.NO_OF_VACANCIES,
-                                YEARS_OF_EXP_RELEVANT = i.YEARS_OF_EXP_RELEVANT,
-                                COMMENTS = i.COMMENTS,
-                                ACTIVE=i.ISACTIVE,
-                                CREATED_ON = i.CREATED_ON,
-                                MODIFIED_ON = i.MODIFIED_ON,
-                                MODIFIED_BY = i.MODIFIED_BY,
-                                CREATED_BY = i.CREATED_BY
+                                JobCode = i.JOB_CODE,
+                                JobDescription = i.JOB_DESCRIPTION,
+                                Position = i.POSITION_NAME,
+                                TotalExp = i.YEARS_OF_EXP_TOTAL,
+                                WorkLocation = i.WORK_LOCATION,
+                                NoOfVacancies = i.NO_OF_VACANCIES,
+                                Comments = i.COMMENTS,
+                                Status=i.ISACTIVE == true ? "Active" : "In-Active",
+                                PublishedOn = i.CREATED_ON
                              }).ToList();
             gv.DataBind();
             Response.ClearContent();
             Response.Buffer = true;
-            string fileName = "Jobs_" + DateTime.Now.Month + "_" + DateTime.Now.Day + "_" + DateTime.Now.Hour + "_" + DateTime.Now.Minute + "_" + DateTime.Now.Second + ".xls";
+            string fileName = "Jobs_" + DateTime.Now.Day + DateTime.Now.ToString("MMM") + "_" + DateTime.Now.Hour + "_" + DateTime.Now.Minute + "_" + DateTime.Now.Second + ".xls";
             Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
             Response.ContentType = "application/ms-excel";
             Response.Charset = "";

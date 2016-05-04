@@ -8,13 +8,16 @@
 
 <div class="row">
     <div class="col-md-4">
+        <br />
         @if (isSuperAdmin == "True")
         {
-            <br />
-            @Html.Partial("_SearchCriteria")
+            @Html.Partial("_SearchCriteria", new ViewDataDictionary { {"sType","1" } })
             @Html.Partial("_CandidateList", Model.CandidateItems)
         }
-            else {@Html.Partial("_JobList", Model.JobItems) }
+        else {
+            @Html.Partial("_SearchCriteria", new ViewDataDictionary { { "sType", "0" } })
+            @Html.Partial("_JobList", Model.JobItems)
+        }
     </div>
 </div>
 
@@ -61,6 +64,12 @@
          $("#btnSearchCriteria").click(function () {
              $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
                  $("#CandidatesPartial").html(data);
+             });
+         });
+
+         $("#btnSearchCriteriaJob").click(function () {
+             $.get("/Home/SearchCriteria", { name: $("#txtPositionName").val(), vendor: "", status: "", stdt: $("#txtPublishedStDate").val(), edt: $("#txtPublishedEndDate").val() }, function (data) {
+                 $("#JobDetailsPartial").html(data);
              });
          });
     });

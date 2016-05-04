@@ -38,12 +38,12 @@ namespace HRPortal.Controllers
                 {
                     var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                     jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                    jobCanObj = GetPagination(jobCanObj, sOdr, page);
-                    return View(jobCanObj);
                 }
                 else {
                     jobCanObj.JobItems = dbJobs;
                 }
+
+                jobCanObj = GetPagination(jobCanObj, sOdr, page);
                 return View(jobCanObj);
             }
             return RedirectToAction("Login", "Account");
@@ -57,25 +57,41 @@ namespace HRPortal.Controllers
                 CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
                 var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                 jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
                 ViewBag.StatusList = vmodelCan.GetStatusList();
+                jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
+                return PartialView("_CandidateList", jobCanObj.CandidateItems);
             }
             else {
-                jobCanObj.JobItems = dbJobs;
+                CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
+                jobCanObj.JobItems=dbJobs;
+                GetJobSearchResults(dbJobs);
+                jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
+                return PartialView("_JobList", jobCanObj.JobItems);
             }
-            return PartialView("_CandidateList", jobCanObj.CandidateItems);
         }
 
-        public async Task<ActionResult> ExportToExcel(int id)
+        public async Task<ActionResult> ExportToExcel()
         {
             System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
             var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
             var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
-            gv.DataSource = GetCandidateSearchResults(dbCan, dbJobs).CandidateItems.ToList(); //TODO: select the columns only wanted for excel
+            var srchSrc = GetCandidateSearchResults(dbCan, dbJobs).CandidateItems.ToList();
+            var dataSrc = srchSrc.Select(i => new {
+                CandidateName= i.CANDIDATE_NAME,
+                Partner = i.VENDOR_NAME,
+                Position = i.POSITION,
+                NoticePeriod=i.NOTICE_PERIOD,
+                LastWorkingDay=i.LAST_WORKING_DATE,
+                TotalExp = i.YEARS_OF_EXP_TOTAL,
+                PublishedOn = i.CREATED_ON,
+                LastModifiedBy=i.MODIFIED_BY,
+                Status =i.STATUS
+            }).ToList();
+            gv.DataSource = dataSrc;
             gv.DataBind();
             Response.ClearContent();
             Response.Buffer = true;
-            string fileName = "Candidates_" + DateTime.Now.Month + "_" + DateTime.Now.Day + "_" + DateTime.Now.Hour + "_" + DateTime.Now.Minute + "_" + DateTime.Now.Second + ".xls";
+            string fileName = "Candidates_" + DateTime.Now.Day + DateTime.Now.ToString("MMM") + "_" + DateTime.Now.Hour + "_" + DateTime.Now.Minute + "_" + DateTime.Now.Second + ".xls";
             Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
             Response.ContentType = "application/ms-excel";
             Response.Charset = "";
@@ -121,6 +137,8 @@ namespace HRPortal.Controllers
         private JobAndCandidateViewModels GetPagination(JobAndCandidateViewModels jobCanObj, string sOdr, int? page)
         {
             ViewBag.CurrentSort = sOdr;
+
+            if (jobCanObj.CandidateItems != null && jobCanObj.CandidateItems.Count > 0) { 
             ViewBag.CNameSort = string.IsNullOrEmpty(sOdr) ? "Name_desc" : "";
             ViewBag.PartnerSort = sOdr == "Partner_desc" ? "Partner_asc" : "Partner_desc";
             ViewBag.PDateSort = sOdr == "SubDate_desc" ? "SubDate_asc" : "SubDate_desc";
@@ -160,7 +178,34 @@ namespace HRPortal.Controllers
                     jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.CANDIDATE_NAME).ToList();
                     break;
             }
+            }
+            else {
+                ViewBag.JCodeSort = string.IsNullOrEmpty(sOdr) ? "JCode_desc" : "";
+                ViewBag.PositionSort = sOdr == "Position_desc" ? "Position_asc" : "Position_desc";
+                ViewBag.PDateSort = sOdr == "PubDate_desc" ? "PubDate_asc" : "PubDate_desc";
 
+                switch (sOdr)
+                {
+                    case "JCode_desc":
+                        jobCanObj.JobItems = jobCanObj.JobItems.OrderByDescending(s => s.JOB_CODE).ToList();
+                        break;
+                    case "Position_desc":
+                        jobCanObj.JobItems = jobCanObj.JobItems.OrderByDescending(s => s.POSITION_NAME).ToList();
+                        break;
+                    case "Position_asc":
+                        jobCanObj.JobItems = jobCanObj.JobItems.OrderBy(s => s.POSITION_NAME).ToList();
+                        break;
+                    case "PubDate_desc":
+                        jobCanObj.JobItems = jobCanObj.JobItems.OrderByDescending(s => s.CREATED_ON).ToList();
+                        break;
+                    case "PubDate_asc":
+                        jobCanObj.JobItems = jobCanObj.JobItems.OrderBy(s => s.CREATED_ON).ToList();
+                        break;
+                    default:
+                        jobCanObj.JobItems = jobCanObj.JobItems.OrderBy(s => s.JOB_CODE).ToList();
+                        break;
+                }
+            }
             ViewBag.PageSize = pageSize;
             ViewBag.PageNo = (page ?? 1);
             return jobCanObj;
@@ -200,6 +245,35 @@ namespace HRPortal.Controllers
                                             CREATED_ON = i.Candidate.CREATED_ON,
                                             MODIFIED_ON = i.Candidate.MODIFIED_ON,
                                             MODIFIED_BY = GetModifiedById(i.Candidate),
+                                        }).ToList();
+            return jobCanObj;
+        }
+
+        private JobAndCandidateViewModels GetJobSearchResults(List<JOBPOSTING> dbJobs)
+        {
+            var cookie = CookieStore.GetCookie(CacheKey.JobSearchHome.ToString());
+            string name = string.Empty, stdt = string.Empty, edt = string.Empty;
+            if (!string.IsNullOrEmpty(cookie))
+            {
+                string[] val = cookie.Split('|');
+                name = val[0]; stdt = val[1]; edt = val[2];
+            }
+            jobCanObj.JobItems = (from j in dbJobs
+                                        join u1 in db.AspNetUsers.ToList() on j.CREATED_BY equals u1.Id into tempUsr1
+                                        from u1 in tempUsr1.DefaultIfEmpty()
+                                        where j.POSITION_NAME.ToUpper().Contains(name.ToUpper())
+                                        && (stdt != string.Empty ? ((Convert.ToDateTime(j.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
+                                        && (edt != string.Empty ? Convert.ToDateTime(j.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
+                                        select new { Job = j }).Select(item => new JOBPOSTING
+                                        {
+                                            JOB_ID = item.Job.JOB_ID,
+                                            JOB_CODE = item.Job.JOB_CODE,
+                                            JOB_DESCRIPTION = item.Job.JOB_DESCRIPTION,
+                                            POSITION_NAME = item.Job.POSITION_NAME,
+                                            NO_OF_VACANCIES = item.Job.NO_OF_VACANCIES,
+                                            YEARS_OF_EXP_TOTAL = item.Job.YEARS_OF_EXP_TOTAL,
+                                            CREATED_ON = item.Job.CREATED_ON,
+                                            ISACTIVE=item.Job.ISACTIVE
                                         }).ToList();
             return jobCanObj;
         }
