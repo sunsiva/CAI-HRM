@@ -6,10 +6,30 @@
     @Html.AntiForgeryToken()
 
     <ul class="nav navbar-nav dropdown">
-        <li >
+        <li class="dropdown">
+            <a class="dropdown-toggle" href="@Url.Action("Index","Manage")">
+                @(HttpRuntime.Cache.Get(CacheKey.UserName.ToString()) != null ? HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString() : User.Identity.Name)
+                <i class="glyphicon glyphicon-user"></i> <b class="caret"></b>
+            </a>
+            @*<ul class="dropdown-menu dropdown-user">
+                <li>
+                    <a href="@Url.Action("ChangePassword","Manage")"><i class="glyphicon glyphicon-user"></i> User Profile</a>
+                </li>
+                <li>
+                    <a href="#"><i class="glyphicon glyphicon-cog"></i> Settings</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                </li>
+            </ul>*@
+            <!-- /.dropdown-user -->
+        </li>
+        @*<li  class="dropdown">
             @Html.ActionLink("Logged in as : " + (HttpRuntime.Cache.Get(CacheKey.UserName.ToString()) != null ? HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString() : User.Identity.Name), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage Account"})
-         </li>
-        <li><a class="" title="Click To Log Off" href="javascript:document.getElementById('logoutForm').submit()">Log Off</a></li>
+            <i class="fa fa-caret-down glyphicon glyphicon-triangle-bottom"></i>
+         </li>*@
+        <li><a class="" title="Click To Log Off" href="javascript:document.getElementById('logoutForm').submit()">Log Out  <i class="glyphicon glyphicon-log-out"></i></a></li>
     </ul>
     }
     @*<br />
@@ -27,11 +47,8 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        @*<li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>*@
-
         <li>@Html.ActionLink("About", "About", "Home")</li>
         <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-        @*<li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>*@
     </ul>
 }
 

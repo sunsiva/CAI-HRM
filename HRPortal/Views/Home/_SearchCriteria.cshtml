@@ -1,5 +1,6 @@
-﻿@{ 
-    string flag = ViewData["sType"].ToString();
+﻿@using HRPortal.Helper;
+@{ 
+    bool isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
 }
 <div class="container">
     <div class="panel-group" id="SearchCriteriaPartial">
@@ -13,13 +14,12 @@
                 <div class="form-group">
                     <div class="col-md-11" align="center">
                         <br />
-                        @if (flag == "1")
+                        @if (isSuperAdmin)
                         {
                         <div id="srchCandidates">
                             <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
                             <input type="text" id="txtCriteriaVendor" placeholder="Partner" />
                             @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, "-- Select a Status --")
-                            @*<input type="text" id="txtCriteriaStatus" placeholder="Status" />*@
                             <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
                             <input type="text" id="txtCriteriaEndDate" class="date-picker" placeholder="Uploaded End Date" />
                             <a class="btn btn-danger btn-xs" id="btnSearchCriteria">

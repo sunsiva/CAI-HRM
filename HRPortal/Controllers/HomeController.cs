@@ -20,14 +20,13 @@ namespace HRPortal.Controllers
         LoginViewModel loginVM = new LoginViewModel();
         JobAndCandidateViewModels jobCanObj = new JobAndCandidateViewModels();
         private CandidateViewModels vmodelCan = new CandidateViewModels();
-        const int pageSize = 1;
+        const int pageSize = 10;
 
         public async Task<ActionResult> Index(string sOdr, int? page)
         {
             if (User.Identity.IsAuthenticated)
             {
                 CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
-                ViewBag.StatusList = vmodelCan.GetStatusList();
                 if (HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null)
                     loginVM.SetUserToCache(User.Identity.Name);
 
@@ -38,6 +37,7 @@ namespace HRPortal.Controllers
                 {
                     var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                     jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                    ViewBag.StatusList = vmodelCan.GetStatusList();
                 }
                 else {
                     jobCanObj.JobItems = dbJobs;

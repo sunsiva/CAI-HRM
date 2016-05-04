@@ -11,11 +11,11 @@
         <br />
         @if (isSuperAdmin == "True")
         {
-            @Html.Partial("_SearchCriteria", new ViewDataDictionary { {"sType","1" } })
+            @Html.Partial("_SearchCriteria")
             @Html.Partial("_CandidateList", Model.CandidateItems)
         }
         else {
-            @Html.Partial("_SearchCriteria", new ViewDataDictionary { { "sType", "0" } })
+            @Html.Partial("_SearchCriteria")
             @Html.Partial("_JobList", Model.JobItems)
         }
     </div>

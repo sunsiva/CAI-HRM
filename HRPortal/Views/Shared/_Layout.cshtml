@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
 <html>
 @using HRPortal.Helper;
-@{  var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? "True" : "False";
-    var isSuperUser = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("SUPERUSER") ? "True" : "False";
-    var dashboardTxt = isSuperAdmin == "True" ? "Candidates" : "Jobs";
+@{  bool isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
+    bool isSuperUser = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("SUPERUSER") ? true : false;
+    var dashboardTxt = isSuperAdmin == true ? "Candidates" : "Jobs";
     }
 <head>
     <meta charset="utf-8" />
@@ -36,10 +36,10 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
-                        if (isSuperAdmin == "True")
+                        if (isSuperAdmin)
                         {
                         <li>@Html.ActionLink("Job", "Index", "Job")</li>}
-                        else if (isSuperUser == "True")
+                        else if (isSuperUser)
                         {
                             <li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>
                             <li>@Html.ActionLink("Squads", "SquadJobs", "Candidate")</li>
@@ -54,9 +54,10 @@
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p class="text-center">&copy; @DateTime.Now.Year - HR Ops(Recruitment Process Management System)</p>
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted">&copy; @DateTime.Now.Year - HR Ops <i>(Recruitment Process Management System)</i></p>
+            </div>
         </footer>
     </div>
     @Scripts.Render("~/bundles/jquery")
