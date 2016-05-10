@@ -3,15 +3,16 @@
 
 @{
     ViewBag.Title = "Home Page";
-    var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? "True" : "False";
+    bool isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
 }
 
 <div class="row">
     <div class="col-md-4">
         <br />
-        @if (isSuperAdmin == "True")
+        @if (isSuperAdmin)
         {
             @Html.Partial("_SearchCriteria")
+            @*@Html.DropDownListFor(m => m.ddlStatusId, new SelectList(Model.StatusList, "Value", "Text"), "-- Select a Status --", new { @class = "form-control", style = "width: 250px;", onchange = "this.form.submit();" })*@
             @Html.Partial("_CandidateList", Model.CandidateItems)
         }
         else {

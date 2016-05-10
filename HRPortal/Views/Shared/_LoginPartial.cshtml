@@ -29,7 +29,17 @@
             @Html.ActionLink("Logged in as : " + (HttpRuntime.Cache.Get(CacheKey.UserName.ToString()) != null ? HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString() : User.Identity.Name), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage Account"})
             <i class="fa fa-caret-down glyphicon glyphicon-triangle-bottom"></i>
          </li>*@
+        
         <li><a class="" title="Click To Log Off" href="javascript:document.getElementById('logoutForm').submit()">Log Out  <i class="glyphicon glyphicon-log-out"></i></a></li>
+        <li>
+            <time class="icon">
+                <em>@DateTime.Now.ToString("dddd")</em>
+                <strong>@DateTime.Now.ToString("MMM").ToUpper()</strong>
+                <span>@DateTime.Now.ToString("dd")</span>
+            </time>
+        </li>
+        <li><div></div></li>
+        <li style="width:50px"></li>
     </ul>
     }
     @*<br />

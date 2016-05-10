@@ -146,3 +146,6 @@ D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Sys
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\obj\Debug\HRPortal.Tests.csprojResolveAssemblyReference.cache
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\obj\Debug\HRPortal.Tests.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\obj\Debug\HRPortal.Tests.pdb
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\DDay.iCal.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\DDay.Collections.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\antlr.runtime.dll

@@ -58,8 +58,12 @@ namespace HRPortal.Controllers
                 var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                 jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
                 ViewBag.StatusList = vmodelCan.GetStatusList();
-                jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
+                if (jobCanObj.CandidateItems.Count > 0) { 
+                    jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
                 return PartialView("_CandidateList", jobCanObj.CandidateItems);
+                }
+                else
+                    return PartialView("_CandidateList");
             }
             else {
                 CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));

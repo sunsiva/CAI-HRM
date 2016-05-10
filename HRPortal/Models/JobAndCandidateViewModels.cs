@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace HRPortal.Models
 {
@@ -9,5 +10,7 @@ namespace HRPortal.Models
     {
         public List<JOBPOSTING> JobItems { get; set; }
         public List<CandidateViewModels> CandidateItems { get; set; }
+        public IEnumerable<SelectListItem> StatusList { get; set; }
+        public string ddlStatusId { get; set; }
     }
 }
