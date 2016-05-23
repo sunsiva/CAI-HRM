@@ -5,11 +5,16 @@ using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using System.Web.Mvc;
 using System.Net.Mime;
+using HRPortal.Models;
+using System.Linq;
 
 namespace HRPortal.Controllers
 {
     public class AppointmentController : Controller
     {
+        private HRPortalEntities db = new HRPortalEntities();
+        private AppointmentViewModels appVM = new AppointmentViewModels();
+
         const string filepath = @"D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\App_Data\ical.test.ics";
         // use PUBLISH for appointments
         // use REQUEST for meeting requests
@@ -22,114 +27,72 @@ namespace HRPortal.Controllers
         
         string bodyPlainText = "This is the simple iCal plain text msg";
         string bodyHtml = "This is the simple <b>iCal HTML message</b>";
-        string location = "Meeting room 101";
+        string location = "Any available meeting room";
         string strOrganizerMail = "sivaprakasams@gmail.com";
         string mailTo = "sivaprakasam_Sundaram@compaid.co.in";
         string mailFrom = "sivaprakasam_Sundaram@compaid.co.in";
-        // 1: High
-        // 5: Normal
-        // 9: low
-        int priority = 1;
-
+        int priority = 1; // 1: High; 5: Normal; 9: low
+        
         // GET: Appointment
         public ActionResult Index()
         {
-            //=====================================
-            MailMessage message = new MailMessage();
-            message.From = new MailAddress(mailFrom);
-            message.To.Add(new MailAddress(mailTo));
-            message.Subject = "[Candidate Schedule] " + VisBetreff;
-            message.Body = bodyPlainText; // Plain Text Version
-
-            // HTML Version
-            string htmlBody = bodyHtml;
-            AlternateView HTMLV = AlternateView.CreateAlternateViewFromString(htmlBody, new ContentType("text/html"));
-
-            // iCal
-            IICalendar iCal = new iCalendar();
-            iCal.Method = METHOD;
-            iCal.ProductID = "My Metting Product";
-
-            // Create an event and attach it to the iCalendar.
-            Event evt = iCal.Create<Event>();
-            evt.UID = uid.ToString();
-            evt.Class = "PUBLIC";
-            // Needed by Outlook
-            evt.Created = new iCalDateTime(DateTime.Now);
-            evt.DTStamp = new iCalDateTime(DateTime.Now);
-            evt.Transparency = TransparencyType.Transparent;
-
-            // Set the event start / end times
-            evt.Start = new iCalDateTime(2016, 5, 10, 13, 30, 0);
-            evt.End = new iCalDateTime(2016, 5, 10, 13, 45, 0);
-            evt.Location = location;
-
-            var organizer = new Organizer(strOrganizerMail);
-            evt.Organizer = organizer;
-
-            // Set the longer description of the event, plain text
-            evt.Description = bodyPlainText;
-
-            // Event description HTML text
-            // X-ALT-DESC;FMTTYPE=text/html
-            var prop = new CalendarProperty("X-ALT-DESC");
-            prop.AddParameter("FMTTYPE", "text/html");
-            prop.AddValue(bodyHtml);
-            evt.AddProperty(prop);
-
-            // Set the one-line summary of the event
-            evt.Summary = VisBetreff;
-            evt.Priority = priority;
-
-            //--- attendees are optional
-            IAttendee at = new Attendee("mailto:sivaprakasams@gmail.com");
-            at.ParticipationStatus = "NEEDS-ACTION";
-            at.RSVP = true;
-            at.Role = "REQ-PARTICIPANT";
-            evt.Attendees.Add(at);
-
-            // Let’s also add an alarm on this event so we can be reminded of it later.
-            Alarm alarm = new Alarm();
-            alarm.Action = AlarmAction.Display; // Display the alarm somewhere on the screen.
-            alarm.Summary = "Upcoming meeting: " + VisBetreff; // This is the text that will be displayed for the alarm.
-            alarm.Trigger = new Trigger(TimeSpan.FromMinutes(-15)); // The alarm is set to occur 30 minutes before the event
-
-            // Add an attachment to this event
-            //string filename = "Test.docx";
-            //IAttachment attachment = new DDay.iCal.Attachment();
-            //attachment.Data = ReadBinary(@"C:\temp\Test.docx");
-            //attachment.Parameters.Add("X-FILENAME", filename);
-            //evt.Attachments.Add(attachment);
-
-            iCalendarSerializer serializer = new iCalendarSerializer();
-            serializer.Serialize(iCal, filepath);
-
-            // the .ics File as a string
-            string iCalStr = serializer.SerializeToString(iCal);
-
-            // .ics as AlternateView (used by Outlook)
-            // text/calendar part: method=REQUEST
-            ContentType calendarType = new ContentType("text/calendar");
-            calendarType.Parameters.Add("method", METHOD);
-            AlternateView ICSview = AlternateView.CreateAlternateViewFromString(iCalStr, calendarType);
-
-            // Compose
-            message.AlternateViews.Add(HTMLV);
-            message.AlternateViews.Add(ICSview); // must be the last part
-
-            // .ics as Attachment (used by mail clients other than Outlook)
-            Byte[] bytes = System.Text.Encoding.ASCII.GetBytes(iCalStr);
-            var ms = new MemoryStream(bytes);
-            var a = new System.Net.Mail.Attachment(ms, "CandidateSchedule.ics", "text/calendar");
-            message.Attachments.Add(a);
-
-            // Send Mail
-            SmtpClient client = new SmtpClient();
-            client.Send(message);
-
-            return RedirectToAction("Index","Dashboard");
+          
+            return View();
+        }
+        
+        public string Init()
+        {
+            bool rslt = false;// Utils.InitialiseDiary();
+            return rslt.ToString();
         }
 
+        public void UpdateEvent(int id, string NewEventStart, string NewEventEnd)
+        {
+            appVM.UpdateDiaryEvent(id, NewEventStart, NewEventEnd);
+        }
+
+
+        public bool SaveEvent(string Title, string NewEventDate, string NewEventTime, string NewEventDuration)
+        {
+            return appVM.CreateNewEvent(Title, NewEventDate, NewEventTime, NewEventDuration);
+        }
+
+        public JsonResult GetDiarySummary(double start, double end)
+        {
+            //var sstart = DateTime.UtcNow.Date.;
+            var ApptListForDate = appVM.LoadAppointmentSummaryInDateRange(start, end);
+            var eventList = from e in ApptListForDate.ToList()
+                            select new
+                            {
+                                id = e.ID,
+                                title = e.TITLE,
+                                start = e.StartDateString,
+                                end = e.EndDateString,
+                                someKey = e.SOMEIMPORTANTKEY,
+                                allDay = false
+                            };
+            var rows = eventList.ToArray();
+            return Json(rows, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetDiaryEvents(double start, double end)
+        {
+            var ApptListForDate = appVM.LoadAllAppointmentsInDateRange(start, end);
+            var eventList = from e in ApptListForDate
+                            select new
+                            {
+                                id = e.ID,
+                                title = e.TITLE,
+                                start = e.StartDateString,
+                                end = e.EndDateString,
+                                color = e.StatusColor,
+                                className = e.ClassName,
+                                someKey = e.SOMEIMPORTANTKEY,
+                                allDay = false
+                            };
+            var rows = eventList.ToArray();
+            return Json(rows, JsonRequestBehavior.AllowGet);
+        }
 
         //private void appointment()
         //{
@@ -218,6 +181,59 @@ namespace HRPortal.Controllers
                 reader.Read(binaryData, 0, (int)reader.Length);
             }
             return binaryData;
+        }
+        
+        /// <summary>
+        /// Alternate way of sending calendar invite.
+        /// </summary>
+        private void SendRequest()
+        {
+            var m = new MailMessage();
+            m.From = new MailAddress(mailFrom);
+            m.To.Add(new MailAddress(mailTo));
+            m.Subject = "Meeting";
+            m.Body = "My new candidate meeting request";
+
+            string iCal =
+                @"BEGIN:VCALENDAR
+                PRODID:-//Microsoft Corporation//Outlook 14.0 MIMEDIR//EN
+                VERSION:2.0
+                METHOD:PUBLISH
+                X-MS-OLK-FORCEINSPECTOROPEN:TRUE
+                BEGIN:VEVENT
+                CLASS:PUBLIC
+                CREATED:20140423T045933Z
+                DESCRIPTION:desc
+                DTEND:20140430T080000Z
+                DTSTAMP:20140423T045933Z
+                DTSTART:20140430T060000Z
+                LAST-MODIFIED:20140423T045933Z
+                LOCATION:location...
+                PRIORITY:1
+                SEQUENCE:0
+                SUMMARY;LANGUAGE=en-us:Summary...
+                TRANSP:OPAQUE
+                UID:D8BFD357-88A7-455C-86BC-C2CECA9AC5C6
+                X-MICROSOFT-CDO-BUSYSTATUS:BUSY
+                X-MICROSOFT-CDO-IMPORTANCE:1
+                X-MICROSOFT-DISALLOW-COUNTER:FALSE
+                X-MS-OLK-AUTOFILLLOCATION:FALSE
+                X-MS-OLK-CONFTYPE:0
+                BEGIN:VALARM
+                TRIGGER:-PT60M
+                ACTION:DISPLAY
+                DESCRIPTION:Reminder
+                END:VALARM
+                END:VEVENT
+                END:VCALENDAR";
+
+            using (var iCalView = AlternateView.CreateAlternateViewFromString(iCal, new ContentType("text/calendar")))
+            {
+                m.AlternateViews.Add(iCalView);
+                var c = new SmtpClient();
+                // Send message
+                c.Send(m);
+            }
         }
     }
 }

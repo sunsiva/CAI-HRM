@@ -1,9 +1,6 @@
 ﻿using HRPortal.Helper;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -39,7 +36,6 @@ namespace HRPortal.Models
             public DateTime CREATED_ON { get; set; }
             public string STATUS { get; set; }
             public string STATUS_ID { get; set; }
-        // public PaginationViewModels PageIndex { get; set; }
 
         /// <summary>
         /// Update the candidate status on creating the canidate profile
@@ -72,23 +68,24 @@ namespace HRPortal.Models
         {
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
             var sHist = dbContext.STATUS_HISTORY.Where(i => i.SCHEDULED_TO <= DateTime.Now).ToList();
-            if (sHist.Count > 0) { 
-            var uid = HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null ? Guid.NewGuid() : HttpRuntime.Cache.Get(CacheKey.Uid.ToString());
-            var stsLst = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).ToList();
+            if (sHist.Count > 0)
+            { 
+                var uid = HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null ? Guid.NewGuid() : HttpRuntime.Cache.Get(CacheKey.Uid.ToString());
+                var stsLst = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).ToList();
 
-            foreach (var item in sHist)
-            {
-                int stsOrdr = stsLst.Where(i => i.STATUS_ID == item.STATUS_ID).FirstOrDefault().STATUS_ORDER.GetValueOrDefault();
-                stsHist = new STATUS_HISTORY();
-                stsHist.STATUS_ID = stsLst.Where(i => i.STATUS_ORDER == stsOrdr+1).FirstOrDefault().STATUS_ID; ;
-                stsHist.CANDIDATE_ID = item.CANDIDATE_ID;
-                stsHist.COMMENTS = "Auto updated the status to Feedback Pending due to passed the due.";
-                stsHist.ISACTIVE = true;
-                stsHist.MODIFIED_BY = uid.ToString();
-                stsHist.MODIFIED_ON = DateTime.Now;
-                dbContext.STATUS_HISTORY.Add(stsHist);
-                dbContext.SaveChanges();
-            }
+                foreach (var item in sHist)
+                {
+                    int stsOrdr = stsLst.Where(i => i.STATUS_ID == item.STATUS_ID).FirstOrDefault().STATUS_ORDER.GetValueOrDefault();
+                    stsHist = new STATUS_HISTORY();
+                    stsHist.STATUS_ID = stsLst.Where(i => i.STATUS_ORDER == stsOrdr+1).FirstOrDefault().STATUS_ID;
+                    stsHist.CANDIDATE_ID = item.CANDIDATE_ID;
+                    stsHist.COMMENTS = "Auto updated the status to Feedback Pending for passed the due date.";
+                    stsHist.ISACTIVE = true;
+                    stsHist.MODIFIED_BY = uid.ToString();
+                    stsHist.MODIFIED_ON = DateTime.Now;
+                    dbContext.STATUS_HISTORY.Add(stsHist);
+                    dbContext.SaveChanges();
+                }
             }
         }
 

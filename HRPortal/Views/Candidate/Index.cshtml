@@ -125,16 +125,28 @@
                 <div class="form-group form-group-required">
                         @Html.Label("Date", new { @class = "col-md-2 control-label" })
                         <div class='col-sm-6'>
-                            <input type='text' class="form-control" id='datetimepicker' />
+                            <input type='text' class="form-control" id='txtdatetimepicker' />
                         </div>
-                </div>
-                <br /><br />
+                </div><br /><br />
+                <div class="form-group form-group-required">
+                    @Html.Label("Length", new { @class = "col-md-2 control-label" })
+                    <div class='col-sm-6'>
+                            <select id="ddlScheduleLength" name="ddlScheduleLength" class="form-control">
+                                <option value="">Select Schedule Length</option>
+                                <option value="15">15 Mins</option>
+                                <option value="30">30 Mins</option>
+                                <option value="45">45 Mins</option>
+                                <option value="60">60 Mins</option>
+                            </select>
+                    </div>
+                </div><br />
+                <br />
                 <div class="form-group form-group-required">
                     @Html.Label("Comments", new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
                         @Html.TextArea("Comments", new { @id = "txtStsComments", @class = "textarea-input-custom", @required = "mandatory" })
                     </div>
-                </div>
+                </div><br />
                 <span class="text-danger" id="errMsgModal"><small>If you don't save, your changes will be lost.</small></span>
             </div>
             <div class="modal-footer">
@@ -156,7 +168,7 @@
         $(document).ready(function () {
 
             $(function () {
-                $('#datetimepicker').datetimepicker();
+                $('#txtdatetimepicker').datetimepicker();
             });
 
         window.myPanel = function (data) {
@@ -167,9 +179,14 @@
         };
 
         $("#btnStatus").click(function () {
-            if ($("#txtSchDate").val() == "") {
+            if ($("#txtdatetimepicker").val() == "") {
                 $("#errMsgModal").text("Please schedule a candidate.");
-                $("#txtSchDate").focus();
+                $("#txtdatetimepicker").focus();
+                return false;
+            }
+            else if ($("#ddlScheduleLength").val() == "") {
+                $("#errMsgModal").text("Please select a length(duration).");
+                $("#ddlScheduleLength").focus();
                 return false;
             }
             else if ($("#txtStsComments").val() == "") {
@@ -178,7 +195,7 @@
                 return false;
             }
             else {
-                $.get("/Candidate/ScheduleCandidate", { id: $("#hdnCandidateId").val(), date: $("#datetimepicker").val(), comments: $("#txtStsComments").val(),statusId:$("#hdnStatusId").val() },
+                $.get("/Candidate/ScheduleCandidate", { id: $("#hdnCandidateId").val(), date: $("#txtdatetimepicker").val(), length: $("#ddlScheduleLength").val(), comments: $("#txtStsComments").val(), statusId: $("#hdnStatusId").val() },
                     function (data) {
                         var id = $("#hdnCandidateId").val();
                         $("#stsSecondTxt_" + id).text(data);

@@ -211,6 +211,7 @@
     <EntitySetMapping Name="STATUS_HISTORY">
       <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
         <MappingFragment StoreEntitySet="STATUS_HISTORY">
+          <ScalarProperty Name="SCHEDULE_LENGTH_MINS" ColumnName="SCHEDULE_LENGTH_MINS" />
           <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
           <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
           <ScalarProperty Name="SCHEDULED_TO" ColumnName="SCHEDULED_TO" />
@@ -218,6 +219,24 @@
           <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
           <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
           <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EVENTSCHEDULEs">
+      <EntityTypeMapping TypeName="HRPortalModel.EVENTSCHEDULE">
+        <MappingFragment StoreEntitySet="EVENTSCHEDULE">
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="STATUSENUM" ColumnName="STATUSENUM" />
+          <ScalarProperty Name="APPOINTMENTLENGTH" ColumnName="APPOINTMENTLENGTH" />
+          <ScalarProperty Name="DATETIMESCHEDULED" ColumnName="DATETIMESCHEDULED" />
+          <ScalarProperty Name="SOMEIMPORTANTKEY" ColumnName="SOMEIMPORTANTKEY" />
+          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>

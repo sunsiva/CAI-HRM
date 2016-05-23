@@ -10,6 +10,10 @@ using System.Web.Mvc;
 using System.IO;
 using HRPortal.Helper;
 using HRPortal.Models;
+using DDay.iCal;
+using DDay.iCal.Serialization.iCalendar;
+using System.Net.Mail;
+using System.Net.Mime;
 
 namespace HRPortal.Controllers
 {
@@ -18,6 +22,7 @@ namespace HRPortal.Controllers
         private HRPortalEntities db = new HRPortalEntities();
         private CandidateViewModels vmodel = new CandidateViewModels();
         private LoginViewModel logvmodel = new LoginViewModel();
+        private AppointmentViewModels appointmentVM = new AppointmentViewModels();
         private string _uid;
 
         public CandidateController()
@@ -28,6 +33,7 @@ namespace HRPortal.Controllers
         // GET: Candidate
         public async Task<ActionResult> Index()
         {
+            setinvite();
             //bool isAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN");
             List<CANDIDATE> canDb = new List<CANDIDATE>();
             //if (isAdmin) {
@@ -137,7 +143,7 @@ namespace HRPortal.Controllers
             return View(cANDIDATE);
         }
         
-        public async Task<ActionResult> ScheduleCandidate(string id, string date, string comments,string statusId)
+        public async Task<ActionResult> ScheduleCandidate(string id, string date,string length, string comments,string statusId)
         {
             var stsLst = db.STATUS_MASTER.ToList();
             var sOrdr = stsLst.Where(i => i.STATUS_ID == Guid.Parse(statusId)).FirstOrDefault();
@@ -149,14 +155,99 @@ namespace HRPortal.Controllers
             sHist.CANDIDATE_ID= Guid.Parse(id);
             sHist.ISACTIVE = true;
             sHist.SCHEDULED_TO = Convert.ToDateTime(date);
+            sHist.SCHEDULE_LENGTH_MINS = int.Parse(length);
             sHist.COMMENTS = comments;
             sHist.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
             sHist.MODIFIED_ON = DateTime.Now;
             db.STATUS_HISTORY.Add(sHist);
             await db.SaveChangesAsync();
-            
+
+            appointmentVM.SendInvite();
+
             return Json(stsId.STATUS_DESCRIPTION.ToString(), JsonRequestBehavior.AllowGet);
-        } 
+        }
+
+        private void setinvite()
+        {
+            // Using DDay.iCal 0.7.0
+            //parameters
+            string title = "Test";
+            string body = "Test body";
+            DateTime startDate = DateTime.Now;
+            double duration = 1;
+            string location = "B4F1 Meeting Room";
+            var organizer = new Organizer(Common.HRPConst.PRIM_EMAIL_FROM);
+            bool updatePreviousEvent = false;
+            string eventId = "000832";
+            bool allDayEvent = false;
+            int recurrenceDaysInterval = 0;
+            int recurrenceCount = 0;
+
+            iCalendar iCal = new iCalendar();
+
+            // outlook 2003 needs this property,
+            // or we’ll get an error (a Lunar error!)
+            iCal.Method = "PUBLISH";
+
+            // Create the event
+            Event evt = iCal.Create<Event>();
+
+            evt.Summary = title;
+            //evt.Start = new iCalDateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, startDate.Minute, startDate.Second);
+            evt.Start = new iCalDateTime(2016, 5, 20, 20, 00, 0);
+            evt.End = new iCalDateTime(2016, 5, 20, 20, 30, 0);
+            evt.Duration = TimeSpan.FromHours(duration);
+            evt.Description = body;
+            evt.Location = location;
+
+            //if (recurrenceDaysInterval > 0)
+            //{
+            //    RecurrencePattern rp = new RecurrencePattern();
+            //    rp.Frequency = FrequencyType.Daily;
+            //    rp.Interval = recurrenceDaysInterval; // interval of days
+
+            //    rp.Count = recurrenceCount;
+            //    evt.RecurrenceID(rp);
+            //}
+            evt.IsAllDay = allDayEvent;
+
+            //organizer is mandatory for outlook 2007 – think about
+            // trowing an exception here.
+            evt.Organizer = organizer;
+
+            if (!String.IsNullOrEmpty(eventId)) evt.UID = eventId;
+
+            //"REQUEST" will update an existing event with the same
+            // UID (Unique ID) and a newer time stamp.
+            iCal.Method = "REQUEST";
+
+            // Save into calendar file.
+            iCalendarSerializer serializer =
+            new iCalendarSerializer(iCal);
+            //serializer.Serialize(@"iCalendar.ics");
+
+            MailMessage msg = new MailMessage();
+            msg.From = new MailAddress("sivaprakasam_sundaram@compaid.co.in");
+            msg.To.Add("sivaprakasam_sundaram@compaid.co.in");
+            msg.Subject = title;
+            msg.Body = body;
+
+            System.Net.Mail.Attachment att = System.Net.Mail.Attachment.CreateAttachmentFromString(serializer.SerializeToString(), new ContentType("text/calendar"));
+            att.TransferEncoding = TransferEncoding.Base64;
+            att.Name = eventId + ".ics";
+
+            msg.Attachments.Add(att);
+
+            SmtpClient clt = new SmtpClient();
+            try
+            {
+                clt.Send(msg);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         private string FileUpload(HttpPostedFileBase file)
         {

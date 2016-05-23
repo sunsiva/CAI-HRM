@@ -35,7 +35,8 @@
                 <ul class="nav navbar-nav">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li>@Html.ActionLink("Dashboard", "Index", "Appointment")</li>
+                        <li>@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
+                        <li>@Html.ActionLink("Appointment", "Index", "Appointment")</li>
                         <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
                         if (isSuperAdmin)
                         {
@@ -66,7 +67,10 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-
+    @*BEGIN:FOR APPOINTMENT CALENDAR*@
+    <link href="~/Content/Calendar/fullcalendar.css" rel="stylesheet" />
+    <script src="~/Scripts/Calendar/fullcalendar.js"></script>
+    @*END:FOR APPOINTMENT CALENDAR*@
     @RenderSection("scripts", required: false)
 </body>
 </html>

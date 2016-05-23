@@ -124,3 +124,21 @@ time.icon span
   padding-top: 0.8em;
   color: #2f2f2f;
 }
+
+/*Modified with original badge attributes for header menu*/
+.badge-notify-header {
+  display: inline-block;
+  min-width: 6px;
+  padding: 2px 5px;
+  font-size: 9px;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  background:red;
+  position:absolute;
+  top:8px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 6px;
+}

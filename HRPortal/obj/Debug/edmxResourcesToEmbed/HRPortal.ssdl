@@ -112,6 +112,23 @@
     <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
     <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
   </EntityType>
+  <EntityType Name="EVENTSCHEDULE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TITLE" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="SOMEIMPORTANTKEY" Type="int" Nullable="false" />
+    <Property Name="DATETIMESCHEDULED" Type="datetime" Nullable="false" />
+    <Property Name="APPOINTMENTLENGTH" Type="int" Nullable="false" />
+    <Property Name="STATUSENUM" Type="int" Nullable="false" />
+    <Property Name="COMMENTS" Type="nvarchar(max)" />
+    <Property Name="ISACTIVE" Type="bit" />
+    <Property Name="MODIFIED_BY" Type="datetime" />
+    <Property Name="MODIFIED_ON" Type="datetime" />
+    <Property Name="CREATED_BY" Type="datetime" />
+    <Property Name="CREATED_ON" Type="datetime" />
+  </EntityType>
   <EntityType Name="JOBPOSTING">
     <Key>
       <PropertyRef Name="JOB_ID" />
@@ -145,6 +162,7 @@
     <Property Name="COMMENTS" Type="nvarchar(max)" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
     <Property Name="SCHEDULED_TO" Type="datetime" />
+    <Property Name="SCHEDULE_LENGTH_MINS" Type="int" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
   </EntityType>
@@ -293,6 +311,7 @@
     <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="CANDIDATES" EntityType="Self.CANDIDATES" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EVENTSCHEDULE" EntityType="Self.EVENTSCHEDULE" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="JOBPOSTING" EntityType="Self.JOBPOSTING" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" Schema="dbo" store:Type="Tables" />

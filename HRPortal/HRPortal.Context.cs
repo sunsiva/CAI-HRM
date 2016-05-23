@@ -39,5 +39,6 @@ namespace HRPortal
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<STATUS_HISTORY> STATUS_HISTORY { get; set; }
+        public virtual DbSet<EVENTSCHEDULE> EVENTSCHEDULEs { get; set; }
     }
 }

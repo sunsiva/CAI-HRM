@@ -106,7 +106,7 @@ namespace HRPortal.Models
 
         public void SetUserToCache(string email)
         {
-            var user = db.AspNetUsers.ToList().Where(m => m.Email == email).FirstOrDefault();
+            var user = db.AspNetUsers.ToList().Where(m => m.UserName == email).FirstOrDefault();
             var rolename = (from usr in db.AspNetUsers.ToList()
                             join rlx in db.UserXRoles.ToList() on Guid.Parse(usr.Id) equals rlx.UserId
                             join rle in db.AspNetRoles.ToList() on rlx.RoleId equals Guid.Parse(rle.Id)

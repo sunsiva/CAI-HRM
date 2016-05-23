@@ -29,7 +29,96 @@
             @Html.ActionLink("Logged in as : " + (HttpRuntime.Cache.Get(CacheKey.UserName.ToString()) != null ? HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString() : User.Identity.Name), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage Account"})
             <i class="fa fa-caret-down glyphicon glyphicon-triangle-bottom"></i>
          </li>*@
-        
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="/Index/Manage" title="Mails">
+                <i class="glyphicon glyphicon-envelope"></i><b class="caret"></b>
+            </a><span class="badge-notify-header">19</span>
+            <ul class="dropdown-menu dropdown-messages">
+                <li>
+                    <a href="#">
+                        <div>
+                            <strong>John</strong>
+                            <span class="pull-right text-muted">
+                                <em>Yesterday</em>
+                            </span>
+                        </div>
+                        <div>Scheduled for drive...</div>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#">
+                        <div>
+                            <strong>Smith</strong>
+                            <span class="pull-right text-muted">
+                                <em>Yesterday</em>
+                            </span>
+                        </div>
+                        <div>This candidate has been short listed...</div>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#">
+                        <div>
+                            <strong>Jacks</strong>
+                            <span class="pull-right text-muted">
+                                <em>Yesterday</em>
+                            </span>
+                        </div>
+                        <div>He is not turned up...</div>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a class="text-center" href="#">
+                        <strong>Read All Messages</strong>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="/Index/Manage" title="Alerts">
+                <i class="glyphicon glyphicon-bell"></i><b class="caret"></b>
+            </a><span class="badge-notify-header">1</span>
+            <ul class="dropdown-menu dropdown-alerts">
+                <li>
+                    <a href="#">
+                        <div>
+                            <i class="glyphicon glyphicon-comment"></i> New Comment
+                            <span class="pull-right text-muted small">4 minutes ago</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#">
+                        <div>
+                            <i class="glyphicon glyphicon-envelope"></i> Message Sent
+                            <span class="pull-right text-muted small">4 minutes ago</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#">
+                        <div>
+                            <i class="glyphicon glyphicon-tasks"></i> New Task
+                            <span class="pull-right text-muted small">4 minutes ago</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a class="text-center" href="#">
+                        <strong>See All Alerts</strong>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+            <!-- /.dropdown-alerts -->
+        </li>
         <li><a class="" title="Click To Log Off" href="javascript:document.getElementById('logoutForm').submit()">Log Out  <i class="glyphicon glyphicon-log-out"></i></a></li>
         <li>
             <time class="icon">

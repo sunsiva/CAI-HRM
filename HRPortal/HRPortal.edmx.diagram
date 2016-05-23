@@ -24,6 +24,7 @@
         <AssociationConnector Association="HRPortalModel.AspNetUserRoles" />
         <EntityTypeShape EntityType="HRPortalModel.STATUS_HISTORY" Width="1.5" PointX="12.625" PointY="9.125" />
         <AssociationConnector Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" />
+        <EntityTypeShape EntityType="HRPortalModel.EVENTSCHEDULE" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
