@@ -29,7 +29,7 @@
             @Html.ActionLink("Logged in as : " + (HttpRuntime.Cache.Get(CacheKey.UserName.ToString()) != null ? HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString() : User.Identity.Name), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage Account"})
             <i class="fa fa-caret-down glyphicon glyphicon-triangle-bottom"></i>
          </li>*@
-        <li class="dropdown">
+        <li class="dropdown hide">
             <a class="dropdown-toggle" data-toggle="dropdown" href="/Index/Manage" title="Mails">
                 <i class="glyphicon glyphicon-envelope"></i><b class="caret"></b>
             </a><span class="badge-notify-header">19</span>
@@ -78,7 +78,7 @@
                 </li>
             </ul>
         </li>
-        <li class="dropdown">
+        <li class="dropdown hide">
             <a class="dropdown-toggle" data-toggle="dropdown" href="/Index/Manage" title="Alerts">
                 <i class="glyphicon glyphicon-bell"></i><b class="caret"></b>
             </a><span class="badge-notify-header">1</span>

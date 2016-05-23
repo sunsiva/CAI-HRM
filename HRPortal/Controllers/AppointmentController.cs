@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Net.Mail;
-using DDay.iCal;
-using DDay.iCal.Serialization.iCalendar;
+
 using System.Web.Mvc;
 using System.Net.Mime;
 using HRPortal.Models;
 using System.Linq;
+using DDay.iCal.Serialization.iCalendar;
+using DDay.iCal;
+using System.Text;
 
 namespace HRPortal.Controllers
 {
@@ -54,7 +56,8 @@ namespace HRPortal.Controllers
 
         public bool SaveEvent(string Title, string NewEventDate, string NewEventTime, string NewEventDuration)
         {
-            return appVM.CreateNewEvent(Title, NewEventDate, NewEventTime, NewEventDuration);
+            setInvite();
+            return true;// appVM.SaveEvent(Title, NewEventDate, NewEventTime, NewEventDuration);
         }
 
         public JsonResult GetDiarySummary(double start, double end)
@@ -65,10 +68,10 @@ namespace HRPortal.Controllers
                             select new
                             {
                                 id = e.ID,
-                                title = e.TITLE,
+                                title = e.Title,
                                 start = e.StartDateString,
                                 end = e.EndDateString,
-                                someKey = e.SOMEIMPORTANTKEY,
+                                someKey = e.KeyID,
                                 allDay = false
                             };
             var rows = eventList.ToArray();
@@ -82,12 +85,12 @@ namespace HRPortal.Controllers
                             select new
                             {
                                 id = e.ID,
-                                title = e.TITLE,
+                                title = e.Title,
                                 start = e.StartDateString,
                                 end = e.EndDateString,
                                 color = e.StatusColor,
                                 className = e.ClassName,
-                                someKey = e.SOMEIMPORTANTKEY,
+                                someKey = e.KeyID,
                                 allDay = false
                             };
             var rows = eventList.ToArray();
@@ -138,9 +141,9 @@ namespace HRPortal.Controllers
 
         //    //organizer is mandatory for outlook 2007 – think about
         //    // trowing an exception here.
-        //    if (!String.IsNullOrEmpty(organizer)) evt.Organizer = organizer;
+        //    evt.Organizer = organizer;
 
-        //    if (!String.IsNullOrEmpty(eventId)) evt.UID = eventId;
+        //    evt.UID = eventId;
 
         //    //"REQUEST" will update an existing event with the same
         //    // UID (Unique ID) and a newer time stamp.
@@ -157,7 +160,7 @@ namespace HRPortal.Controllers
         //    msg.Subject = title;
         //    msg.Body = body;
 
-        //    Attachment att = Attachment.CreateAttachmentFromString(serializer.SerializeToString(), new ContentType("text / calendar"));
+        //    System.Net.Mail.Attachment att = System.Net.Mail.Attachment.CreateAttachmentFromString(serializer.SerializeToString(), new ContentType("text / calendar"));
         //    att.TransferEncoding = TransferEncoding.Base64;
         //    att.Name = eventId + ".ics";
 
@@ -234,6 +237,56 @@ namespace HRPortal.Controllers
                 // Send message
                 c.Send(m);
             }
+        }
+
+        private void setInvite()
+        {
+            MailMessage msg = new MailMessage();
+            //Now we have to set the value to Mail message properties
+
+            //Note Please change it to correct mail-id to use this in your application
+            msg.From = new MailAddress(mailFrom);
+            msg.To.Add(new MailAddress(mailTo, "sunsiv"));
+            msg.CC.Add(new MailAddress("reachsunsiva@gmail.com", "ss"));// it is optional, only if required
+            msg.Subject = "Send mail with ICS file as an Attachment";
+            msg.Body = "Please Attend the meeting with this schedule";
+
+            // Now Contruct the ICS file using string builder
+            StringBuilder str = new StringBuilder();
+            str.AppendLine("BEGIN:VCALENDAR");
+            str.AppendLine("PRODID:-//Schedule a Meeting");
+            str.AppendLine("VERSION:2.0");
+            str.AppendLine("METHOD:PUBLISH");
+            str.AppendLine("BEGIN:VEVENT");
+            str.AppendLine(string.Format("DTSTART:{0:yyyyMMddTHHmmssZ}", DateTime.Now.AddMinutes(+330)));
+            str.AppendLine(string.Format("DTSTAMP:{0:yyyyMMddTHHmmssZ}", DateTime.UtcNow));
+            str.AppendLine(string.Format("DTEND:{0:yyyyMMddTHHmmssZ}", DateTime.Now.AddMinutes(+660)));
+            str.AppendLine("LOCATION: " + "meeting room");
+            str.AppendLine(string.Format("UID:{0}", Guid.NewGuid()));
+            str.AppendLine(string.Format("DESCRIPTION:{0}", msg.Body));
+            str.AppendLine(string.Format("X-ALT-DESC;FMTTYPE=text/html:{0}", msg.Body));
+            str.AppendLine(string.Format("SUMMARY:{0}", msg.Subject));
+            str.AppendLine(string.Format("ORGANIZER:MAILTO:{0}", msg.From.Address));
+
+            str.AppendLine(string.Format("ATTENDEE;CN=\"{0}\";RSVP=TRUE:mailto:{1}", msg.To[0].DisplayName, msg.To[0].Address));
+
+            str.AppendLine("BEGIN:VALARM");
+            str.AppendLine("TRIGGER:-PT15M");
+            str.AppendLine("ACTION:DISPLAY");
+            str.AppendLine("DESCRIPTION:Reminder");
+            str.AppendLine("END:VALARM");
+            str.AppendLine("END:VEVENT");
+            str.AppendLine("END:VCALENDAR");
+
+            //Now sending a mail with attachment ICS file.                     
+            ContentType contype = new ContentType("text/calendar");
+            contype.Parameters.Add("method", "PUBLISH");
+            contype.Parameters.Add("name", "Meeting.ics");
+            AlternateView avCal = AlternateView.CreateAlternateViewFromString(str.ToString(), contype);
+            msg.AlternateViews.Add(avCal);
+            
+            var c = new SmtpClient();
+            c.Send(msg);
         }
     }
 }

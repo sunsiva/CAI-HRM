@@ -235,7 +235,7 @@
           <ScalarProperty Name="STATUSENUM" ColumnName="STATUSENUM" />
           <ScalarProperty Name="APPOINTMENTLENGTH" ColumnName="APPOINTMENTLENGTH" />
           <ScalarProperty Name="DATETIMESCHEDULED" ColumnName="DATETIMESCHEDULED" />
-          <ScalarProperty Name="SOMEIMPORTANTKEY" ColumnName="SOMEIMPORTANTKEY" />
+          <ScalarProperty Name="KEY" ColumnName="KEY" />
           <ScalarProperty Name="TITLE" ColumnName="TITLE" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>

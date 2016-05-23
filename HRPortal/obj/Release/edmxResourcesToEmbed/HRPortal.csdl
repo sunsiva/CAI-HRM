@@ -75,6 +75,7 @@
       <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
       <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
     </AssociationSet>
+    <EntitySet Name="EVENTSCHEDULEs" EntityType="HRPortalModel.EVENTSCHEDULE" />
   </EntityContainer>
   <EntityType Name="CANDIDATE">
     <Key>
@@ -286,9 +287,11 @@
     <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
     <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="SCHEDULED_TO" Type="DateTime" Precision="3" />
     <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
     <NavigationProperty Name="STATUS_MASTER" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
+    <Property Name="SCHEDULE_LENGTH_MINS" Type="Int32" />
   </EntityType>
   <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
     <End Type="HRPortalModel.STATUS_MASTER" Role="STATUS_MASTER" Multiplicity="1" />
@@ -302,4 +305,21 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <EntityType Name="EVENTSCHEDULE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TITLE" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="SOMEIMPORTANTKEY" Type="Int32" Nullable="false" />
+    <Property Name="DATETIMESCHEDULED" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="APPOINTMENTLENGTH" Type="Int32" Nullable="false" />
+    <Property Name="STATUSENUM" Type="Int32" Nullable="false" />
+    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="MODIFIED_BY" Type="DateTime" Precision="3" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
+  </EntityType>
 </Schema>

@@ -22,7 +22,7 @@ namespace HRPortal.Controllers
         private HRPortalEntities db = new HRPortalEntities();
         private CandidateViewModels vmodel = new CandidateViewModels();
         private LoginViewModel logvmodel = new LoginViewModel();
-        private AppointmentViewModels appointmentVM = new AppointmentViewModels();
+        //private AppointmentViewModels appointmentVM = new AppointmentViewModels();
         private string _uid;
 
         public CandidateController()
@@ -33,7 +33,7 @@ namespace HRPortal.Controllers
         // GET: Candidate
         public async Task<ActionResult> Index()
         {
-            setinvite();
+            //setinvite();
             //bool isAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN");
             List<CANDIDATE> canDb = new List<CANDIDATE>();
             //if (isAdmin) {
@@ -162,7 +162,7 @@ namespace HRPortal.Controllers
             db.STATUS_HISTORY.Add(sHist);
             await db.SaveChangesAsync();
 
-            appointmentVM.SendInvite();
+            //appointmentVM.SendInvite();
 
             return Json(stsId.STATUS_DESCRIPTION.ToString(), JsonRequestBehavior.AllowGet);
         }

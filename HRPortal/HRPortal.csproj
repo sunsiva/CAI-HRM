@@ -44,17 +44,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="antlr.runtime">
+    <Reference Include="antlr.runtime, Version=2.7.6.2, Culture=neutral, PublicKeyToken=1790ba318ebc5d56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>dlls\antlr.runtime.dll</HintPath>
     </Reference>
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DDay.Collections">
+    <Reference Include="DDay.Collections, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>dlls\DDay.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="DDay.iCal">
+    <Reference Include="DDay.iCal, Version=1.0.2.575, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>dlls\DDay.iCal.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -222,6 +225,7 @@
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
     <Compile Include="Common\Context.cs" />
+    <Compile Include="Common\DiaryEvents.cs" />
     <Compile Include="Common\HRPConst.cs" />
     <Compile Include="Common\IContext.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -266,8 +270,8 @@
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\CandidateViewModels.cs" />
     <Compile Include="Models\AppointmentViewModels.cs" />
+    <Compile Include="Models\CandidateViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JobAndCandidateViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -315,6 +319,9 @@
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\sb-admin-2.css" />
     <Content Include="Content\timeline.css" />
+    <Content Include="dlls\antlr.runtime.dll" />
+    <Content Include="dlls\DDay.Collections.dll" />
+    <Content Include="dlls\DDay.iCal.dll" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

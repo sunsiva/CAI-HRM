@@ -311,15 +311,15 @@
     </Key>
     <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="TITLE" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="SOMEIMPORTANTKEY" Type="Int32" Nullable="false" />
+    <Property Name="KEY" Type="Int32" Nullable="false" />
     <Property Name="DATETIMESCHEDULED" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="APPOINTMENTLENGTH" Type="Int32" Nullable="false" />
     <Property Name="STATUSENUM" Type="Int32" Nullable="false" />
     <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="ISACTIVE" Type="Boolean" />
-    <Property Name="MODIFIED_BY" Type="DateTime" Precision="3" />
+    <Property Name="MODIFIED_BY" Type="Guid" />
     <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-    <Property Name="CREATED_BY" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="Guid" />
     <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
   </EntityType>
 </Schema>

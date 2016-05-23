@@ -118,15 +118,15 @@
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="TITLE" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="SOMEIMPORTANTKEY" Type="int" Nullable="false" />
+    <Property Name="KEY" Type="int" Nullable="false" />
     <Property Name="DATETIMESCHEDULED" Type="datetime" Nullable="false" />
     <Property Name="APPOINTMENTLENGTH" Type="int" Nullable="false" />
     <Property Name="STATUSENUM" Type="int" Nullable="false" />
     <Property Name="COMMENTS" Type="nvarchar(max)" />
     <Property Name="ISACTIVE" Type="bit" />
-    <Property Name="MODIFIED_BY" Type="datetime" />
+    <Property Name="MODIFIED_BY" Type="uniqueidentifier" />
     <Property Name="MODIFIED_ON" Type="datetime" />
-    <Property Name="CREATED_BY" Type="datetime" />
+    <Property Name="CREATED_BY" Type="uniqueidentifier" />
     <Property Name="CREATED_ON" Type="datetime" />
   </EntityType>
   <EntityType Name="JOBPOSTING">
