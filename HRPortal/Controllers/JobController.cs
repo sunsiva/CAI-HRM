@@ -58,6 +58,7 @@ namespace HRPortal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING)
         {
+            try { 
             if (ModelState.IsValid)
             {
                 jOBPOSTING.JOB_ID = Guid.NewGuid();
@@ -69,8 +70,9 @@ namespace HRPortal.Controllers
                 await dbContext.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-
             return View(jOBPOSTING);
+            }
+            catch (Exception ex) { throw ex; }
         }
 
         // GET: Job/Edit/5
@@ -95,6 +97,7 @@ namespace HRPortal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_ON,CREATED_BY")] JOBPOSTING jOBPOSTING)
         {
+            try { 
             if (ModelState.IsValid)
             {
                 jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
@@ -105,6 +108,8 @@ namespace HRPortal.Controllers
                 return RedirectToAction("Index");
             }
             return View(jOBPOSTING);
+            }
+            catch (Exception ex) { throw ex; }
         }
 
         // GET: Job/Delete/5
@@ -127,6 +132,7 @@ namespace HRPortal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
+            try { 
             JOBPOSTING jOBPOSTING = await dbContext.JOBPOSTINGs.FindAsync(id);
             if (jOBPOSTING == null)
             {
@@ -137,6 +143,8 @@ namespace HRPortal.Controllers
                 await dbContext.SaveChangesAsync();
             }
             return RedirectToAction("Index");
+            }
+            catch (Exception ex) { throw ex; }
         }
 
         //// POST: Job/Delete/5

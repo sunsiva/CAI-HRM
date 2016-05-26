@@ -86,8 +86,8 @@
 
             dayClick: function (date, allDay, jsEvent, view) {
                 $('#eventTitle').val("");
-                $('#eventDate').val($.fullCalendar.formatDate(date, 'dd/MM/yyyy'));
-                $('#eventTime').val($.fullCalendar.formatDate(date, 'HH:mm'));
+                $('#eventDate').val($.fullCalendar.formatDate(date, 'yyyy-MM-dd'));
+                $('#eventTime').val($.fullCalendar.formatDate(date, 'HH:mm:ss'));
                 ShowEventPopup(date);
             },
 

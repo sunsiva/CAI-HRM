@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using HRPortal.Helper;
+using System.Threading.Tasks;
+using System.IO;
+using System.Net.Mail;
+using DDay.iCal;
+using DDay.iCal.Serialization.iCalendar;
+using HRPortal.Common;
 
 namespace HRPortal.Models
 {
     public class AppointmentViewModels
     {
         DiaryEvent dEv = new DiaryEvent();
+        HRPortalEntities dbContext = new HRPortalEntities();
+
         public List<DiaryEvent> LoadAllAppointmentsInDateRange(double start, double end)
         {
             var fromDate = ConvertFromUnixTimestamp(start);
@@ -124,6 +132,11 @@ namespace HRPortal.Models
             return Json(rows, JsonRequestBehavior.AllowGet);
         }
 
+        private JsonResult Json(object[] rows, JsonRequestBehavior allowGet)
+        {
+            throw new NotImplementedException();
+        }
+
         public JsonResult GetDiaryEvents(double start, double end)
         {
             var ApptListForDate = dEv.LoadAllAppointmentsInDateRange(start, end);
@@ -142,12 +155,154 @@ namespace HRPortal.Models
             var rows = eventList.ToArray();
             return Json(rows, JsonRequestBehavior.AllowGet);
         }
-
-        private JsonResult Json(object[] rows, JsonRequestBehavior allowGet)
+        
+        public async Task SendInvite(string NewEventDate, string NewEventDuration, Guid canId)
         {
-            throw new NotImplementedException();
+            try
+            { 
+                string serverPath = System.Configuration.ConfigurationManager.AppSettings["DocPathAppointment"];
+                string filepath = Path.Combine(serverPath+@"ical\", "ical.test.ics");
+                //@"D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\UploadDocument\ical.test.ics";
+                // use PUBLISH for appointments
+                // use REQUEST for meeting requests
+                const string METHOD = "REQUEST";
+                DateTime evtSDate = DateTime.Parse(NewEventDate);
+                DateTime evtEDate = evtSDate.AddMinutes(int.Parse(NewEventDuration));
+
+                //Get data for selected candidate
+                //var canLst = dbContext.CANDIDATES.Where(x => x.CANDIDATE_ID == canId).FirstOrDefault();
+                
+
+                // Properties of the meeting request
+                // keep guid in sending program to modify or cancel the request later
+                string strSubject = "Important!!!!";
+                string TerminVerantwortlicherEmail = "Chandrashekhar_Yarashi@compaid.co.in";// "Mohan_Kumar@compaid.co.in";// "Chandrashekhar_Yarashi@compaid.co.in";// "Nagaraju_Chinnapalle@compaid.co.in";
+                string bodyPlainText = "Dear Chandru, You have to meet Siva for further assignements. And you will be monitored by Nagaraju timely. Rgrds";
+                string bodyHtml = "Dear Chandru, You have to meet <b> Siva </b> for further assignements. And you will be monitored by Nagaraju timely. </br> Rgrds";
+                string location = "Meeting room 101";
+                string organizerMail = "Mohan_Kumar@compaid.co.in";
+                string filename = "Test.txt";//--- Attachments
+                int priority = 1;// 1: High; 5: Normal; 9: low
+                //=====================================
+
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, "sunsiv");
+                message.To.Add(new MailAddress(TerminVerantwortlicherEmail));
+                //message.CC.Add(new MailAddress("sivaprakasam_sundaram@compaid.co.in", "sunsiv"));
+                message.Subject = strSubject;
+                message.Body = bodyPlainText; // Plain Text Version
+
+                // HTML Version
+                string htmlBody = bodyHtml;
+                AlternateView HTMLV = AlternateView.CreateAlternateViewFromString(htmlBody,
+                  new System.Net.Mime.ContentType("text/html"));
+
+                // iCal
+                IICalendar iCal = new iCalendar();
+                iCal.Method = METHOD;
+                iCal.ProductID = "My Metting Product";
+
+                // Create an event and attach it to the iCalendar.
+                Event evt = iCal.Create<Event>();
+                evt.UID = canId.ToString();
+                evt.Class = "PUBLIC";
+                evt.Created = new iCalDateTime(DateTime.Now);
+                evt.DTStamp = new iCalDateTime(DateTime.Now);
+                evt.Transparency = TransparencyType.Transparent;
+
+                // Set the event start / end times
+                evt.Start = new iCalDateTime(evtSDate.Year, evtSDate.Month, evtSDate.Day, evtSDate.Hour, evtSDate.Minute, evtSDate.Second);
+                evt.End = new iCalDateTime(evtEDate.Year, evtEDate.Month, evtEDate.Day, evtEDate.Hour, evtEDate.Minute, evtEDate.Second);
+                evt.Location = location;
+
+                var organizer = new Organizer(organizerMail);
+                evt.Organizer = organizer;
+                evt.Description = bodyPlainText; // Set the longer description of the event, plain text
+
+                // Event description HTML text
+                // X-ALT-DESC;FMTTYPE=text/html
+                var prop = new CalendarProperty("X-ALT-DESC");
+                prop.AddParameter("FMTTYPE", "text/html");
+                prop.AddValue(bodyHtml);
+                evt.AddProperty(prop);
+
+                // Set the one-line summary of the event
+                evt.Summary = strSubject;
+                evt.Priority = priority;
+
+                //--- attendes are optional
+                IAttendee at = new Attendee("mailto:Mohan_Kumar@compaid.co.in");
+                at.ParticipationStatus = "NEEDS-ACTION";
+                at.RSVP = true;
+                at.Role = "REQ-PARTICIPANT";
+                at.CommonName = "Sunsiva";
+                evt.Attendees.Add(at);
+
+                // Let’s also add an alarm on this event so we can be reminded of it later.
+                Alarm alarm = new Alarm();
+
+                // Display the alarm somewhere on the screen.
+                alarm.Action = AlarmAction.Display;
+
+                // This is the text that will be displayed for the alarm.
+                alarm.Summary = "Upcoming meeting: " + strSubject;
+
+                // The alarm is set to occur 15 minutes before the event
+                alarm.Trigger = new Trigger(TimeSpan.FromMinutes(-15));
+
+                // Add an attachment to this event
+                IAttachment attachment = new DDay.iCal.Attachment();
+                attachment.Data = ReadBinary(Path.Combine(serverPath, filename));
+                attachment.Parameters.Add("X-FILENAME", filename);
+                evt.Attachments.Add(attachment);
+
+                iCalendarSerializer serializer = new iCalendarSerializer();
+                serializer.Serialize(iCal, filepath);
+
+                // the .ics File as a string
+                string iCalStr = serializer.SerializeToString(iCal);
+
+                // .ics as AlternateView (used by Outlook)
+                // text/calendar part: method=REQUEST
+                System.Net.Mime.ContentType calendarType =
+                  new System.Net.Mime.ContentType("text/calendar");
+                calendarType.Parameters.Add("method", METHOD);
+                AlternateView ICSview =
+                  AlternateView.CreateAlternateViewFromString(iCalStr, calendarType);
+
+                // Compose
+                message.AlternateViews.Add(HTMLV);
+                message.AlternateViews.Add(ICSview); // must be the last part
+
+                // .ics as Attachment (used by mail clients other than Outlook)
+                Byte[] bytes = System.Text.Encoding.ASCII.GetBytes(iCalStr);
+                var ms = new System.IO.MemoryStream(bytes);
+                var a = new System.Net.Mail.Attachment(ms,
+                  "HROpsEvent.ics", "text/calendar");
+                message.Attachments.Add(a);
+
+                // Send Mail
+                SmtpClient client = new SmtpClient();
+                await client.SendMailAsync(message);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
+        private static byte[] ReadBinary(string fileName)
+        {
+            byte[] binaryData = null;
+            using (FileStream reader = new FileStream(fileName,
+              FileMode.Open, FileAccess.Read))
+            {
+                binaryData = new byte[reader.Length];
+                reader.Read(binaryData, 0, (int)reader.Length);
+            }
+            return binaryData;
+        }
+        
         private DateTime ConvertFromUnixTimestamp(double timestamp)
         {
             var origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);

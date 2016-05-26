@@ -49,6 +49,7 @@ namespace HRPortal
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "VENDOR_ID,VENDOR_NAME,VENDOR_SPOC,EMAIL,VENDOR_CONTACT_NO,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] VENDOR_MASTER vENDOR_MASTER)
         {
+            try { 
             if (ModelState.IsValid)
             {
                 vENDOR_MASTER.VENDOR_ID = Guid.NewGuid();
@@ -60,11 +61,14 @@ namespace HRPortal
             }
 
             return View(vENDOR_MASTER);
+            }
+            catch (Exception ex) { throw ex; }
         }
 
         // GET: Vendor/Edit/5
         public ActionResult Edit(Guid? id)
         {
+            try { 
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -75,6 +79,8 @@ namespace HRPortal
                 return HttpNotFound();
             }
             return View(vENDOR_MASTER);
+            }
+            catch (Exception ex) { throw ex; }
         }
 
         // POST: Vendor/Edit/5

@@ -24,58 +24,65 @@ namespace HRPortal.Controllers
 
         public async Task<ActionResult> Index(string sOdr, int? page)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
-                if (HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null)
-                    loginVM.SetUserToCache(User.Identity.Name);
-
-                vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
-
-                var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
-                if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
+            try { 
+                if (User.Identity.IsAuthenticated)
                 {
-                    var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
-                    jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                    ViewBag.StatusList = vmodelCan.GetStatusList();
-                }
-                else {
-                    jobCanObj.JobItems = dbJobs;
-                }
+                    CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
+                    if (HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null)
+                        loginVM.SetUserToCache(User.Identity.Name);
 
-                jobCanObj = GetPagination(jobCanObj, sOdr, page);
-                return View(jobCanObj);
+                    vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
+
+                    var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
+                    if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
+                    {
+                        var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
+                        jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                        ViewBag.StatusList = vmodelCan.GetStatusList();
+                    }
+                    else {
+                        jobCanObj.JobItems = dbJobs;
+                    }
+
+                    jobCanObj = GetPagination(jobCanObj, sOdr, page);
+                    return View(jobCanObj);
+                }
+                return RedirectToAction("Login", "Account");
             }
-            return RedirectToAction("Login", "Account");
+            catch (Exception ex) { throw ex; }
         }
 
         public async Task<ActionResult> SearchCriteria(string name, string vendor, string status, string stdt, string edt)
         {
-            var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
-            if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
-            {
-                CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
-                var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
-                jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                ViewBag.StatusList = vmodelCan.GetStatusList();
-                if (jobCanObj.CandidateItems.Count > 0) { 
-                    jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
-                return PartialView("_CandidateList", jobCanObj.CandidateItems);
+            try { 
+                var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
+                if (HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
+                {
+                    CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
+                    var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
+                    jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                    ViewBag.StatusList = vmodelCan.GetStatusList();
+                    if (jobCanObj.CandidateItems.Count > 0) { 
+                        jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
+                    return PartialView("_CandidateList", jobCanObj.CandidateItems);
+                    }
+                    else
+                        return PartialView("_CandidateList");
                 }
-                else
-                    return PartialView("_CandidateList");
+                else {
+                    CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
+                    jobCanObj.JobItems=dbJobs;
+                    GetJobSearchResults(dbJobs);
+                    jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
+                    return PartialView("_JobList", jobCanObj.JobItems);
+                }
             }
-            else {
-                CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
-                jobCanObj.JobItems=dbJobs;
-                GetJobSearchResults(dbJobs);
-                jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
-                return PartialView("_JobList", jobCanObj.JobItems);
-            }
+            catch (Exception ex) { throw ex; }
         }
 
         public async Task<ActionResult> ExportToExcel()
         {
+            try { 
             System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
             var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
             var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
@@ -106,6 +113,8 @@ namespace HRPortal.Controllers
             Response.Flush();
             Response.End();
             return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex) { throw ex; }
         }
 
         /// <summary>
@@ -117,6 +126,7 @@ namespace HRPortal.Controllers
         /// <returns></returns>
         public async Task<ActionResult> StatusUpdate(string id, string status, string comments)
         {
+            try { 
             STATUS_HISTORY sHist = new STATUS_HISTORY();
             sHist.STATUS_ID = Guid.Parse(status);
             sHist.COMMENTS = comments;
@@ -136,6 +146,8 @@ namespace HRPortal.Controllers
             await db.SaveChangesAsync();
             
             return new EmptyResult();
+            }
+            catch (Exception ex) { throw ex; }
         }
 
         private JobAndCandidateViewModels GetPagination(JobAndCandidateViewModels jobCanObj, string sOdr, int? page)
