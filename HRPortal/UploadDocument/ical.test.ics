@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REQUEST
+PRODID:My Metting Product
+BEGIN:VEVENT
+ATTACH;X-FILENAME=Test.txt;VALUE=BINARY;ENCODING=BASE64:dGVzdGluZyBzc3M=
+ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;ROLE=REQ-PARTICIPANT;CN=Sunsiva:ma
+ ilto:Mohan_Kumar@compaid.co.in
+CLASS:PUBLIC
+CREATED:20160526T141211
+DESCRIPTION:Dear Chandru\, You have to meet Siva for further assignements. 
+ And you will be monitored by Nagaraju timely. Rgrds
+DTEND:20160526T183000
+DTSTAMP:20160526T084211Z
+DTSTART:20160526T180000
+LOCATION:Meeting room 101
+ORGANIZER:mailto:mohan_kumar@compaid.co.in
+PRIORITY:1
+SEQUENCE:0
+SUMMARY:This is the subject of the meeting request
+TRANSP:Transparent
+UID:bc30bed0-8f41-4ce0-b8bd-df47b30060cb
+X-ALT-DESC;FMTTYPE=text/html:Dear Chandru\, You have to meet <b> Siva </b> 
+ for further assignements. And you will be monitored by Nagaraju timely. </
+ br> Rgrds
+END:VEVENT
+END:VCALENDAR

@@ -14,6 +14,8 @@ using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using System.Net.Mail;
 using System.Net.Mime;
+using HRPortal.Common;
+using HRPortal.Common.Enums;
 
 namespace HRPortal.Controllers
 {
@@ -151,7 +153,7 @@ namespace HRPortal.Controllers
             return View(cANDIDATE);
         }
         
-        public async Task<ActionResult> ScheduleCandidate(string id, string date,string length, string comments,string statusId)
+        public async Task<ActionResult> ScheduleCandidate(string id, string date,string length,string sendTo, string comments,string statusId)
         {
             try { 
                 var stsLst = db.STATUS_MASTER.ToList();
@@ -171,9 +173,9 @@ namespace HRPortal.Controllers
                 db.STATUS_HISTORY.Add(sHist);
                 await db.SaveChangesAsync();
 
-                if (System.Configuration.ConfigurationManager.AppSettings["AppointmentMail"] == "true")
+                if (System.Configuration.ConfigurationManager.AppSettings["IsAppointmentMail"] == "true")
                 {
-                    await appointmentVM.SendInvite(date, length, Guid.Parse(id));
+                    await appointmentVM.SendInvite(date, length, sendTo, Guid.Parse(id));
                 }
 
                 return Json(stsId.STATUS_DESCRIPTION.ToString(), JsonRequestBehavior.AllowGet);
@@ -309,6 +311,18 @@ namespace HRPortal.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Exception e = filterContext.Exception;
+            //Log Exception e to DB.
+            filterContext.ExceptionHandled = true;
+            LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+            //filterContext.Result = new ViewResult()
+            //{
+            //    ViewName = "Error"
+            //};
         }
     }
 }

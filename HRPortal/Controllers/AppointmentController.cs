@@ -43,10 +43,11 @@ namespace HRPortal.Controllers
         {
             try
             {
-                Guid canId = Guid.Parse("BC30BED0-8F41-4CE0-B8BD-DF47B30060CB");
                 if(System.Configuration.ConfigurationManager.AppSettings["AppointmentMail"]=="true")
-                { 
-                    await appVM.SendInvite(NewEventDate+" "+NewEventTime, NewEventDuration, canId);
+                {
+                    Guid canId = Guid.Parse("BC30BED0-8F41-4CE0-B8BD-DF47B30060CB");
+                    string sendTo = System.Configuration.ConfigurationManager.AppSettings["SupportEmailTo"];
+                    await appVM.SendInvite(NewEventDate+" "+NewEventTime, NewEventDuration, sendTo, canId);
                 }
                 return appVM.SaveEvent(Title, NewEventDate, NewEventTime, NewEventDuration);
             }

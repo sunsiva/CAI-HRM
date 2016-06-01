@@ -228,6 +228,7 @@
     <Compile Include="Common\DiaryEvents.cs" />
     <Compile Include="Common\HRPConst.cs" />
     <Compile Include="Common\IContext.cs" />
+    <Compile Include="Common\LoggingUtil.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\CandidateController.cs" />
@@ -248,6 +249,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\Cookie.cs" />
+    <Compile Include="Helper\ErrorLevels.cs" />
     <Compile Include="Helper\HelperFuntions.cs" />
     <Compile Include="Helper\Keys.cs" />
     <Compile Include="Helper\Utils.cs" />
@@ -318,6 +320,8 @@
     <Content Include="Content\images\Excel-icon.png" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\sb-admin-2.css" />
+    <Content Include="Content\tags\jquery.tagit.css" />
+    <Content Include="Content\tags\tagit.ui-zendesk.css" />
     <Content Include="Content\timeline.css" />
     <Content Include="dlls\antlr.runtime.dll" />
     <Content Include="dlls\DDay.Collections.dll" />
@@ -386,6 +390,8 @@
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\tags\tag-it.js" />
+    <Content Include="Scripts\tags\tag-it.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\Appointment\Index.cshtml" />
     <Content Include="Web.config">

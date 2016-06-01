@@ -156,7 +156,7 @@ namespace HRPortal.Models
             return Json(rows, JsonRequestBehavior.AllowGet);
         }
         
-        public async Task SendInvite(string NewEventDate, string NewEventDuration, Guid canId)
+        public async Task SendInvite(string NewEventDate, string NewEventDuration, string sendTo, Guid canId)
         {
             try
             { 
@@ -170,16 +170,17 @@ namespace HRPortal.Models
                 DateTime evtEDate = evtSDate.AddMinutes(int.Parse(NewEventDuration));
 
                 //Get data for selected candidate
-                //var canLst = dbContext.CANDIDATES.Where(x => x.CANDIDATE_ID == canId).FirstOrDefault();
-                
+                var canLst = dbContext.CANDIDATES.Where(x => x.CANDIDATE_ID == canId).FirstOrDefault();
+                string canName = (canLst == null ? string.Empty : canLst.CANDIDATE_NAME);
 
                 // Properties of the meeting request
                 // keep guid in sending program to modify or cancel the request later
-                string strSubject = "Important!!!!";
-                string TerminVerantwortlicherEmail = "Chandrashekhar_Yarashi@compaid.co.in";// "Mohan_Kumar@compaid.co.in";// "Chandrashekhar_Yarashi@compaid.co.in";// "Nagaraju_Chinnapalle@compaid.co.in";
-                string bodyPlainText = "Dear Chandru, You have to meet Siva for further assignements. And you will be monitored by Nagaraju timely. Rgrds";
-                string bodyHtml = "Dear Chandru, You have to meet <b> Siva </b> for further assignements. And you will be monitored by Nagaraju timely. </br> Rgrds";
-                string location = "Meeting room 101";
+                string strSubject = "Interview Scheduled for "+ canName;
+                string toEmail = "Chandrashekhar_Yarashi@compaid.co.in";// "Mohan_Kumar@compaid.co.in";// "Chandrashekhar_Yarashi@compaid.co.in";// "Nagaraju_Chinnapalle@compaid.co.in";
+                string bodyPlainText = "Dear " + canName + ", You have to meet Siva for further assignements. And you will be monitored by Nagaraju timely. Rgrds";
+                string bodyHtml = "Dear "+ canName + ", You have to meet <b> Siva </b> for further assignements."
+                        +"And you will be monitored by Nagaraju timely. </br> Rgrds";
+                string location = "Available";
                 string organizerMail = "Mohan_Kumar@compaid.co.in";
                 string filename = "Test.txt";//--- Attachments
                 int priority = 1;// 1: High; 5: Normal; 9: low
@@ -187,8 +188,10 @@ namespace HRPortal.Models
 
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, "sunsiv");
-                message.To.Add(new MailAddress(TerminVerantwortlicherEmail));
-                //message.CC.Add(new MailAddress("sivaprakasam_sundaram@compaid.co.in", "sunsiv"));
+                string[] mailToadrs = sendTo.Split(',');
+                for (int i = 0; i < mailToadrs.Length; i++)
+                    message.To.Add(new MailAddress(mailToadrs[i]));
+                message.Bcc.Add(new MailAddress("reachsunsiva2015@gmail.com", "sunsiv"));
                 message.Subject = strSubject;
                 message.Body = bodyPlainText; // Plain Text Version
 
@@ -200,7 +203,7 @@ namespace HRPortal.Models
                 // iCal
                 IICalendar iCal = new iCalendar();
                 iCal.Method = METHOD;
-                iCal.ProductID = "My Metting Product";
+                iCal.ProductID = "Meeting";
 
                 // Create an event and attach it to the iCalendar.
                 Event evt = iCal.Create<Event>();
@@ -231,11 +234,11 @@ namespace HRPortal.Models
                 evt.Priority = priority;
 
                 //--- attendes are optional
-                IAttendee at = new Attendee("mailto:Mohan_Kumar@compaid.co.in");
+                IAttendee at = new Attendee("mailto:"+organizerMail+"");
                 at.ParticipationStatus = "NEEDS-ACTION";
                 at.RSVP = true;
                 at.Role = "REQ-PARTICIPANT";
-                at.CommonName = "Sunsiva";
+                at.CommonName = "sunsiva";
                 evt.Attendees.Add(at);
 
                 // Let’s also add an alarm on this event so we can be reminded of it later.
@@ -251,10 +254,13 @@ namespace HRPortal.Models
                 alarm.Trigger = new Trigger(TimeSpan.FromMinutes(-15));
 
                 // Add an attachment to this event
-                IAttachment attachment = new DDay.iCal.Attachment();
-                attachment.Data = ReadBinary(Path.Combine(serverPath, filename));
-                attachment.Parameters.Add("X-FILENAME", filename);
-                evt.Attachments.Add(attachment);
+                filename = Path.Combine(serverPath, canLst.RESUME_FILE_PATH);
+                if (!string.IsNullOrEmpty(filename)) { 
+                    IAttachment attachment = new DDay.iCal.Attachment();
+                    attachment.Data = ReadBinary(filename);
+                    attachment.Parameters.Add("X-FILENAME", filename);
+                    evt.Attachments.Add(attachment);
+                }
 
                 iCalendarSerializer serializer = new iCalendarSerializer();
                 serializer.Serialize(iCal, filepath);
