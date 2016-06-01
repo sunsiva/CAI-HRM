@@ -2,6 +2,8 @@
     ViewBag.Title = "Appointment Page";
 }
 
+<link href="~/Content/tags/jquery.tagit.css" rel="stylesheet" />
+<link href="~/Content/tags/tagit.ui-zendesk.css" rel="stylesheet" />
 
 <div class="container">
     <br /><br />
@@ -13,16 +15,20 @@
         <div class="modal-content">
             <div class="modal-header"><h4><i class="glyphicon glyphicon-plus"></i> Add new event</h4></div>
             <div class="modal-body">
+                <input name="tags" type="hidden" id="sendTo" value="">
                 <div class="">
                     <input type="hidden" id="eventID">
-                    <label>Event title</label>
-                    <input type="text" id="eventTitle" class="form-control textarea-input-custom" placeholder="Title here"><br />
-                    <label>Scheduled date</label>
+                    <label>Event title<i class="text-danger">*</i></label>
+                    <input type="text" id="eventTitle" class="form-control textarea-input-custom" placeholder="Enter a title"><br />
+                    <label>Email To<i class="text-danger">*</i></label>
+                            <ul id="singleFieldTags"></ul>
+                    <br />
+                    <label>Scheduled date<i class="text-danger">*</i></label>
                     <input type="text" class="form-control" id="eventDate"><br />
-                    <label>Scheduled time</label>
+                    <label>Scheduled start time<i class="text-danger">*</i></label>
                     <input type="text" class="form-control" id="eventTime"><br />
-                    <label>Appointment length (minutes)</label>
-                    <input type="text" class="form-control" id="eventDuration" placeholder="15">
+                    <label>Appointment length (minutes)<i class="text-danger">*</i></label>
+                    <input type="text" class="form-control" id="eventDuration" placeholder="Enter a appointment duration">
                 </div>
             </div>
             <div class="modal-footer">
@@ -36,9 +42,21 @@
 </div>
 
 @section scripts{
-    
+    <script src="~/Scripts/tags/tag-it.js" type="text/javascript" charset="utf-8"></script>
+
 <script>
     $(document).ready(function () {
+
+        //-------------------------------
+        // Single field
+        //-------------------------------
+        var sampleTags = ['c++', 'java'];
+        $('#singleFieldTags').tagit({
+            availableTags: sampleTags,
+            // This will make Tag-it submit a single form value, as a comma-delimited field.
+            singleField: true,
+            singleFieldNode: $('#sendTo')
+        });
 
         var sourceFullView = { url: '/Appointment/GetDiaryEvents/' };
         var sourceSummaryView = { url: '/Appointment/GetDiarySummary/' };
@@ -90,7 +108,7 @@
             },
 
             viewRender: function (view, element) {
-
+        
                 if (!CalLoading) {
                     if (view.name == 'month') {
                         $('#calendar').fullCalendar('removeEventSource', sourceFullView);
@@ -141,7 +159,8 @@
             'Title': $('#eventTitle').val(),
             'NewEventDate': $('#eventDate').val(),
             'NewEventTime': $('#eventTime').val(),
-            'NewEventDuration': $('#eventDuration').val()
+            'NewEventDuration': $('#eventDuration').val(),
+            'sendTo':$("#sendTo").val()
         }
 
         ClearPopupFormValues();

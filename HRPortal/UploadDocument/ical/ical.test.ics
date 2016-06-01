@@ -4025,21 +4025,21 @@ ATTACH;X-FILENAME="D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPo
 ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;ROLE=REQ-PARTICIPANT;CN=sunsiva:ma
  ilto:Mohan_Kumar@compaid.co.in
 CLASS:PUBLIC
-CREATED:20160531T162736
-DESCRIPTION:Dear Varma Si\, You have to meet Siva for further assignements.
-  And you will be monitored by Nagaraju timely. Rgrds
-DTEND:20160531T164100
-DTSTAMP:20160531T105736Z
-DTSTART:20160531T162600
+CREATED:20160601T184500
+DESCRIPTION:Dear Calvin\, You have to meet Siva for further assignements. A
+ nd you will be monitored by Nagaraju timely. Rgrds
+DTEND:20160601T210000
+DTSTAMP:20160601T131500Z
+DTSTART:20160601T203000
 LOCATION:Available
 ORGANIZER:mailto:Mohan_Kumar@compaid.co.in
 PRIORITY:1
 SEQUENCE:0
-SUMMARY:Interview Scheduled for Varma Si
+SUMMARY:Interview Scheduled for Calvin
 TRANSP:Transparent
-UID:7ac21701-a5e1-40bd-abc8-e645a21e7c6e
-X-ALT-DESC;FMTTYPE=text/html:Dear Varma Si\, You have to meet <b> Siva </b>
-  for further assignements.And you will be monitored by Nagaraju timely. </
- br> Rgrds
+UID:bc30bed0-8f41-4ce0-b8bd-df47b30060cb
+X-ALT-DESC;FMTTYPE=text/html:Dear Calvin\, You have to meet <b> Siva </b> f
+ or further assignements.And you will be monitored by Nagaraju timely. </br
+ > Rgrds
 END:VEVENT
 END:VCALENDAR

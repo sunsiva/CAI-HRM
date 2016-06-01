@@ -20,7 +20,11 @@ namespace HRPortal.Models
         public List<DiaryEvent> LoadAllAppointmentsInDateRange(double start, double end)
         {
             var fromDate = ConvertFromUnixTimestamp(start);
+            TimeSpan ts = new TimeSpan(00, 01, 0);
+            fromDate = fromDate.Date + ts;
             var toDate = ConvertFromUnixTimestamp(end);
+            TimeSpan to = new TimeSpan(23, 59, 0);
+            toDate = toDate.Date + to;
             using (HRPortalEntities ent = new HRPortalEntities())
             {
                 var rslt = ent.EVENTSCHEDULEs.Where(s => s.DATETIMESCHEDULED >= 

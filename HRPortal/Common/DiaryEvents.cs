@@ -118,8 +118,8 @@ namespace HRPortal.Models
                 EVENTSCHEDULE rec = new EVENTSCHEDULE();
                 Guid uid = HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null ? Guid.NewGuid() : Guid.Parse(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()).ToString());
                 rec.TITLE = Title;
-                rec.DATETIMESCHEDULED = DateTime.ParseExact(NewEventDate + " " + NewEventTime, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
-                rec.APPOINTMENTLENGTH = Int32.Parse(NewEventDuration);
+                rec.DATETIMESCHEDULED = DateTime.Parse(NewEventDate + " " + NewEventTime);//, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+                rec.APPOINTMENTLENGTH = int.Parse(NewEventDuration);
                 rec.STATUSENUM = 1;
                 rec.ISACTIVE = true;
                 rec.CREATED_BY = uid;

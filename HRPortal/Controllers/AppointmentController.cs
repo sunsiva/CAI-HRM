@@ -21,8 +21,7 @@ namespace HRPortal.Controllers
         // GET: Appointment
         public ActionResult Index()
         {
-          
-            return View();
+           return View();
         }
         
         public string Init()
@@ -39,14 +38,13 @@ namespace HRPortal.Controllers
             catch (Exception ex) { throw ex; }
         }
         
-        public async Task<bool> SaveEvent(string Title, string NewEventDate, string NewEventTime, string NewEventDuration)
+        public async Task<bool> SaveEvent(string Title, string NewEventDate, string NewEventTime, string NewEventDuration, string sendTo)
         {
             try
             {
-                if(System.Configuration.ConfigurationManager.AppSettings["AppointmentMail"]=="true")
+                if(System.Configuration.ConfigurationManager.AppSettings["IsAppointmentMail"]=="true")
                 {
                     Guid canId = Guid.Parse("BC30BED0-8F41-4CE0-B8BD-DF47B30060CB");
-                    string sendTo = System.Configuration.ConfigurationManager.AppSettings["SupportEmailTo"];
                     await appVM.SendInvite(NewEventDate+" "+NewEventTime, NewEventDuration, sendTo, canId);
                 }
                 return appVM.SaveEvent(Title, NewEventDate, NewEventTime, NewEventDuration);
