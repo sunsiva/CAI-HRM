@@ -149,3 +149,5 @@ D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\obj\Debug\HRP
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\obj\Debug\HRPortal.Tests.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\obj\Debug\HRPortal.Tests.pdb
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\antlr.runtime.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\PagedList.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\PagedList.xml

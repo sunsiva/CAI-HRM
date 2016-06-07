@@ -4,12 +4,13 @@
 @{  bool isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
     bool isSuperUser = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("SUPERUSER") ? true : false;
     var dashboardTxt = isSuperAdmin == true ? "Candidates" : "Jobs";
+    var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
     }
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="~/Content/images/CAI.ico" type="image/x-icon" />
-    <title>@ViewBag.Title - HR - Recruitment Process</title>
+    <title>@ViewBag.Title - HR Ops</title>
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -29,24 +30,31 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="@Url.Action("Index","Dashboard",new { @class="navbar-brand" })"> <img src="~/Content/images/CAI_HROps.gif" alt="CAI" /> </a>
+
+                <a href="@Url.Action("Index",isHome,new { @class="navbar-brand" })"> <img src="~/Content/images/CAI_HROps.gif" alt="CAI" /> </a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li>@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
-                        <li>@Html.ActionLink("Appointment", "Index", "Appointment")</li>
-                        <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
+                        
                         if (isSuperAdmin)
                         {
-                        <li>@Html.ActionLink("Job", "Index", "Job")</li>}
+                            <li>@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
+                            <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
+                            <li>@Html.ActionLink("Job", "Index", "Job")</li>
+                        }
                         else if (isSuperUser)
                         {
+                            <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
                             <li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>
                             <li>@Html.ActionLink("Squads", "SquadJobs", "Candidate")</li>
                         }
-                        else {<li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>}
+                        else {
+                            <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
+                            <li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>
+                        }
+                        <li>@Html.ActionLink("Appointment", "Index", "Appointment")</li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")

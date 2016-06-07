@@ -1,16 +1,20 @@
 using HRPortal.Common.Enums;
+using HRPortal.Helper;
 using System;
 using System.Diagnostics;
 using System.Text;
+using System.Web;
 
 namespace HRPortal.Common
 {
     /// <summary>
     /// LoggingUtils provides methods to log message to system's event viewer.
     /// </summary>
-
+    
     public static class LoggingUtil
     {
+        private static HRPortalEntities dbContext = new HRPortalEntities();
+
         public static void LogException(Exception exception, ErrorLevel errorLevel, string urlRef = null)
         {
             StringBuilder sbMessage = new StringBuilder();
@@ -104,7 +108,19 @@ namespace HRPortal.Common
             // the move utilities.
             if (string.IsNullOrEmpty(eventSource))
             {
-                //TODO: Send Exception Message to DB
+                try {
+                    //TODO: Send Exception Message to DB
+                    ERROR_LOG obj = new ERROR_LOG();
+                    obj.ERR_ID = Guid.NewGuid();
+                    obj.ERR_PAGE = message;
+                    obj.ERR_CODE = message;
+                    obj.ERR_DESC = message;
+                    obj.ERR_EVENT = message;
+                    obj.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                    obj.CREATED_ON = DateTime.Now;
+                    dbContext.ERROR_LOG.Add(obj);
+                    dbContext.SaveChanges();
+                } catch(Exception ex) { throw ex; }
                 
             }
             else

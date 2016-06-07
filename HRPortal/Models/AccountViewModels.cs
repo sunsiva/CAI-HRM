@@ -165,6 +165,8 @@ namespace HRPortal.Models
 
     public class RegisterViewModel
     {
+        public string Id { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

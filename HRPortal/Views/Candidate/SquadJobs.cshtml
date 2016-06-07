@@ -1,4 +1,6 @@
-﻿@model IEnumerable<HRPortal.Models.CandidateViewModels>
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<HRPortal.Models.CandidateViewModels>
 
 @{
     ViewBag.Title = "SquadJobs";
@@ -15,7 +17,7 @@
                     <tr>
                         <th>#</th>
                         <th>
-                            @Html.DisplayName("CANDIDATE NAME")
+                            @Html.ActionLink("CANDIDATE NAME", "SquadJobs", new { sOdr = ViewBag.CNameSort })
                         </th>
                         <th>
                             YEARS OF EXP.
@@ -24,7 +26,7 @@
                             @Html.DisplayName("MOBILE NO")
                         </th>
                         <th>
-                            @Html.DisplayName("EMAIL")
+                            @Html.ActionLink("EMAIL", "SquadJobs", new { sOdr = ViewBag.EmailSort })
                         </th>
                         <th>
                             @Html.DisplayName("CURRENT COMPANY")
@@ -34,7 +36,7 @@
                         </th>
                         <th>@Html.DisplayName("SUBMITTED BY")</th>
                         <th>
-                            @Html.DisplayName("STATUS")
+                            @Html.ActionLink("STATUS", "SquadJobs", new { sOdr = ViewBag.StatusSort })
                         </th>
                         <th colspan="3">@Html.DisplayName("ACTION")</th>
                     </tr>
@@ -94,6 +96,16 @@
                 </tr>
     }
                     <tr><td><input type="hidden" id="hdnCandidateId" /><input type="hidden" id="hdnStatusId" /></td><td align="right" class="" colspan="11">@Model.Count() Record(s) found.</td></tr>
+                </table>
+                <div class="clearfix"></div>
+                <table align="right">
+                    <tr>
+                        <td>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount  </td>
+                        <td width="10px"></td>
+                        <td>
+                            @Html.PagedListPager(Model, page => Url.Action("SquadJobs", "Candidate", new { page, sOdr = ViewBag.CurrentSort }))
+                        </td>
+                    </tr>
                 </table>
           </div>
         </div>

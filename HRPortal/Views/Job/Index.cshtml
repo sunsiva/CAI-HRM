@@ -1,5 +1,7 @@
 ﻿@using HRPortal.Helper;
-@model IEnumerable<HRPortal.JOBPOSTING>
+@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<JOBPOSTING>
 
 @{
     ViewBag.Title = "Index";
@@ -20,10 +22,10 @@
                     <tr>
                         <th>#</th>
                         <th>
-                            @Html.DisplayName("JOB CODE")
+                            @Html.ActionLink("JOB CODE", "Index", new { sOdr = ViewBag.JCodeSort })
                         </th>
                         <th>
-                            @Html.DisplayName("POSITION NAME")
+                            @Html.ActionLink("POSITION NAME", "Index", new { sOdr = ViewBag.PosSort })
                         </th>
                         <th>
                             @Html.DisplayName("JOB DESCRIPTION")
@@ -103,8 +105,17 @@
                             </td>
                         </tr>
                     }
-
                     <tr><td align="right" class="" colspan="12">@Model.Count() Record(s) found.</td></tr>
+                </table>
+                <div class="clearfix"></div>
+                <table align="right">
+                    <tr>
+                        <td>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount  </td>
+                        <td width="10px"></td>
+                        <td>
+                            @Html.PagedListPager(Model, page => Url.Action("Index", "Candidate", new { page, sOdr = ViewBag.CurrentSort }))
+                        </td>
+                    </tr>
                 </table>
             </div>
             </div>

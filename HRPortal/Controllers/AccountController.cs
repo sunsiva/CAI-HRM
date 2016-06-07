@@ -215,6 +215,38 @@ namespace HRPortal.Controllers
             return View(model);
         }
 
+        public ActionResult GetAllUsers()
+        {
+            var usrs = db.AspNetUsers.ToList().Select(x => new RegisterViewModel { Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber }).ToList();
+            return View("UserIndex", usrs);
+        }
+
+        public ActionResult UserEdit(string id)
+        {
+            var usr = db.AspNetUsers.Where(x=>x.Id==id).Select(x => new RegisterViewModel { Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber }).FirstOrDefault();
+            return View(usr);
+        }
+
+        [HttpPost]
+        public ActionResult UserEdit(RegisterViewModel model)
+        {
+            try
+            {
+                
+                    //Update Users
+                    AspNetUser objUser = db.AspNetUsers.Find(model.Id);
+                    objUser.Email = model.Email;
+                    objUser.FirstName = model.FirstName;
+                    objUser.LastName = model.LastName;
+                    objUser.PhoneNumber = model.PhoneNumber;
+                    db.Entry(objUser).State = EntityState.Modified;
+                    db.SaveChanges();
+                ViewBag.RegSuccess = "User modified successfully.";
+                return View("UserEdit");
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
@@ -528,8 +560,9 @@ namespace HRPortal.Controllers
             {
                 return Redirect(returnUrl);
             }
-            //return RedirectToAction("Index", "Home");
-            return RedirectToAction("Index", "Dashboard");
+            bool isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
+            var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
+            return RedirectToAction("Index", isHome);
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

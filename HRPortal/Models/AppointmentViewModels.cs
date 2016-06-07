@@ -166,7 +166,6 @@ namespace HRPortal.Models
             { 
                 string serverPath = System.Configuration.ConfigurationManager.AppSettings["DocPathAppointment"];
                 string filepath = Path.Combine(serverPath+@"ical\", "ical.test.ics");
-                //@"D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\UploadDocument\ical.test.ics";
                 // use PUBLISH for appointments
                 // use REQUEST for meeting requests
                 const string METHOD = "REQUEST";
@@ -177,25 +176,34 @@ namespace HRPortal.Models
                 var canLst = dbContext.CANDIDATES.Where(x => x.CANDIDATE_ID == canId).FirstOrDefault();
                 string canName = (canLst == null ? string.Empty : canLst.CANDIDATE_NAME);
 
+                var job = dbContext.JOBPOSTINGs.Where(x => x.JOB_ID == canLst.JOB_ID).FirstOrDefault();
+                var uid = HelperFuntions.HasValue(System.Web.HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                var usr = dbContext.AspNetUsers.Where(x => x.Id == uid).FirstOrDefault();
+                string UserName = "Admin";
+                string UserEmail = "Naveen_Sankar@compaid.co.in";
+                if(usr != null)
+                {
+                    UserName = usr.FirstName + " " + usr.LastName;
+                    UserEmail = usr.Email;
+                }
                 // Properties of the meeting request
                 // keep guid in sending program to modify or cancel the request later
                 string strSubject = "Interview Scheduled for "+ canName;
                 string toEmail = "Chandrashekhar_Yarashi@compaid.co.in";// "Mohan_Kumar@compaid.co.in";// "Chandrashekhar_Yarashi@compaid.co.in";// "Nagaraju_Chinnapalle@compaid.co.in";
-                string bodyPlainText = "Dear " + canName + ", You have to meet Siva for further assignements. And you will be monitored by Nagaraju timely. Rgrds";
-                string bodyHtml = "Dear "+ canName + ", You have to meet <b> Siva </b> for further assignements."
-                        +"And you will be monitored by Nagaraju timely. </br> Rgrds";
+                string bodyPlainText = "Hi, Interview has been scheduled for the possition of "+job.POSITION_NAME+". Please let me know if you any quries on this. Regards, "+UserName;
+                string bodyHtml = "Hi, <br> Interview has been scheduled for the possition of <b>" + job.POSITION_NAME + "</b>. <br> Please let me know if you any quries on this. <br> Regards,<br><b>" + UserName +"</b>";
                 string location = "Available";
-                string organizerMail = "Mohan_Kumar@compaid.co.in";
+                string organizerMail = UserEmail;
                 string filename = "Test.txt";//--- Attachments
                 int priority = 1;// 1: High; 5: Normal; 9: low
                 //=====================================
 
                 MailMessage message = new MailMessage();
-                message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, "sunsiv");
+                message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, UserName);
                 string[] mailToadrs = sendTo.Split(',');
                 for (int i = 0; i < mailToadrs.Length; i++)
                     message.To.Add(new MailAddress(mailToadrs[i]));
-                message.Bcc.Add(new MailAddress("reachsunsiva2015@gmail.com", "sunsiv"));
+                message.Bcc.Add(new MailAddress("reachsunsiva2015@gmail.com", UserName));
                 message.Subject = strSubject;
                 message.Body = bodyPlainText; // Plain Text Version
 
@@ -242,7 +250,7 @@ namespace HRPortal.Models
                 at.ParticipationStatus = "NEEDS-ACTION";
                 at.RSVP = true;
                 at.Role = "REQ-PARTICIPANT";
-                at.CommonName = "sunsiva";
+                at.CommonName = UserName;
                 evt.Attendees.Add(at);
 
                 // Let’s also add an alarm on this event so we can be reminded of it later.
@@ -288,7 +296,7 @@ namespace HRPortal.Models
                 Byte[] bytes = System.Text.Encoding.ASCII.GetBytes(iCalStr);
                 var ms = new System.IO.MemoryStream(bytes);
                 var a = new System.Net.Mail.Attachment(ms,
-                  "HROpsEvent.ics", "text/calendar");
+                  "HROpsMeetingRequest.ics", "text/calendar");
                 message.Attachments.Add(a);
 
                 // Send Mail

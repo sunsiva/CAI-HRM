@@ -11,6 +11,7 @@ using HRPortal;
 using HRPortal.Models;
 using System.IO;
 using HRPortal.Helper;
+using PagedList;
 
 namespace HRPortal.Controllers
 {
@@ -18,11 +19,19 @@ namespace HRPortal.Controllers
     {
 
         private HRPortalEntities dbContext = new HRPortalEntities();
+        const int pageSize = 10;
 
         // GET: Job
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sOdr, int? page)
         {
-            return View(await dbContext.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync());
+
+            var jobLst = await dbContext.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
+            jobLst = GetPagination(jobLst, sOdr, page);
+
+            int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
+            int pNo = ViewBag.PageNo == null ? 0 : ViewBag.PageNo;
+
+            return View(jobLst.ToPagedList(pNo, pSize));
         }
 
         // GET: Job/Details/5
@@ -224,6 +233,36 @@ namespace HRPortal.Controllers
             return obj.Remove(7);
         }
 
+        private List<JOBPOSTING> GetPagination(List<JOBPOSTING> jobCanObj, string sOdr, int? page)
+        {
+            ViewBag.CurrentSort = sOdr;
+
+            if (jobCanObj != null && jobCanObj.Count > 0)
+            {
+                ViewBag.JCodeSort = string.IsNullOrEmpty(sOdr) ? "JCode_desc" : "";
+                ViewBag.PosSort = sOdr == "Pos_desc" ? "Pos_asc" : "Pos_desc";
+
+                switch (sOdr)
+                {
+                    case "JCode_desc":
+                        jobCanObj = jobCanObj.OrderByDescending(s => s.JOB_CODE).ToList();
+                        break;
+                    case "Pos_desc":
+                        jobCanObj = jobCanObj.OrderByDescending(s => s.POSITION_NAME).ToList();
+                        break;
+                    case "Pos_asc":
+                        jobCanObj = jobCanObj.OrderBy(s => s.POSITION_NAME).ToList();
+                        break;
+                    default:
+                        jobCanObj = jobCanObj.OrderBy(s => s.JOB_CODE).ToList();
+                        break;
+                }
+            }
+
+            ViewBag.PageSize = pageSize;
+            ViewBag.PageNo = (page ?? 1);
+            return jobCanObj;
+        }
 
         protected override void Dispose(bool disposing)
         {

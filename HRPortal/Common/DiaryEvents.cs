@@ -48,7 +48,6 @@ namespace HRPortal.Models
 
                 return result;
             }
-        
         }
 
 

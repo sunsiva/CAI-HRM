@@ -16,6 +16,7 @@ using System.Net.Mail;
 using System.Net.Mime;
 using HRPortal.Common;
 using HRPortal.Common.Enums;
+using PagedList;
 
 namespace HRPortal.Controllers
 {
@@ -26,6 +27,7 @@ namespace HRPortal.Controllers
         private LoginViewModel logvmodel = new LoginViewModel();
         private AppointmentViewModels appointmentVM = new AppointmentViewModels();
         private string _uid;
+        const int pageSize = 10;
 
         public CandidateController()
         {
@@ -33,7 +35,7 @@ namespace HRPortal.Controllers
         }
 
         // GET: Candidate
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sOdr, int? page)
         {
             try
             {
@@ -54,13 +56,18 @@ namespace HRPortal.Controllers
                     STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
                 }).ToList();
 
-                return View(canLst);
+                canLst = GetPagination(canLst, sOdr, page);
+
+                int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
+                int pNo = ViewBag.PageNo == null ? 0 : ViewBag.PageNo;
+
+                return View(canLst.ToPagedList(pNo, pSize));
             }
             catch(Exception ex) { throw ex; }
         }
 
         // GET: Squads Candidates
-        public async Task<ActionResult> SquadJobs()
+        public async Task<ActionResult> SquadJobs(string sOdr, int? page)
         {
             try
             {
@@ -81,7 +88,14 @@ namespace HRPortal.Controllers
                     STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
                     CREATED_BY = logvmodel.GetUserNameById(i.CREATED_BY),
                 }).ToList();
-                return View(canLst);
+
+
+                canLst = GetPagination(canLst, sOdr, page);
+
+                int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
+                int pNo = ViewBag.PageNo == null ? 0 : ViewBag.PageNo;
+
+                return View(canLst.ToPagedList(pNo, pSize));
             }
             catch (Exception ex)
             {
@@ -311,6 +325,44 @@ namespace HRPortal.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private List<CandidateViewModels> GetPagination(List<CandidateViewModels> jobCanObj, string sOdr, int? page)
+        {
+            ViewBag.CurrentSort = sOdr;
+
+            if (jobCanObj != null && jobCanObj.Count > 0)
+            {
+                ViewBag.CNameSort = string.IsNullOrEmpty(sOdr) ? "Name_desc" : "";
+                ViewBag.EmailSort = sOdr == "EMail_desc" ? "EMail_asc" : "EMail_desc";
+                ViewBag.StatusSort = sOdr == "Sts_desc" ? "Sts_asc" : "Sts_desc";
+
+                switch (sOdr)
+                {
+                    case "Name_desc":
+                        jobCanObj = jobCanObj.OrderByDescending(s => s.CANDIDATE_NAME).ToList();
+                        break;
+                    case "EMail_desc":
+                        jobCanObj = jobCanObj.OrderByDescending(s => s.EMAIL).ToList();
+                        break;
+                    case "EMail_asc":
+                        jobCanObj = jobCanObj.OrderBy(s => s.EMAIL).ToList();
+                        break;
+                    case "Sts_desc":
+                        jobCanObj = jobCanObj.OrderByDescending(s => s.STATUS).ToList();
+                        break;
+                    case "Sts_asc":
+                        jobCanObj = jobCanObj.OrderBy(s => s.STATUS).ToList();
+                        break;
+                    default:
+                        jobCanObj = jobCanObj.OrderBy(s => s.CANDIDATE_NAME).ToList();
+                        break;
+                }
+            }
+
+            ViewBag.PageSize = pageSize;
+            ViewBag.PageNo = (page ?? 1);
+            return jobCanObj;
         }
 
         protected override void OnException(ExceptionContext filterContext)

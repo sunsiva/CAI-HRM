@@ -274,6 +274,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AppointmentViewModels.cs" />
     <Compile Include="Models\CandidateViewModels.cs" />
+    <Compile Include="Models\HistoryViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JobAndCandidateViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -456,6 +457,8 @@
     <Content Include="UploadDocument\Herds_Clarifications.xlsx" />
     <Content Include="UploadDocument\License_MovementPermityEquine.pdf" />
     <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Account\UserIndex.cshtml" />
+    <Content Include="Views\Account\UserEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

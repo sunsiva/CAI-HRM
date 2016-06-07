@@ -1,4 +1,6 @@
-﻿using HRPortal.Helper;
+﻿using HRPortal.Common;
+using HRPortal.Common.Enums;
+using HRPortal.Helper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -90,13 +92,21 @@ namespace HRPortal
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "VENDOR_ID,VENDOR_NAME,VENDOR_SPOC,EMAIL,VENDOR_CONTACT_NO,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] VENDOR_MASTER vENDOR_MASTER)
         {
+            try
+            { 
             if (ModelState.IsValid)
             {
+                vENDOR_MASTER.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                vENDOR_MASTER.MODIFIED_ON = DateTime.Now;
                 db.Entry(vENDOR_MASTER).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(vENDOR_MASTER);
+            }
+            catch(Exception ex)
+            { throw ex;
+            }
         }
 
         // GET: Vendor/Delete/5
@@ -132,6 +142,19 @@ namespace HRPortal
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Exception e = filterContext.Exception;
+            //Log Exception e to DB.
+            filterContext.ExceptionHandled = true;
+            LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+            //filterContext.Result = new ViewResult()
+            //{
+            //    ViewName = "Error"
+            //};
         }
     }
 }
