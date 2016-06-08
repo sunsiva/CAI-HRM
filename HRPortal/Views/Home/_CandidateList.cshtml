@@ -2,8 +2,8 @@
 @using PagedList;
 @using PagedList.Mvc;
 @{
-    int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
-    int pNo = ViewBag.PageNo == null ? 0 : ViewBag.PageNo;
+    int pSize = ViewBag.PageSize == null ? 1 : ViewBag.PageSize;
+    int pNo = ViewBag.PageNo == null ? 1 : ViewBag.PageNo;
     var modal = Model != null ? Model.ToPagedList(pNo, pSize) : null;
     int sl = 0;
  }

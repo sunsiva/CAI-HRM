@@ -9,6 +9,8 @@ using Microsoft.Owin.Security;
 using HRPortal.Models;
 using System.Data.Entity;
 using HRPortal.Helper;
+using HRPortal.Common;
+using HRPortal.Common.Enums;
 
 namespace HRPortal.Controllers
 {
@@ -82,7 +84,7 @@ namespace HRPortal.Controllers
             {
                 case SignInStatus.Success:
                     loginVM.SetUserToCache(model.Email);
-                    loginVM.UserLogs(true,model.Email);
+                    //loginVM.UserLogs(true,model.Email, HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString()); //TODO:disabed the feature temporarily
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -192,7 +194,7 @@ namespace HRPortal.Controllers
                             db.UserXRoles.Add(role);
                             await db.SaveChangesAsync();
                             dbContextTransaction.Commit();
-                            // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                             // Send an email with this link
                             // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                             // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
@@ -217,7 +219,13 @@ namespace HRPortal.Controllers
 
         public ActionResult GetAllUsers()
         {
-            var usrs = db.AspNetUsers.ToList().Select(x => new RegisterViewModel { Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber }).ToList();
+            var usrs = db.AspNetUsers.ToList().Select(x => new RegisterViewModel {
+                Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber, Vendor_Id=x.Vendor_Id }).ToList();
+            if (HttpRuntime.Cache.Get(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
+            {
+                var vendorId = Guid.Parse(HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.VendorId.ToString())));
+                usrs = usrs.Where(i => i.Vendor_Id == vendorId).ToList();
+            }
             return View("UserIndex", usrs);
         }
 
@@ -284,7 +292,7 @@ namespace HRPortal.Controllers
                     return View("ForgotPasswordConfirmation");
                 }
 
-                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
                 // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
@@ -467,7 +475,7 @@ namespace HRPortal.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            loginVM.UserLogs(false, User.Identity.Name);
+            //loginVM.UserLogs(false, User.Identity.Name, HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString());//TODO:disabed the feature temporarily
             return RedirectToAction("Login");
         }
 
@@ -552,6 +560,21 @@ namespace HRPortal.Controllers
             {
                 ModelState.AddModelError("", error);
             }
+        }
+        
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Exception e = filterContext.Exception;
+            //Log Exception e to DB.
+            if (!filterContext.ExceptionHandled)
+            {
+                LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+                filterContext.ExceptionHandled = true;
+            }
+            //filterContext.Result = new ViewResult()
+            //{
+            //    ViewName = "Error"
+            //};
         }
 
         private ActionResult RedirectToLocal(string returnUrl)

@@ -118,12 +118,12 @@ namespace HRPortal.Models
             HttpRuntime.Cache.Insert(CacheKey.UserName.ToString(), user.FirstName + " " + user.LastName);
         }
 
-        public void UserLogs(bool isIn,string email)
+        public void UserLogs(bool isIn,string email, string username)
         {
             UserLog ulog = new UserLog();
             if (isIn)
             {
-                ulog.UserLogName = HttpContext.Current.User.Identity.Name;
+                ulog.UserLogName = username;
                 ulog.LoggedInBy = email;// HttpRuntime.Cache.Get("LogInEmail") != null ? HttpRuntime.Cache.Get("LogInEmail").ToString() : string.Empty;
                 ulog.LoggedInOn = DateTime.Now;
                 ulog.UserLogDesc = "Computer Name is-" + System.Net.Dns.GetHostEntry(HttpContext.Current.Request.UserHostAddress).HostName;

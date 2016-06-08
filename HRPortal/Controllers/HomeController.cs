@@ -11,6 +11,8 @@ using HRPortal.Models;
 using System.IO;
 using HRPortal.Helper;
 using PagedList;
+using HRPortal.Common;
+using HRPortal.Common.Enums;
 
 namespace HRPortal.Controllers
 {
@@ -44,7 +46,8 @@ namespace HRPortal.Controllers
                         jobCanObj.JobItems = dbJobs;
                     }
 
-                    jobCanObj = GetPagination(jobCanObj, sOdr, page);
+                    jobCanObj = (jobCanObj.CandidateItems != null && jobCanObj.CandidateItems.Count > 0)
+                        || (jobCanObj.JobItems != null && jobCanObj.JobItems.Count > 0) ? GetPagination(jobCanObj, sOdr, page) : jobCanObj;
                     return View(jobCanObj);
                 }
                 return RedirectToAction("Login", "Account");
@@ -353,5 +356,18 @@ namespace HRPortal.Controllers
             return View();
         }
 
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Exception e = filterContext.Exception;
+            //Log Exception e to DB.
+            if (!filterContext.ExceptionHandled) { 
+            LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+                filterContext.ExceptionHandled = true;
+            }
+            //filterContext.Result = new ViewResult()
+            //{
+            //    ViewName = "Error"
+            //};
+        }
     }
 }

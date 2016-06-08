@@ -10,6 +10,8 @@ using DDay.iCal.Serialization.iCalendar;
 using DDay.iCal;
 using System.Text;
 using System.Threading.Tasks;
+using HRPortal.Common;
+using HRPortal.Common.Enums;
 
 namespace HRPortal.Controllers
 {
@@ -96,6 +98,22 @@ namespace HRPortal.Controllers
             return Json(rows, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex) { throw ex; }
+        }
+
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Exception e = filterContext.Exception;
+            //Log Exception e to DB.
+            if (!filterContext.ExceptionHandled)
+            {
+                LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+                filterContext.ExceptionHandled = true;
+            }
+            //filterContext.Result = new ViewResult()
+            //{
+            //    ViewName = "Error"
+            //};
         }
 
     }

@@ -112,10 +112,10 @@ namespace HRPortal.Common
                     //TODO: Send Exception Message to DB
                     ERROR_LOG obj = new ERROR_LOG();
                     obj.ERR_ID = Guid.NewGuid();
-                    obj.ERR_PAGE = message;
-                    obj.ERR_CODE = message;
+                    obj.ERR_PAGE = string.Empty;
+                    obj.ERR_CODE = string.Empty;
                     obj.ERR_DESC = message;
-                    obj.ERR_EVENT = message;
+                    obj.ERR_EVENT = string.Empty;
                     obj.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
                     obj.CREATED_ON = DateTime.Now;
                     dbContext.ERROR_LOG.Add(obj);

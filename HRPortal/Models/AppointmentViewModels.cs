@@ -163,8 +163,8 @@ namespace HRPortal.Models
         public async Task SendInvite(string NewEventDate, string NewEventDuration, string sendTo, Guid canId)
         {
             try
-            { 
-                string serverPath = System.Configuration.ConfigurationManager.AppSettings["DocPathAppointment"];
+            {
+                string serverPath = System.Web.HttpContext.Current.Server.MapPath("~/UploadDocument/");
                 string filepath = Path.Combine(serverPath+@"ical\", "ical.test.ics");
                 // use PUBLISH for appointments
                 // use REQUEST for meeting requests
@@ -190,8 +190,8 @@ namespace HRPortal.Models
                 // keep guid in sending program to modify or cancel the request later
                 string strSubject = "Interview Scheduled for "+ canName;
                 string toEmail = "Chandrashekhar_Yarashi@compaid.co.in";// "Mohan_Kumar@compaid.co.in";// "Chandrashekhar_Yarashi@compaid.co.in";// "Nagaraju_Chinnapalle@compaid.co.in";
-                string bodyPlainText = "Hi, Interview has been scheduled for the possition of "+job.POSITION_NAME+". Please let me know if you any quries on this. Regards, "+UserName;
-                string bodyHtml = "Hi, <br> Interview has been scheduled for the possition of <b>" + job.POSITION_NAME + "</b>. <br> Please let me know if you any quries on this. <br> Regards,<br><b>" + UserName +"</b>";
+                string bodyPlainText = "Hi, Interview has been scheduled for the possition of "+job.POSITION_NAME+". Please let me know if you have any quries on this. Regards, "+UserName+".";
+                string bodyHtml = "Hi, <br><br> Interview has been scheduled for the possition of <b>" + job.POSITION_NAME + "</b>. <br> <br> Please let me know if you have any quries on this. <br> <br> Regards,<br><b>" + UserName +"</b>.";
                 string location = "Available";
                 string organizerMail = UserEmail;
                 string filename = "Test.txt";//--- Attachments

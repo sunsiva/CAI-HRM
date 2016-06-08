@@ -56,7 +56,7 @@ namespace HRPortal.Controllers
                     STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
                 }).ToList();
 
-                canLst = GetPagination(canLst, sOdr, page);
+                canLst = canDb != null? GetPagination(canLst, sOdr, page): canLst;
 
                 int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
                 int pNo = ViewBag.PageNo == null ? 0 : ViewBag.PageNo;
@@ -89,8 +89,7 @@ namespace HRPortal.Controllers
                     CREATED_BY = logvmodel.GetUserNameById(i.CREATED_BY),
                 }).ToList();
 
-
-                canLst = GetPagination(canLst, sOdr, page);
+                canLst = squadsLst != null ? GetPagination(canLst, sOdr, page) : canLst;
 
                 int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
                 int pNo = ViewBag.PageNo == null ? 0 : ViewBag.PageNo;

@@ -12,6 +12,8 @@ using HRPortal.Models;
 using System.IO;
 using HRPortal.Helper;
 using PagedList;
+using HRPortal.Common;
+using HRPortal.Common.Enums;
 
 namespace HRPortal.Controllers
 {
@@ -264,6 +266,20 @@ namespace HRPortal.Controllers
             return jobCanObj;
         }
 
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Exception e = filterContext.Exception;
+            //Log Exception e to DB.
+            if (!filterContext.ExceptionHandled)
+            {
+                LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+                filterContext.ExceptionHandled = true;
+            }
+            //filterContext.Result = new ViewResult()
+            //{
+            //    ViewName = "Error"
+            //};
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

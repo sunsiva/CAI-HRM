@@ -46,7 +46,7 @@ namespace HRPortal
 
         // POST: Vendor/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "VENDOR_ID,VENDOR_NAME,VENDOR_SPOC,EMAIL,VENDOR_CONTACT_NO,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] VENDOR_MASTER vENDOR_MASTER)
@@ -57,6 +57,7 @@ namespace HRPortal
                 vENDOR_MASTER.VENDOR_ID = Guid.NewGuid();
                 vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
                 vENDOR_MASTER.CREATED_ON = DateTime.Now;
+                    vENDOR_MASTER.ISACTIVE = true;
                 db.VENDOR_MASTER.Add(vENDOR_MASTER);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -87,7 +88,7 @@ namespace HRPortal
 
         // POST: Vendor/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "VENDOR_ID,VENDOR_NAME,VENDOR_SPOC,EMAIL,VENDOR_CONTACT_NO,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] VENDOR_MASTER vENDOR_MASTER)
@@ -144,13 +145,15 @@ namespace HRPortal
             base.Dispose(disposing);
         }
 
-
         protected override void OnException(ExceptionContext filterContext)
         {
             Exception e = filterContext.Exception;
             //Log Exception e to DB.
-            filterContext.ExceptionHandled = true;
-            LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+            if (!filterContext.ExceptionHandled)
+            {
+                LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+                filterContext.ExceptionHandled = true;
+            }
             //filterContext.Result = new ViewResult()
             //{
             //    ViewName = "Error"
