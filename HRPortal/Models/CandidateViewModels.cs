@@ -67,7 +67,7 @@ namespace HRPortal.Models
         public void AutoUpdateStatus()
         {
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
-            var sHist = dbContext.STATUS_HISTORY.Where(i => i.SCHEDULED_TO <= DateTime.Now).ToList();
+            var sHist = dbContext.STATUS_HISTORY.Where(i => i.SCHEDULED_TO != null && i.SCHEDULED_TO <= DateTime.Now && i.ISACTIVE==true).ToList();
             if (sHist.Count > 0)
             { 
                 var uid = HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null ? Guid.NewGuid() : HttpRuntime.Cache.Get(CacheKey.Uid.ToString());

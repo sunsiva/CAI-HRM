@@ -220,7 +220,7 @@ namespace HRPortal.Controllers
         public ActionResult GetAllUsers()
         {
             var usrs = db.AspNetUsers.ToList().Select(x => new RegisterViewModel {
-                Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber, Vendor_Id=x.Vendor_Id }).ToList();
+                Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber, Vendor_Id=x.Vendor_Id, CreatedBy=x.CreatedBy }).ToList();
             if (HttpRuntime.Cache.Get(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
             {
                 var vendorId = Guid.Parse(HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.VendorId.ToString())));

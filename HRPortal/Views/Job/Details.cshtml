@@ -4,6 +4,7 @@
     ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var isActive =(Model.ISACTIVE == true ? "Active" : "In-Active");
+    var jdpath = (Model.JD_FILE_PATH == "" ? "" : Model.JD_FILE_PATH);
     }
 
 <h2 align="center">Job Details</h2>
@@ -67,7 +68,17 @@
             <dd>
                 @Html.DisplayFor(model => model.WORK_LOCATION)
             </dd>
-
+            <dt>
+                @Html.DisplayName("JD")
+            </dt>
+            <dd>
+                @if (jdpath == string.Empty)
+                {
+                    @Html.DisplayName("No JD available")}
+                else {
+                <a href="@jdpath" target="_blank" title="Click To Download JD">Download</a>
+                }
+            </dd>
             <dt>
                 @Html.DisplayName("COMMENTS")
             </dt>

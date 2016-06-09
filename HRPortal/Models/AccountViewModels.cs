@@ -200,7 +200,7 @@ namespace HRPortal.Models
         [Required]
         [Display(Name = "Is Admin")]
         public bool IsAdmin { get; set; }
-
+        public string CreatedBy { get; set; }
         [Display(Name = "Vendor")]
         public Nullable<System.Guid> Vendor_Id { get; set; }
     }

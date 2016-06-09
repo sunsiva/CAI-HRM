@@ -8,7 +8,7 @@
 <h2 align="center">Create a new Job</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm("Create", "Job", FormMethod.Post, new { enctype = "multipart/form-data", @Id = "JobForm" }))
 {
     @Html.AntiForgeryToken()
     
@@ -85,6 +85,7 @@
             <label for="file" class="control-label col-md-2">JD UPLOAD </label>
             <div class="col-md-10">
                 <input class="form-control" type="file" name="file" id="file" />
+                <span align="right" id="errMsgJDUpload" class="text-danger"></span>
             </div>
         </div>
 

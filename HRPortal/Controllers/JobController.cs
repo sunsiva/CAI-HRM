@@ -47,8 +47,9 @@ namespace HRPortal.Controllers
             var owner = (from j in dbContext.JOBPOSTINGs.ToList()
                           join u in dbContext.AspNetUsers.ToList() on j.CREATED_BY equals u.Id
                           where j.JOB_ID == id
-                          select u.FirstName+" "+u.LastName).FirstOrDefault();
-            jOBPOSTING.CREATED_BY = owner.ToString();
+                          select new {uid = u.FirstName + " " + u.LastName, jd=j.JD_FILE_PATH }).FirstOrDefault();
+            jOBPOSTING.CREATED_BY = owner.uid.ToString();
+            jOBPOSTING.JD_FILE_PATH = string.IsNullOrEmpty(owner.jd) ? string.Empty : Path.Combine("/UploadDocument/", owner.jd);
             if (jOBPOSTING == null)
             {
                 return HttpNotFound();
@@ -67,7 +68,7 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING)
+        public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file)
         {
             try { 
             if (ModelState.IsValid)
@@ -75,7 +76,8 @@ namespace HRPortal.Controllers
                 jOBPOSTING.JOB_ID = Guid.NewGuid();
                 jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
                 jOBPOSTING.ISACTIVE = true;
-                jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                    jOBPOSTING.JD_FILE_PATH = FileUpload(file);
+                    jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
                 jOBPOSTING.CREATED_ON = DateTime.Now;
                 dbContext.JOBPOSTINGs.Add(jOBPOSTING);
                 await dbContext.SaveChangesAsync();
@@ -106,13 +108,14 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_ON,CREATED_BY")] JOBPOSTING jOBPOSTING)
+        public async Task<ActionResult> Edit([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_ON,CREATED_BY")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file)
         {
             try { 
             if (ModelState.IsValid)
             {
                 jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
                 jOBPOSTING.MODIFIED_ON = DateTime.Now;
+                jOBPOSTING.JD_FILE_PATH = FileUpload(file);
                 dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
 
@@ -223,6 +226,8 @@ namespace HRPortal.Controllers
                 obj = "JVA";
             else if(posName.Contains("ASP"))
                 obj = "ASP";
+            else if (posName.Contains("SAP"))
+                obj = "SAP";
             else if (posName.Contains("SQL"))
                 obj = "SQL";
             else if (posName.Contains("CONTENT"))
@@ -265,6 +270,31 @@ namespace HRPortal.Controllers
             ViewBag.PageNo = (page ?? 1);
             return jobCanObj;
         }
+
+
+        private string FileUpload(HttpPostedFileBase file)
+        {
+            string filename = string.Empty;
+            if (file != null && file.ContentLength > 0)
+                try
+                {
+                    filename = Path.GetFileName(file.FileName); //TODO:filename should be with vendorname appended.
+                    string path = Path.Combine(Server.MapPath("~/UploadDocument"), filename);
+                    file.SaveAs(path);
+                    ViewBag.FileMessage = "File uploaded successfully";
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.FileMessage = "ERROR:" + ex.Message.ToString();
+                    throw ex;
+                }
+            else
+            {
+                ViewBag.FileMessage = "You have not specified a file.";
+            }
+            return filename;
+        }
+
 
         protected override void OnException(ExceptionContext filterContext)
         {
