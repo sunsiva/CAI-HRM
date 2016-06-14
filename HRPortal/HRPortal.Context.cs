@@ -39,7 +39,7 @@ namespace HRPortal
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<STATUS_HISTORY> STATUS_HISTORY { get; set; }
         public virtual DbSet<EVENTSCHEDULE> EVENTSCHEDULEs { get; set; }
-        public virtual DbSet<EXCEPTION_LOGGING> EXCEPTION_LOGGING { get; set; }
         public virtual DbSet<CANDIDATE> CANDIDATES { get; set; }
+        public virtual DbSet<EXCEPTION_LOGGING> EXCEPTION_LOGGING { get; set; }
     }
 }

@@ -440,12 +440,12 @@
             <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
           </AssociationSet>
           <EntitySet Name="EVENTSCHEDULEs" EntityType="HRPortalModel.EVENTSCHEDULE" />
-          <EntitySet Name="EXCEPTION_LOGGING" EntityType="HRPortalModel.EXCEPTION_LOGGING" />
           <EntitySet Name="CANDIDATES" EntityType="HRPortalModel.CANDIDATE" />
           <AssociationSet Name="FK_CANDIDATES_JOBPOSTING" Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING">
             <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
             <End Role="CANDIDATE" EntitySet="CANDIDATES" />
           </AssociationSet>
+          <EntitySet Name="EXCEPTION_LOGGING" EntityType="HRPortalModel.EXCEPTION_LOGGING" />
         </EntityContainer>
         <EntityType Name="UserLog">
           <Key>
@@ -649,21 +649,6 @@
           <Property Name="CREATED_BY" Type="Guid" />
           <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="EXCEPTION_LOGGING">
-          <Key>
-            <PropertyRef Name="LOG_ID" />
-          </Key>
-          <Property Name="LOG_ID" Type="Int32" Nullable="false" />
-          <Property Name="EXCEPTION_MSG" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="EXCEPTION_TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EXCEPTION_SOURCE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EXCEPTION_PAGEDETAILS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EXCEPTION_URL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EXCEPTION_DATETIME" Type="DateTime" Precision="3" />
-          <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
-          <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CREATED_BY" Type="Guid" Nullable="false" />
-        </EntityType>
         <EntityType Name="CANDIDATE">
           <Key>
             <PropertyRef Name="CANDIDATE_ID" />
@@ -707,6 +692,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="EXCEPTION_LOGGING">
+          <Key>
+            <PropertyRef Name="LOG_ID" />
+          </Key>
+          <Property Name="LOG_ID" Type="Int32" Nullable="false" />
+          <Property Name="EXCEPTION_MSG" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EXCEPTION_TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EXCEPTION_SOURCE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EXCEPTION_PAGEDETAILS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EXCEPTION_URL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EXCEPTION_DATETIME" Type="DateTime" Precision="3" />
+          <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+          <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_BY" Type="Guid" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -922,22 +922,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="EXCEPTION_LOGGING">
-            <EntityTypeMapping TypeName="HRPortalModel.EXCEPTION_LOGGING">
-              <MappingFragment StoreEntitySet="EXCEPTION_LOGGING">
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="EXCEPTION_DATETIME" ColumnName="EXCEPTION_DATETIME" />
-                <ScalarProperty Name="EXCEPTION_URL" ColumnName="EXCEPTION_URL" />
-                <ScalarProperty Name="EXCEPTION_PAGEDETAILS" ColumnName="EXCEPTION_PAGEDETAILS" />
-                <ScalarProperty Name="EXCEPTION_SOURCE" ColumnName="EXCEPTION_SOURCE" />
-                <ScalarProperty Name="EXCEPTION_TYPE" ColumnName="EXCEPTION_TYPE" />
-                <ScalarProperty Name="EXCEPTION_MSG" ColumnName="EXCEPTION_MSG" />
-                <ScalarProperty Name="LOG_ID" ColumnName="LOG_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CANDIDATES">
             <EntityTypeMapping TypeName="HRPortalModel.CANDIDATE">
               <MappingFragment StoreEntitySet="CANDIDATES">
@@ -966,6 +950,22 @@
                 <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
                 <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
                 <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EXCEPTION_LOGGING">
+            <EntityTypeMapping TypeName="HRPortalModel.EXCEPTION_LOGGING">
+              <MappingFragment StoreEntitySet="EXCEPTION_LOGGING">
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="EXCEPTION_DATETIME" ColumnName="EXCEPTION_DATETIME" />
+                <ScalarProperty Name="EXCEPTION_URL" ColumnName="EXCEPTION_URL" />
+                <ScalarProperty Name="EXCEPTION_PAGEDETAILS" ColumnName="EXCEPTION_PAGEDETAILS" />
+                <ScalarProperty Name="EXCEPTION_SOURCE" ColumnName="EXCEPTION_SOURCE" />
+                <ScalarProperty Name="EXCEPTION_TYPE" ColumnName="EXCEPTION_TYPE" />
+                <ScalarProperty Name="EXCEPTION_MSG" ColumnName="EXCEPTION_MSG" />
+                <ScalarProperty Name="LOG_ID" ColumnName="LOG_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

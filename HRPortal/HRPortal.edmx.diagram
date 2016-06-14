@@ -23,9 +23,9 @@
         <EntityTypeShape EntityType="HRPortalModel.STATUS_HISTORY" Width="1.5" PointX="12.625" PointY="9.125" />
         <AssociationConnector Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" />
         <EntityTypeShape EntityType="HRPortalModel.EVENTSCHEDULE" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="HRPortalModel.EXCEPTION_LOGGING" Width="1.5" PointX="3.375" PointY="0.75" />
         <EntityTypeShape EntityType="HRPortalModel.CANDIDATE" Width="1.5" PointX="7.75" PointY="13.75" />
         <AssociationConnector Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING" />
+        <EntityTypeShape EntityType="HRPortalModel.EXCEPTION_LOGGING" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
