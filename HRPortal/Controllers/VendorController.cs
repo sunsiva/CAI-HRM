@@ -55,7 +55,7 @@ namespace HRPortal
             if (ModelState.IsValid)
             {
                 vENDOR_MASTER.VENDOR_ID = Guid.NewGuid();
-                vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                 vENDOR_MASTER.CREATED_ON = DateTime.Now;
                     vENDOR_MASTER.ISACTIVE = true;
                 db.VENDOR_MASTER.Add(vENDOR_MASTER);
@@ -97,7 +97,7 @@ namespace HRPortal
             { 
             if (ModelState.IsValid)
             {
-                vENDOR_MASTER.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                vENDOR_MASTER.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                 vENDOR_MASTER.MODIFIED_ON = DateTime.Now;
                 db.Entry(vENDOR_MASTER).State = EntityState.Modified;
                 db.SaveChanges();

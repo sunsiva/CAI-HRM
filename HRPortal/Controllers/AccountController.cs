@@ -221,9 +221,9 @@ namespace HRPortal.Controllers
         {
             var usrs = db.AspNetUsers.ToList().Select(x => new RegisterViewModel {
                 Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber, Vendor_Id=x.Vendor_Id, CreatedBy=x.CreatedBy }).ToList();
-            if (HttpRuntime.Cache.Get(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
+            if (Session[CacheKey.RoleName.ToString()].ToString().ToUpper().Contains("SUPERUSER"))
             {
-                var vendorId = Guid.Parse(HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.VendorId.ToString())));
+                var vendorId = Guid.Parse(HelperFuntions.HasValue(Session[CacheKey.VendorId.ToString()]));
                 usrs = usrs.Where(i => i.Vendor_Id == vendorId).ToList();
             }
             return View("UserIndex", usrs);
@@ -491,9 +491,9 @@ namespace HRPortal.Controllers
         private void SetVendorList()
         {
             var query = db.VENDOR_MASTER.Where(s=>s.ISACTIVE==true).Select(i => new { i.VENDOR_ID, i.VENDOR_NAME });
-            if(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
+            if(Session[CacheKey.RoleName.ToString()].ToString().ToUpper().Contains("SUPERUSER"))
             {
-                var vendorId = Guid.Parse(HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.VendorId.ToString())));
+                var vendorId = Guid.Parse(HelperFuntions.HasValue(Session[CacheKey.VendorId.ToString()]));
                 query = query.Where(i => i.VENDOR_ID == vendorId);
             }
             ViewBag.VendorList = new SelectList(query.AsEnumerable(), "VENDOR_ID", "VENDOR_NAME", 3);
@@ -502,7 +502,7 @@ namespace HRPortal.Controllers
         private void SetRoleList()
         {
             var query = db.AspNetRoles.Select(i => new { i.Id, i.Name });
-            if (HttpRuntime.Cache.Get(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
+            if (Session[CacheKey.RoleName.ToString()].ToString().ToUpper().Contains("SUPERUSER"))
             {
                 query = query.Where(i => i.Name == "User");
             }
@@ -583,7 +583,7 @@ namespace HRPortal.Controllers
             {
                 return Redirect(returnUrl);
             }
-            bool isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
+            bool isSuperAdmin = HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
             var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
             return RedirectToAction("Index", isHome);
         }

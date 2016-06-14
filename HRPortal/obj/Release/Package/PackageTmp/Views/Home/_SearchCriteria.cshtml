@@ -1,4 +1,8 @@
-﻿<div class="container">
+﻿@using HRPortal.Helper;
+@{ 
+    bool isSuperAdmin = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
+}
+<div class="container">
     <div class="panel-group" id="SearchCriteriaPartial">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -10,14 +14,29 @@
                 <div class="form-group">
                     <div class="col-md-11" align="center">
                         <br />
-                        <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
-                        <input type="text" id="txtCriteriaVendor" placeholder="Partner" />
-                        <input type="text" id="txtCriteriaStatus" placeholder="Status" />
-                        <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
-                        <input type="text" id="txtCriteriaEndDate" class="date-picker" placeholder="Uploaded End Date" />
-                        <a class="btn btn-danger btn-xs" id="btnSearchCriteria">
-                            <span class="glyphicon glyphicon-search"></span>
-                        </a>
+                        @if (isSuperAdmin)
+                        {
+                        <div id="srchCandidates">
+                            <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
+                            <input type="text" id="txtCriteriaVendor" placeholder="Partner" />
+                            @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, "-- Select a Status --")
+                            <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
+                            <input type="text" id="txtCriteriaEndDate" class="date-picker" placeholder="Uploaded End Date" />
+                            <a class="btn btn-danger btn-xs" id="btnSearchCriteria">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </a>
+                        </div>
+                        }
+                        else {
+                        <div id="srchJobs">
+                            <input type="text" id="txtPositionName" placeholder="Position Name" />
+                            <input type="text" id="txtPublishedStDate" class="date-picker" placeholder="Published Start Date" />
+                            <input type="text" id="txtPublishedEndDate" class="date-picker" placeholder="Published End Date" />
+                            <a class="btn btn-danger btn-xs" id="btnSearchCriteriaJob">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </a>
+                        </div>
+                        }
                     </div>
                 </div>
             </div>

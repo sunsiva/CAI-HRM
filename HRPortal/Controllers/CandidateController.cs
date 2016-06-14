@@ -26,21 +26,17 @@ namespace HRPortal.Controllers
         private CandidateViewModels vmodel = new CandidateViewModels();
         private LoginViewModel logvmodel = new LoginViewModel();
         private AppointmentViewModels appointmentVM = new AppointmentViewModels();
-        private string _uid;
         const int pageSize = 10;
-
-        public CandidateController()
-        {
-            _uid = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
-        }
 
         // GET: Candidate
         public async Task<ActionResult> Index(string sOdr, int? page)
         {
             try
             {
+                
                 List<CANDIDATE> canDb = new List<CANDIDATE>();
-                canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == _uid && c.ISACTIVE == true).ToListAsync();
+                var uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
 
                 var canLst = canDb.Select(i => new CandidateViewModels
                 {
@@ -71,9 +67,10 @@ namespace HRPortal.Controllers
         {
             try
             {
-                var vendorId = Guid.Parse(HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.VendorId.ToString())));
+                var uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                var vendorId = Guid.Parse(HelperFuntions.HasValue(Session[CacheKey.VendorId.ToString()]));
                 var squadsLst = await db.CANDIDATES.ToListAsync();
-                var usrs = await db.AspNetUsers.Where(i => i.Vendor_Id == vendorId && i.Id != _uid).Select(s => s.Id).ToListAsync();
+                var usrs = await db.AspNetUsers.Where(i => i.Vendor_Id == vendorId && i.Id != uid).Select(s => s.Id).ToListAsync();
                 var canLst = squadsLst.Where(c => usrs.Contains(c.CREATED_BY) && c.ISACTIVE == true).Select(i => new CandidateViewModels
                 {
                     CANDIDATE_ID = i.CANDIDATE_ID,
@@ -86,6 +83,7 @@ namespace HRPortal.Controllers
                     LAST_WORKING_DATE = i.LAST_WORKING_DATE,
                     STATUS_ID = i.STATUS,
                     STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
+                    CREATED_ON = i.CREATED_ON,
                     CREATED_BY = logvmodel.GetUserNameById(i.CREATED_BY),
                 }).ToList();
 
@@ -151,7 +149,7 @@ namespace HRPortal.Controllers
                     cANDIDATE.ISACTIVE = true;
                     cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes")?true:false;
                     cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
-                    cANDIDATE.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                    cANDIDATE.CREATED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                     cANDIDATE.CREATED_ON = DateTime.Now;
                     cANDIDATE.STATUS = db.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID.ToString();
                     cANDIDATE.RESUME_FILE_PATH = FileUpload(file);
@@ -181,7 +179,7 @@ namespace HRPortal.Controllers
                 sHist.SCHEDULED_TO = Convert.ToDateTime(date);
                 sHist.SCHEDULE_LENGTH_MINS = int.Parse(length);
                 sHist.COMMENTS = comments;
-                sHist.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                sHist.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                 sHist.MODIFIED_ON = DateTime.Now;
                 db.STATUS_HISTORY.Add(sHist);
                 await db.SaveChangesAsync();
@@ -239,20 +237,24 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,JOB_ID,CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] CANDIDATE cANDIDATE, FormCollection frm)
+        public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,JOB_ID,CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] CANDIDATE cANDIDATE, HttpPostedFileBase file, FormCollection frm)
         {
             try { 
             if (ModelState.IsValid)
             {
                 cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
                 cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
-                cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                 cANDIDATE.MODIFIED_ON = DateTime.Now;
+                cANDIDATE.LAST_WORKING_DATE = string.IsNullOrEmpty(frm["LAST_WORKING_DATE"])? cANDIDATE.LAST_WORKING_DATE : DateTime.Parse(frm["LAST_WORKING_DATE"]);
+                cANDIDATE.RESUME_FILE_PATH = (file==null? frm["RESUME_FILE_PATH"]: FileUpload(file));
                 db.Entry(cANDIDATE).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-
-                return RedirectToAction("Index");
-            }
+                if(Request.UrlReferrer.Query.ToString()== "?styp=S")
+                    return RedirectToAction("SquadJobs");
+                else
+                    return RedirectToAction("Index"); 
+                }
             return View(cANDIDATE);
             }
             catch (Exception ex) { throw ex; }
@@ -283,9 +285,12 @@ namespace HRPortal.Controllers
         {
             try { 
             CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
-            db.CANDIDATES.Remove(cANDIDATE);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+                //db.CANDIDATES.Remove(cANDIDATE);
+                cANDIDATE.COMMENTS = "";
+                cANDIDATE.ISACTIVE = false;
+                db.Entry(cANDIDATE).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+            return RedirectToAction("Index","Home");
             }
             catch (Exception ex) { throw ex; }
         }
@@ -364,12 +369,54 @@ namespace HRPortal.Controllers
             return jobCanObj;
         }
 
+        public async Task<ActionResult> ExportToExcel()
+        {
+            try
+            {
+                System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
+                List<CANDIDATE> canDb = new List<CANDIDATE>();
+                var uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
+
+                var canLst = canDb.Select(i => new 
+                {
+                    CANDIDATE_NAME = i.CANDIDATE_NAME,
+                    MOBILE_NO = i.MOBILE_NO,
+                    EMAIL = i.EMAIL,
+                    CURRENT_COMPANY = i.CURRENT_COMPANY,
+                    NOTICE_PERIOD = i.NOTICE_PERIOD,
+                    YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
+                    LAST_WORKING_DATE = i.LAST_WORKING_DATE,
+                    STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
+                }).ToList();
+
+                gv.DataSource = canLst;
+                gv.DataBind();
+                Response.ClearContent();
+                Response.Buffer = true;
+                string fileName = "Candidates_" + DateTime.Now.Day + DateTime.Now.ToString("MMM") + "_" + DateTime.Now.Hour + "_" + DateTime.Now.Minute + "_" + DateTime.Now.Second + ".xls";
+                Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+                Response.ContentType = "application/ms-excel";
+                Response.Charset = "";
+                StringWriter sw = new StringWriter();
+                System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
+                gv.RenderControl(htw);
+                Response.Output.Write(sw.ToString());
+                Response.Flush();
+                Response.End();
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         protected override void OnException(ExceptionContext filterContext)
         {
             Exception e = filterContext.Exception;
             //Log Exception e to DB.
-            filterContext.ExceptionHandled = true;
-            LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+            if (!filterContext.ExceptionHandled)
+            {
+                LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+            }
             //filterContext.Result = new ViewResult()
             //{
             //    ViewName = "Error"

@@ -1,6 +1,6 @@
 ﻿@using HRPortal.Helper;
 @{ 
-    bool isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
+    bool isSuperAdmin = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
 }
 <div class="container">
     <div class="panel-group" id="SearchCriteriaPartial">
@@ -19,6 +19,7 @@
                         <div id="srchCandidates">
                             <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
                             <input type="text" id="txtCriteriaVendor" placeholder="Partner" />
+                            <input type="text" id="txtCriteriaPosition" placeholder="Position Name" />
                             @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, "-- Select a Status --")
                             <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
                             <input type="text" id="txtCriteriaEndDate" class="date-picker" placeholder="Uploaded End Date" />

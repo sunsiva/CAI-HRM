@@ -77,7 +77,7 @@ namespace HRPortal.Controllers
                 jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
                 jOBPOSTING.ISACTIVE = true;
                     jOBPOSTING.JD_FILE_PATH = FileUpload(file);
-                    jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                    jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                 jOBPOSTING.CREATED_ON = DateTime.Now;
                 dbContext.JOBPOSTINGs.Add(jOBPOSTING);
                 await dbContext.SaveChangesAsync();
@@ -113,7 +113,7 @@ namespace HRPortal.Controllers
             try { 
             if (ModelState.IsValid)
             {
-                jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                 jOBPOSTING.MODIFIED_ON = DateTime.Now;
                 jOBPOSTING.JD_FILE_PATH = FileUpload(file);
                 dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
@@ -153,8 +153,11 @@ namespace HRPortal.Controllers
                 return HttpNotFound();
             }
             else {
-                dbContext.JOBPOSTINGs.Remove(jOBPOSTING);
-                await dbContext.SaveChangesAsync();
+                    //dbContext.JOBPOSTINGs.Remove(jOBPOSTING);
+                    jOBPOSTING.COMMENTS = "";
+                    jOBPOSTING.ISACTIVE = false;
+                    dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
+                    await dbContext.SaveChangesAsync();
             }
             return RedirectToAction("Index");
             }

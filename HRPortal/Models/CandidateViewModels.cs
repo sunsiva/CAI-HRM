@@ -15,7 +15,7 @@ namespace HRPortal.Models
             public string VENDOR_NAME { get; set; }
             public Guid JOB_ID { get; set; }
             public string POSITION { get; set; }
-            public int YEARS_OF_EXP_TOTAL { get; set; }
+            public decimal YEARS_OF_EXP_TOTAL { get; set; }
             public Nullable<int> YEARS_OF_EXP_RELEVANT { get; set; }
             public string MOBILE_NO { get; set; }
             public string ALTERNATE_MOBILE_NO { get; set; }
@@ -48,7 +48,7 @@ namespace HRPortal.Models
         {
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
             var stsId = dbContext.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID;
-            var uid = HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null ? Guid.NewGuid() : HttpRuntime.Cache.Get(CacheKey.Uid.ToString());
+            var uid = HttpContext.Current.Session[CacheKey.Uid.ToString()] == null ? Guid.NewGuid() : HttpContext.Current.Session[CacheKey.Uid.ToString()];
             stsHist = new STATUS_HISTORY();
             stsHist.STATUS_ID = ((stid == null || stid == Guid.Empty) ? stsId : stid);
             stsHist.CANDIDATE_ID = cId;
@@ -70,7 +70,7 @@ namespace HRPortal.Models
             var sHist = dbContext.STATUS_HISTORY.Where(i => i.SCHEDULED_TO != null && i.SCHEDULED_TO <= DateTime.Now && i.ISACTIVE==true).ToList();
             if (sHist.Count > 0)
             { 
-                var uid = HttpRuntime.Cache.Get(CacheKey.Uid.ToString()) == null ? Guid.NewGuid() : HttpRuntime.Cache.Get(CacheKey.Uid.ToString());
+                var uid = HttpContext.Current.Session[CacheKey.Uid.ToString()] == null ? Guid.NewGuid() : HttpContext.Current.Session[CacheKey.Uid.ToString()];
                 var stsLst = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).ToList();
 
                 foreach (var item in sHist)

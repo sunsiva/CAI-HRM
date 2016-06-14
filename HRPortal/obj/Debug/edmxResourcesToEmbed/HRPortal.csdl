@@ -44,15 +44,10 @@
     <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
     <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" />
     <EntitySet Name="VENDOR_MASTER" EntityType="Self.VENDOR_MASTER" />
-    <EntitySet Name="CANDIDATES" EntityType="HRPortalModel.CANDIDATE" />
     <EntitySet Name="UserLogs" EntityType="HRPortalModel.UserLog" />
     <EntitySet Name="STATUS_MASTER" EntityType="HRPortalModel.STATUS_MASTER" />
     <EntitySet Name="sysdiagrams" EntityType="HRPortalModel.sysdiagram" />
     <EntitySet Name="JOBPOSTINGs" EntityType="HRPortalModel.JOBPOSTING" />
-    <AssociationSet Name="FK_CANDIDATES_JOBPOSTING" Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING">
-      <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
-      <End Role="CANDIDATE" EntitySet="CANDIDATES" />
-    </AssociationSet>
     <EntitySet Name="UserXRoles" EntityType="HRPortalModel.UserXRole" />
     <EntitySet Name="AspNetRoles" EntityType="HRPortalModel.AspNetRole" />
     <EntitySet Name="AspNetUserClaims" EntityType="HRPortalModel.AspNetUserClaim" />
@@ -76,38 +71,13 @@
       <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
     </AssociationSet>
     <EntitySet Name="EVENTSCHEDULEs" EntityType="HRPortalModel.EVENTSCHEDULE" />
+    <EntitySet Name="EXCEPTION_LOGGING" EntityType="HRPortalModel.EXCEPTION_LOGGING" />
+    <EntitySet Name="CANDIDATES" EntityType="HRPortalModel.CANDIDATE" />
+    <AssociationSet Name="FK_CANDIDATES_JOBPOSTING" Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING">
+      <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
+      <End Role="CANDIDATE" EntitySet="CANDIDATES" />
+    </AssociationSet>
   </EntityContainer>
-  <EntityType Name="CANDIDATE">
-    <Key>
-      <PropertyRef Name="CANDIDATE_ID" />
-    </Key>
-    <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
-    <Property Name="CANDIDATE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="JOB_ID" Type="Guid" Nullable="false" />
-    <Property Name="YEARS_OF_EXP_TOTAL" Type="Int32" Nullable="false" />
-    <Property Name="YEARS_OF_EXP_RELEVANT" Type="Int32" />
-    <Property Name="MOBILE_NO" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
-    <Property Name="ALTERNATE_MOBILE_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-    <Property Name="EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="ALTERNATE_EMAIL_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="DOB" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="CURRENT_COMPANY" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
-    <Property Name="NOTICE_PERIOD" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="ANY_OTHER_OFFER" Type="Boolean" />
-    <Property Name="LAST_WORKING_DATE" Type="DateTime" Precision="3" />
-    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="ISINNOTICEPERIOD" Type="Boolean" />
-    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
-    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="RESUME_FILE_PATH" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-    <Property Name="RESUME_SOURCE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="CURRENT_LOCATION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="JOBPOSTING" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="CANDIDATE" ToRole="JOBPOSTING" />
-  </EntityType>
   <EntityType Name="UserLog">
     <Key>
       <PropertyRef Name="UserLogId" />
@@ -171,18 +141,6 @@
     <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
     <NavigationProperty Name="CANDIDATES" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="JOBPOSTING" ToRole="CANDIDATE" />
   </EntityType>
-  <Association Name="FK_CANDIDATES_JOBPOSTING">
-    <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
-    <End Type="HRPortalModel.CANDIDATE" Role="CANDIDATE" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="JOBPOSTING">
-        <PropertyRef Name="JOB_ID" />
-      </Principal>
-      <Dependent Role="CANDIDATE">
-        <PropertyRef Name="JOB_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityType Name="UserXRole">
     <Key>
       <PropertyRef Name="UserId" />
@@ -322,4 +280,62 @@
     <Property Name="CREATED_BY" Type="Guid" />
     <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
   </EntityType>
+  <EntityType Name="EXCEPTION_LOGGING">
+    <Key>
+      <PropertyRef Name="LOG_ID" />
+    </Key>
+    <Property Name="LOG_ID" Type="Int32" Nullable="false" />
+    <Property Name="EXCEPTION_MSG" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="EXCEPTION_TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="EXCEPTION_SOURCE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EXCEPTION_PAGEDETAILS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="EXCEPTION_URL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="EXCEPTION_DATETIME" Type="DateTime" Precision="3" />
+    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CREATED_BY" Type="Guid" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CANDIDATE">
+    <Key>
+      <PropertyRef Name="CANDIDATE_ID" />
+    </Key>
+    <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
+    <Property Name="CANDIDATE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="JOB_ID" Type="Guid" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_TOTAL" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="YEARS_OF_EXP_RELEVANT" Type="Int32" />
+    <Property Name="MOBILE_NO" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="ALTERNATE_MOBILE_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ALTERNATE_EMAIL_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DOB" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CURRENT_COMPANY" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="CURRENT_LOCATION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="NOTICE_PERIOD" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ANY_OTHER_OFFER" Type="Boolean" />
+    <Property Name="LAST_WORKING_DATE" Type="DateTime" Precision="3" />
+    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="RESUME_FILE_PATH" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="RESUME_SOURCE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ISINNOTICEPERIOD" Type="Boolean" />
+    <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="JOBPOSTING" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="CANDIDATE" ToRole="JOBPOSTING" />
+  </EntityType>
+  <Association Name="FK_CANDIDATES_JOBPOSTING">
+    <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
+    <End Type="HRPortalModel.CANDIDATE" Role="CANDIDATE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="JOBPOSTING">
+        <PropertyRef Name="JOB_ID" />
+      </Principal>
+      <Dependent Role="CANDIDATE">
+        <PropertyRef Name="JOB_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

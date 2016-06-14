@@ -1,10 +1,14 @@
 ﻿@model IEnumerable<JOBPOSTING>
-@{ int sl = 0;}
+@using PagedList;
+@using PagedList.Mvc;
+@{
+    int pSize = ViewBag.PageSize;
+    int pNo = ViewBag.PageNo;
+    var modal = Model.ToPagedList(pNo, pSize);
+    int sl = 0;
+}
 
-<div class="container">
-    <br />
-    <br />
-    @*@Html.Partial("_SearchCriteria")*@
+<div class="container" id="JobDetailsPartial">
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
@@ -12,22 +16,22 @@
                     <tr>
                         <th>#</th>
                         <th>
-                            @Html.DisplayNameFor(model => model.JOB_CODE)
+                            @Html.ActionLink("JOB CODE", "Index", new { sOdr = ViewBag.JCodeSort })
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.JOB_DESCRIPTION)
+                            JOB DESCRIPTION
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.POSITION_NAME)
+                            @Html.ActionLink("POSITION NAME", "Index", new { sOdr = ViewBag.PositionSort })
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.NO_OF_VACANCIES)
+                            NO.OF VACANCIES
                         </th>
                         <th>
                             YEARS OF EXP.
                         </th>
                         <th>
-                            PUBLISHED DATE
+                            @Html.ActionLink("PUBLISHED DATE", "Index", new { sOdr = ViewBag.PDateSort })
                         </th>
                         <th>
                             STATUS
@@ -35,7 +39,7 @@
                         <th colspan="3">ACTION</th>
                     </tr>
 
-                    @foreach (var item in Model)
+                    @foreach (var item in modal)
                     {
                         <tr class="text-center">
                             <td>@(sl = sl + 1) </td>
@@ -68,37 +72,21 @@
                                     </a>
                                 </p>
                             </td>
-                            @*<td>
-                                <p data-placement="top" data-toggle="tooltip" title="Edit">
-                                    <a href="@Url.Action("Edit", "Job", new { id = item.JOB_ID })" id="btnJobEdit" value="@item.JOB_ID" class="btn btn-primary btn-xs">
-                                        <span class="glyphicon glyphicon-pencil"></span>
-                                    </a>
-                                </p>
-                            </td>
-
-                            <td>
-                                <p data-placement="top" data-toggle="tooltip" title="Delete">
-                                    <a href="@Url.Action("Delete", "Job", new { id = item.JOB_ID })" class="btn btn-danger btn-xs" id="btnJobDelete" value="@item.JOB_ID">
-                                        <span class="glyphicon glyphicon-trash"></span>
-                                    </a>
-                                </p>
-                            </td>*@
                         </tr>
                     }
 
                     <tr><td align="left"><a href="@Url.Action("ExportToExcel","Job")" title="Export To Excel" id="btnExport"><img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a></td>
                     <td align="right" class="" colspan="11">@Model.Count() Record(s) found.</td></tr>
                 </table>
-                <div class="clearfix"></div>
-                <ul class="pagination pull-right">
-                    <li class="disabled"><a href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                </ul>
+                <table align="right">
+                    <tr>
+                        <td>Page @(modal.PageCount < modal.PageNumber ? 0 : modal.PageNumber) of @modal.PageCount  </td>
+                        <td width="10px"></td>
+                        <td>
+                            @Html.PagedListPager(modal, page => Url.Action("Index", "Home", new { page, sOdr = ViewBag.CurrentSort }))
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

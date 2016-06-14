@@ -3,7 +3,7 @@
 
 @{
     ViewBag.Title = "Home Page";
-    bool isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
+    bool isSuperAdmin = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
 }
 
 <div class="row">
@@ -63,7 +63,7 @@
          });
        
          $("#btnSearchCriteria").click(function () {
-             $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
+             $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), position: $("#txtCriteriaPosition").val(), status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
                  $("#CandidatesPartial").html(data);
              });
          });

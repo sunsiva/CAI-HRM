@@ -112,10 +112,10 @@ namespace HRPortal.Models
                             join rle in db.AspNetRoles.ToList() on rlx.RoleId equals Guid.Parse(rle.Id)
                             where usr.Id == user.Id
                             select rle.Name).FirstOrDefault();
-            HttpRuntime.Cache.Insert(CacheKey.VendorId.ToString(), user.Vendor_Id);
-            HttpRuntime.Cache.Insert(CacheKey.RoleName.ToString(), rolename);
-            HttpRuntime.Cache.Insert(CacheKey.Uid.ToString(), user.Id);
-            HttpRuntime.Cache.Insert(CacheKey.UserName.ToString(), user.FirstName + " " + user.LastName);
+            HttpContext.Current.Session[CacheKey.VendorId.ToString()]= user.Vendor_Id;
+            HttpContext.Current.Session[CacheKey.RoleName.ToString()]= rolename;
+            HttpContext.Current.Session[CacheKey.Uid.ToString()]= user.Id;
+            HttpContext.Current.Session[CacheKey.UserName.ToString()]= user.FirstName + " " + user.LastName;
         }
 
         public void UserLogs(bool isIn,string email, string username)

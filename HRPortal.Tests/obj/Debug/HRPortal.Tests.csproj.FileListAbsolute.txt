@@ -119,12 +119,14 @@ D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Mic
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Owin.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\System.Web.Http.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\EntityFramework.dll
-D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\DDay.iCal.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Microsoft.Owin.Security.Cookies.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Microsoft.Owin.Host.SystemWeb.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\PagedList.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\System.Net.Http.Formatting.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\DDay.Collections.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\antlr.runtime.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\HRPortal.pdb
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.xml
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Newtonsoft.Json.xml
@@ -144,10 +146,8 @@ D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Ent
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Microsoft.Owin.Security.Cookies.xml
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\Microsoft.Owin.Host.SystemWeb.xml
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\PagedList.xml
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\System.Net.Http.Formatting.xml
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\obj\Debug\HRPortal.Tests.csprojResolveAssemblyReference.cache
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\obj\Debug\HRPortal.Tests.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\obj\Debug\HRPortal.Tests.pdb
-D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\antlr.runtime.dll
-D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\PagedList.dll
-D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal.Tests\bin\Debug\PagedList.xml

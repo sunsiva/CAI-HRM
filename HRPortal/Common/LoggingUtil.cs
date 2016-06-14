@@ -116,7 +116,7 @@ namespace HRPortal.Common
                     obj.ERR_CODE = string.Empty;
                     obj.ERR_DESC = message;
                     obj.ERR_EVENT = string.Empty;
-                    obj.CREATED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                    obj.CREATED_BY = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.Uid.ToString()]);
                     obj.CREATED_ON = DateTime.Now;
                     dbContext.ERROR_LOG.Add(obj);
                     dbContext.SaveChanges();

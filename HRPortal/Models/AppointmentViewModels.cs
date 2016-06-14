@@ -9,6 +9,7 @@ using System.Net.Mail;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using HRPortal.Common;
+using System.Web;
 
 namespace HRPortal.Models
 {
@@ -177,7 +178,7 @@ namespace HRPortal.Models
                 string canName = (canLst == null ? string.Empty : canLst.CANDIDATE_NAME);
 
                 var job = dbContext.JOBPOSTINGs.Where(x => x.JOB_ID == canLst.JOB_ID).FirstOrDefault();
-                var uid = HelperFuntions.HasValue(System.Web.HttpRuntime.Cache.Get(CacheKey.Uid.ToString()));
+                var uid = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.Uid.ToString()]);
                 var usr = dbContext.AspNetUsers.Where(x => x.Id == uid).FirstOrDefault();
                 string UserName = "Admin";
                 string UserEmail = "Naveen_Sankar@compaid.co.in";

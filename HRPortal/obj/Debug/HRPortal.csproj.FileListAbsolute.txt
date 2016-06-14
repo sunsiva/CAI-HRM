@@ -88,6 +88,7 @@ D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\bin\Microsoft.Owin.
 D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.csprojResolveAssemblyReference.cache
 D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.dll
 D:\source\HDC\HR Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.pdb
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.csprojResolveAssemblyReference.cache
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\roslyn\csc.exe
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\roslyn\csc.exe.config
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\roslyn\csc.rsp
@@ -117,7 +118,10 @@ D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\roslyn\VBCSComp
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\HRPortal.dll.config
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\HRPortal.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\HRPortal.pdb
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\antlr.runtime.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\Antlr3.Runtime.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\DDay.Collections.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\DDay.iCal.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\EntityFramework.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\EntityFramework.SqlServer.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\GridMvc.dll
@@ -181,7 +185,3 @@ D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\Microsoft.Owin.
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.pdb
-D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.csprojResolveAssemblyReference.cache
-D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\antlr.runtime.dll
-D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\DDay.Collections.dll
-D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\DDay.iCal.dll

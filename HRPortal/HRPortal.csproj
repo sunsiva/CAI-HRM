@@ -245,6 +245,9 @@
     <Compile Include="EVENTSCHEDULE.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
+    <Compile Include="EXCEPTION_LOGGING.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -341,6 +344,15 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
     <EntityDeploy Include="HRPortal.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>HRPortal.Designer.cs</LastGenOutput>
@@ -395,15 +407,6 @@
     <Content Include="Scripts\tags\tag-it.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\Appointment\Index.cshtml" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />

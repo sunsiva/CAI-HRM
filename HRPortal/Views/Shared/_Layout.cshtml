@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE html>
 <html>
 @using HRPortal.Helper;
-@{  bool isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
-    bool isSuperUser = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("SUPERUSER") ? true : false;
+@{  bool isSuperAdmin = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
+    bool isSuperUser = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("SUPERUSER") ? true : false;
     var dashboardTxt = isSuperAdmin == true ? "Candidates" : "Jobs";
     var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
     }
@@ -54,7 +54,7 @@
                             <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
                             <li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>
                         }
-                        <li>@Html.ActionLink("Appointment", "Index", "Appointment")</li>
+                        @*<li>@Html.ActionLink("Appointment", "Index", "Appointment")</li>*@
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")

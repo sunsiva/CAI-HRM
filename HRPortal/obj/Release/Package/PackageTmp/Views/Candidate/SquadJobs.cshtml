@@ -34,7 +34,6 @@
                         <th>
                             @Html.DisplayName("NOTICE PERIOD/LWD")
                         </th>
-                        <th>@Html.DisplayName("SUBMITTED ON")</th>
                         <th>@Html.DisplayName("SUBMITTED BY")</th>
                         <th>
                             @Html.ActionLink("STATUS", "SquadJobs", new { sOdr = ViewBag.StatusSort })
@@ -64,7 +63,6 @@
                     <td>
                         @(item.LAST_WORKING_DATE != null ? (item.LAST_WORKING_DATE.Value.ToString("dd-MMM-yyyy")) : item.NOTICE_PERIOD)
                     </td>
-                    <td>@Html.DisplayName(item.CREATED_ON.ToString("dd-MMM-yyyy"))</td>
                     <td>@Html.DisplayFor(modelItem => item.CREATED_BY)</td>
                     <td>
                         @if (item.STATUS.ToUpper().ToString().Contains("TOBESCHEDULED"))

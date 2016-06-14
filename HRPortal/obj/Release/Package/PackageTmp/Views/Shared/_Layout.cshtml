@@ -1,50 +1,60 @@
 ﻿<!DOCTYPE html>
 <html>
 @using HRPortal.Helper;
-@{  var isSuperAdmin = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? "True" : "False";
-    var isSuperUser = HelperFuntions.HasValue(HttpRuntime.Cache.Get(CacheKey.RoleName.ToString())).ToUpper().Contains("SUPERUSER") ? "True" : "False";
-    var dashboardTxt = isSuperAdmin == "True" ? "Candidates" : "Jobs";
+@{  bool isSuperAdmin = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
+    bool isSuperUser = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("SUPERUSER") ? true : false;
+    var dashboardTxt = isSuperAdmin == true ? "Candidates" : "Jobs";
+    var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
     }
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="~/Content/images/CAI.ico" type="image/x-icon" />
-    <title>@ViewBag.Title - HR - Recruitment Process</title>
+    <title>@ViewBag.Title - HR Ops</title>
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
         @*.navbar-inverse { -changed to #337AB7
     .navbar-inverse .navbar-nav > -changed to #F5F5F5
      .navbar-inverse .navbar-nav > li > a:hover, -changed to #000 : These styles has customized for blue color from bootstrap.css*@
-    <script src="@Url.Content("http://code.jquery.com/jquery-1.11.0.min.js")"></script> @*TODO:move to script folder.This is for having $ in the script file.*@
+    <script src="@Url.Content("https://code.jquery.com/jquery-1.11.0.min.js")"></script> @*TODO:move to script folder.This is for having $ in the script file.*@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
 </head>
 <body> 
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="container1">
             <div class="navbar-header">
-
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="@Url.Action("Index","Home",new { @class="navbar-brand" })"> <img src="~/Content/images/CAI_Logo2.gif" alt="CAI" /> </a>
+
+                <a href="@Url.Action("Index",isHome,new { @class="navbar-brand" })"> <img src="~/Content/images/CAI_HROps.gif" alt="CAI" /> </a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
-                        if (isSuperAdmin == "True")
+                        
+                        if (isSuperAdmin)
                         {
-                        <li>@Html.ActionLink("Job", "Index", "Job")</li>}
-                        else if (isSuperUser == "True")
+                            <li>@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
+                            <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
+                            <li>@Html.ActionLink("Job", "Index", "Job")</li>
+                        }
+                        else if (isSuperUser)
                         {
+                            <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
                             <li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>
                             <li>@Html.ActionLink("Squads", "SquadJobs", "Candidate")</li>
                         }
-                        else {<li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>}
+                        else {
+                            <li>@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
+                            <li>@Html.ActionLink("Candidate", "Index", "Candidate")</li>
+                        }
+                        @*<li>@Html.ActionLink("Appointment", "Index", "Appointment")</li>*@
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -54,17 +64,21 @@
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Recruitment Process Management System</p>
+        <footer >
+            <div>
+                <p class="text-muted">&copy; @DateTime.Now.Year - HR Ops <i>(Recruitment Process Management System)</i></p>
+            </div>
         </footer>
     </div>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    @*BEGIN:FOR APPOINTMENT CALENDAR*@
+    <link href="~/Content/Calendar/fullcalendar.css" rel="stylesheet" />
+    <script src="~/Scripts/Calendar/fullcalendar.js"></script>
+    @*END:FOR APPOINTMENT CALENDAR*@
     @RenderSection("scripts", required: false)
 </body>
 </html>
