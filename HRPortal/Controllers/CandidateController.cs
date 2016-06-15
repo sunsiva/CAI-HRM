@@ -114,6 +114,8 @@ namespace HRPortal.Controllers
                              where j.CANDIDATE_ID == id
                              select u.FirstName + " " + u.LastName).FirstOrDefault();
                 cANDIDATE.CREATED_BY = owner.ToString();
+                var stsCmnts = db.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).OrderByDescending(j => j.MODIFIED_ON).FirstOrDefault().COMMENTS;
+                ViewBag.StatusComments = stsCmnts;
                 if (cANDIDATE == null)
                 {
                     return HttpNotFound();

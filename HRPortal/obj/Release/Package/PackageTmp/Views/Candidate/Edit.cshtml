@@ -8,10 +8,10 @@
 
 <h2 align="center">Edit Candidate</h2>
 
-@using (Html.BeginForm("Edit", "Candidate", FormMethod.Post, new { @Id = "CandidateFormEdit" }))
+@using (Html.BeginForm("Edit", "Candidate", FormMethod.Post, new { enctype = "multipart/form-data", @Id = "CandidateFormEdit" })) 
 {
-        @Html.AntiForgeryToken()
-    <span align="right" id="errMsg" class="text-danger col-lg-offset-4"></span>
+            @Html.AntiForgeryToken()
+        <span align="right" id="errMsg" class="text-danger col-lg-offset-4"></span>
         <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.CANDIDATE_ID)
@@ -146,11 +146,20 @@
                 @Html.TextAreaFor(model => model.COMMENTS, new { @class = "textarea-input-custom" })
                 @Html.ValidationMessageFor(model => model.COMMENTS, "", new { @class = "text-danger" })
 
+                @Html.HiddenFor(model => model.RESUME_FILE_PATH, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.HiddenFor(model => model.CREATED_BY, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.HiddenFor(model => model.CREATED_ON, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.HiddenFor(model => model.ISACTIVE, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
+
+            <div class="form-group form-group-required">
+                <label for="file" class="control-label col-md-2">RESUME UPLOAD :</label>
+                <div class="col-md-10">
+                    <input class="form-control" type="file" name="file" id="file" />
+                    <span align="right" id="errMsgCVUpload" class="text-danger"></span>
+                </div>
+            </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -197,8 +206,8 @@
                     $("#errMsgLWD").text("Last working date is required.");
                 else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "")
                     $("#errMsgNP").text("Notice Period is required.");
-                //else if ($("#file").val() == "")
-                //    $("#errMsgCVUpload").text("Please upload a resume.");
+                else if ($("#file").val() == "")
+                    $("#errMsgCVUpload").text("Please upload a resume.");
                 else
                     $("#errMsg").text("Required field is empty.");
                 return false;

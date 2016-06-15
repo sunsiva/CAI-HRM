@@ -63,7 +63,7 @@
          });
        
          $("#btnSearchCriteria").click(function () {
-             $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
+             $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), position: $("#txtCriteriaPosition").val(), status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
                  $("#CandidatesPartial").html(data);
              });
          });
