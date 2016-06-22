@@ -29,7 +29,7 @@
             </div>
 
             <div class="form-group form-group-required">
-                @Html.LabelFor(model => model.CANDIDATE_NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.CANDIDATE_NAME, "CANDIDATE NAME", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.CANDIDATE_NAME, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
                     @Html.ValidationMessageFor(model => model.CANDIDATE_NAME, "", new { @class = "text-danger" })
@@ -37,7 +37,7 @@
             </div>
 
             <div class="form-group form-group-required">
-                @Html.LabelFor(model => model.YEARS_OF_EXP_TOTAL, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.YEARS_OF_EXP_TOTAL, "YEARS OF EXP TOTAL", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.YEARS_OF_EXP_TOTAL, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
                     @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_TOTAL, "", new { @class = "text-danger" })
@@ -45,7 +45,7 @@
             </div>
 
             <div class="form-group form-group-required">
-                @Html.LabelFor(model => model.CURRENT_COMPANY, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.CURRENT_COMPANY, "CURRENT COMPANY", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.CURRENT_COMPANY, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
                     @Html.ValidationMessageFor(model => model.CURRENT_COMPANY, "", new { @class = "text-danger" })
@@ -53,10 +53,11 @@
             </div>
 
             <div class="form-group form-group-required">
-                @Html.LabelFor(model => model.MOBILE_NO, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.MOBILE_NO, "MOBILE NO", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
                     @Html.ValidationMessageFor(model => model.MOBILE_NO, "", new { @class = "text-danger" })
+                    <span align="right" id="errMsgMob" class="text-danger"></span>
                 </div>
             </div>
 
@@ -65,6 +66,7 @@
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
                     @Html.ValidationMessageFor(model => model.EMAIL, "", new { @class = "text-danger" })
+                    <span align="right" id="errMsgEmail" class="text-danger"></span>
                 </div>
             </div>
 
@@ -77,7 +79,7 @@
             </div>
 
             <div class="form-group form-group-required">
-                @Html.LabelFor(model => model.CURRENT_LOCATION, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.CURRENT_LOCATION, "CURRENT LOCATION", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.CURRENT_LOCATION, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
                     @Html.ValidationMessageFor(model => model.CURRENT_LOCATION, "", new { @class = "text-danger" })
@@ -93,7 +95,7 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.YEARS_OF_EXP_RELEVANT, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.YEARS_OF_EXP_RELEVANT, "RELEVANT EXPERIENCE", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.YEARS_OF_EXP_RELEVANT, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_RELEVANT, "", new { @class = "text-danger" })
@@ -101,23 +103,25 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.ALTERNATE_MOBILE_NO, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.ALTERNATE_MOBILE_NO, "ALTERNATE MOBILE", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.ALTERNATE_MOBILE_NO, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.ALTERNATE_MOBILE_NO, "", new { @class = "text-danger" })
+                    <span align="right" id="errMsgAltMob" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.ALTERNATE_EMAIL_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.ALTERNATE_EMAIL_ID, "ALTERNATE EMAIL", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.ALTERNATE_EMAIL_ID, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.ALTERNATE_EMAIL_ID, "", new { @class = "text-danger" })
+                    <span align="right" id="errMsgAltEmail" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.ISINNOTICEPERIOD, "IS_IN_NOTICE_PERIOD", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.ISINNOTICEPERIOD, "IS IN NOTICE PERIOD?", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     <div class="checkbox">
                         <span><input type="radio" id="rdoIsNPYes" name="IsNP" checked="checked" value="Yes" />Yes</span>
@@ -128,7 +132,7 @@
             </div>
 
             <div class="form-group form-group-required" id="txtLWD">
-                @Html.LabelFor(model => model.LAST_WORKING_DATE, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.LAST_WORKING_DATE, "LAST WORKING DATE", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.LAST_WORKING_DATE, new { htmlAttributes = new { @class = "form-control date-picker", placeholder = "Select a date..." } })
                     <span align="right" id="errMsgLWD" class="text-danger"></span>
@@ -136,7 +140,7 @@
             </div>
 
         <div class="form-group form-group-required hide" id="txtNP">
-            @Html.LabelFor(model => model.NOTICE_PERIOD, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.NOTICE_PERIOD, "NOTICE PERIOD", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <select id="ddlNoticePeriod" name="ddlNoticePeriod" class="form-control">
                     <option value="">Select Notice Period</option>
@@ -170,8 +174,16 @@
 
 @if (Request.QueryString.Count > 0 && Request.QueryString["styp"] == "H")
 {
-    @Html.ActionLink("Back to List", "Index", "Home")}
-else {@Html.ActionLink("Back to List", "Index")}
+    @Html.ActionLink("Back to List", "Index", "Home")
+}
+else if (Request.QueryString.Count > 0 && Request.QueryString["styp"] == "A")
+{
+    @Html.ActionLink("Back to List", "Index", "Job")
+}
+else
+{
+    @Html.ActionLink("Back to List", "Index")
+}
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

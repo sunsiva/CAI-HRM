@@ -26,6 +26,8 @@
         <EntityTypeShape EntityType="HRPortalModel.CANDIDATE" Width="1.5" PointX="7.75" PointY="13.75" />
         <AssociationConnector Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING" />
         <EntityTypeShape EntityType="HRPortalModel.EXCEPTION_LOGGING" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="HRPortalModel.JOB_HISTORY" Width="1.5" PointX="7.75" PointY="20.625" />
+        <AssociationConnector Association="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

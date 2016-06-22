@@ -12,14 +12,15 @@ using System.Web.Mvc;
 
 namespace HRPortal
 {
+    [LogActionFilter]
     public class VendorController : Controller
     {
         private HRPortalEntities db = new HRPortalEntities();
 
         // GET: Vendor
+
         public ActionResult Index()
         {
-
             return View(db.VENDOR_MASTER.ToList());
         }
 

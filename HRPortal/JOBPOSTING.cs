@@ -18,6 +18,7 @@ namespace HRPortal
         public JOBPOSTING()
         {
             this.CANDIDATES = new HashSet<CANDIDATE>();
+            this.JOB_HISTORY = new HashSet<JOB_HISTORY>();
         }
     
         public System.Guid JOB_ID { get; set; }
@@ -41,5 +42,7 @@ namespace HRPortal
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CANDIDATE> CANDIDATES { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<JOB_HISTORY> JOB_HISTORY { get; set; }
     }
 }

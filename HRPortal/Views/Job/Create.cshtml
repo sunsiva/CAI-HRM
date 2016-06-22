@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <br />
-<h2 align="center">Create a new Job</h2>
+<h2 align="center">Create A New Job</h2>
 
 
 @using (Html.BeginForm("Create", "Job", FormMethod.Post, new { enctype = "multipart/form-data", @Id = "JobForm" }))
@@ -29,15 +29,17 @@
             @Html.LabelFor(model => model.JOB_DESCRIPTION, "JOB DESCRIPTION", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextAreaFor(model => model.JOB_DESCRIPTION, new { @class= "textarea-input-custom", @required = "mandatory"})
+                <br />
                 @Html.ValidationMessageFor(model => model.JOB_DESCRIPTION, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group form-group-required">
-            @Html.LabelFor(model => model.NO_OF_VACANCIES, "NO.OF VACANCIES", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.NO_OF_VACANCIES, "NO OF VACANCIES", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.NO_OF_VACANCIES, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
-                @Html.ValidationMessageFor(model => model.NO_OF_VACANCIES, "", new { @class = "text-danger" })
+                @*@Html.ValidationMessageFor(model => model.NO_OF_VACANCIES, "", new { @class = "text-danger" })*@
+                <span align="right" id="errMsgNoOfVacan" class="text-danger"></span>
             </div>
         </div>
 
@@ -91,7 +93,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" id="btnJobCreate" value="Create" class="btn btn-default" />
                 <input type="button" value="Clear" onclick="this.form.reset()" class="btn btn-default" />
             </div>
         </div>
@@ -108,9 +110,11 @@
 <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
 <script lang="ja" type="text/javascript">
     $(document).ready(function () {
-        $('.date-picker').datetimepicker({
-            format: 'MM/DD/YYYY'
+        $("#btnJobCreate").click(function () {
+            if ($("#NO_OF_VACANCIES").val() == "")
+                $("#errMsgNoOfVacan").text("This field is required.");
         });
+
     });
 </script>
 }

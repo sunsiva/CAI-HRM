@@ -17,9 +17,12 @@ using System.Net.Mime;
 using HRPortal.Common;
 using HRPortal.Common.Enums;
 using PagedList;
+using System.Web.Http.Controllers;
+using System.Threading;
 
 namespace HRPortal.Controllers
 {
+    [LogActionFilter]
     public class CandidateController : Controller
     {
         private HRPortalEntities db = new HRPortalEntities();
@@ -33,7 +36,6 @@ namespace HRPortal.Controllers
         {
             try
             {
-                
                 List<CANDIDATE> canDb = new List<CANDIDATE>();
                 var uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                 canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
@@ -51,7 +53,7 @@ namespace HRPortal.Controllers
                     STATUS_ID = i.STATUS,
                     STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
                 }).ToList();
-
+                ViewBag.TotalRecord = canLst.Count();
                 canLst = canDb != null? GetPagination(canLst, sOdr, page): canLst;
 
                 int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
@@ -86,7 +88,7 @@ namespace HRPortal.Controllers
                     CREATED_ON = i.CREATED_ON,
                     CREATED_BY = logvmodel.GetUserNameById(i.CREATED_BY),
                 }).ToList();
-
+                ViewBag.TotalRecord = canLst.Count();
                 canLst = squadsLst != null ? GetPagination(canLst, sOdr, page) : canLst;
 
                 int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
@@ -109,11 +111,9 @@ namespace HRPortal.Controllers
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
                 CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
-                var owner = (from j in db.CANDIDATES.ToList()
-                             join u in db.AspNetUsers.ToList() on j.CREATED_BY equals u.Id
-                             where j.CANDIDATE_ID == id
-                             select u.FirstName + " " + u.LastName).FirstOrDefault();
-                cANDIDATE.CREATED_BY = owner.ToString();
+                var userLst = db.AspNetUsers.ToList();
+                cANDIDATE.CREATED_BY = userLst.Where(u => u.Id == cANDIDATE.CREATED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
+                cANDIDATE.MODIFIED_BY = userLst.Where(u => u.Id == cANDIDATE.MODIFIED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
                 var stsCmnts = db.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).OrderByDescending(j => j.MODIFIED_ON).FirstOrDefault().COMMENTS;
                 ViewBag.StatusComments = stsCmnts;
                 if (cANDIDATE == null)
@@ -138,31 +138,39 @@ namespace HRPortal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,LAST_WORKING_DATE")] CANDIDATE cANDIDATE, HttpPostedFileBase file,FormCollection frm)
         {
-            var jid = Request.UrlReferrer.Query.ToString().Split('&').Count()>1? Request.UrlReferrer.Query.ToString().Split('&')[1]: cANDIDATE.JOB_ID.ToString();
             if (IsCandidateDuplicate(cANDIDATE.MOBILE_NO, cANDIDATE.DOB.ToShortDateString()))
             {
                 ViewBag.IsExist = "Candidate is already exist.";
             }
-            else { 
-            if (ModelState.IsValid)
+            else
             {
+                string _uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                if (ModelState.IsValid && file != null && _uid != string.Empty)
+                {
+                    var jid = Request.UrlReferrer.Query.ToString().Split('&').Count() > 1 ? Request.UrlReferrer.Query.ToString().Split('&')[1] : cANDIDATE.JOB_ID.ToString();
                     cANDIDATE.CANDIDATE_ID = Guid.NewGuid();
-                    cANDIDATE.JOB_ID = new Guid(jid.Replace("JID=",string.Empty));
+                    cANDIDATE.CANDIDATE_NAME = cANDIDATE.CANDIDATE_NAME.Trim();
+                    cANDIDATE.JOB_ID = new Guid(jid.Replace("JID=", string.Empty));
                     cANDIDATE.ISACTIVE = true;
-                    cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes")?true:false;
+                    cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
                     cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
-                    cANDIDATE.CREATED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                    cANDIDATE.CREATED_BY = (_uid == string.Empty ? User.Identity.Name : _uid);
                     cANDIDATE.CREATED_ON = DateTime.Now;
                     cANDIDATE.STATUS = db.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID.ToString();
                     cANDIDATE.RESUME_FILE_PATH = FileUpload(file);
                     db.CANDIDATES.Add(cANDIDATE);
                     await db.SaveChangesAsync();
 
-                vmodel.UpdateStatus(Guid.Empty, cANDIDATE.CANDIDATE_ID, string.Empty);
-                return RedirectToAction("Index");
+                    vmodel.UpdateStatus(Guid.Empty, cANDIDATE.CANDIDATE_ID, string.Empty);
+
+                    string _admin = (Request.UrlReferrer.Query.ToString().Split('&').Count() > 1 ? Request.UrlReferrer.Query.ToString().Split('&')[2] : string.Empty);
+                    if(_admin.ToString().ToLower().Contains("styp=a")) //For redirecting to Admin's job list page
+                        return RedirectToAction("Index","Job");
+
+                    return RedirectToAction("Index");
+                }
             }
-            }
-            ModelState.AddModelError("FILD", "Failed to Insert");
+            ModelState.AddModelError("FAILED", "Failed to Insert");
             return View(cANDIDATE);
         }
         
@@ -241,23 +249,35 @@ namespace HRPortal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,JOB_ID,CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] CANDIDATE cANDIDATE, HttpPostedFileBase file, FormCollection frm)
         {
-            try { 
-            if (ModelState.IsValid)
+            try
             {
-                cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
-                cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
-                cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
-                cANDIDATE.MODIFIED_ON = DateTime.Now;
-                cANDIDATE.LAST_WORKING_DATE = string.IsNullOrEmpty(frm["LAST_WORKING_DATE"])? cANDIDATE.LAST_WORKING_DATE : DateTime.Parse(frm["LAST_WORKING_DATE"]);
-                cANDIDATE.RESUME_FILE_PATH = (file==null? frm["RESUME_FILE_PATH"]: FileUpload(file));
-                db.Entry(cANDIDATE).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                if(Request.UrlReferrer.Query.ToString()== "?styp=S")
-                    return RedirectToAction("SquadJobs");
-                else
-                    return RedirectToAction("Index"); 
-                }
-            return View(cANDIDATE);
+                //TODO:duplicate has to be checked
+                //CANDIDATE oldCan = db.CANDIDATES.Find(cANDIDATE.CANDIDATE_ID);
+                //var isExist = (oldCan.MOBILE_NO == cANDIDATE.MOBILE_NO || oldCan.DOB == cANDIDATE.DOB) ? true : false;
+                //if (!isExist && IsCandidateDuplicate(cANDIDATE.MOBILE_NO, cANDIDATE.DOB.ToShortDateString()))
+                //{
+                //    ViewBag.IsExist = "Candidate is already exist.";
+                //}
+                //else
+                //{
+                    if (ModelState.IsValid)
+                    {
+                        cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
+                        cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
+                        cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                        cANDIDATE.MODIFIED_ON = DateTime.Now;
+                        cANDIDATE.LAST_WORKING_DATE = string.IsNullOrEmpty(frm["LAST_WORKING_DATE"]) ? cANDIDATE.LAST_WORKING_DATE : DateTime.Parse(frm["LAST_WORKING_DATE"]);
+                        cANDIDATE.RESUME_FILE_PATH = (file == null ? frm["RESUME_FILE_PATH"] : FileUpload(file));
+                        db.Entry(cANDIDATE).State = EntityState.Modified;
+                        await db.SaveChangesAsync();
+                        if (Request.UrlReferrer.Query.ToString() == "?styp=S")
+                            return RedirectToAction("SquadJobs");
+                        else
+                            return RedirectToAction("Index");
+                    }
+                
+                ModelState.AddModelError("FAILED", "Failed to update");
+                return View(cANDIDATE);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -283,16 +303,19 @@ namespace HRPortal.Controllers
         // POST: Candidate/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(Guid id)
+        public async Task<ActionResult> DeleteConfirmed(Guid id, CANDIDATE model)
         {
             try { 
-            CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
+
+                CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
                 //db.CANDIDATES.Remove(cANDIDATE);
-                cANDIDATE.COMMENTS = "";
+                cANDIDATE.COMMENTS = cANDIDATE.COMMENTS+ " || "+ model.COMMENTS;
                 cANDIDATE.ISACTIVE = false;
+                cANDIDATE.MODIFIED_BY = (HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]) == string.Empty ? User.Identity.Name : Session[CacheKey.Uid.ToString()].ToString());
+                cANDIDATE.MODIFIED_ON = DateTime.Now;
                 db.Entry(cANDIDATE).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-            return RedirectToAction("Index","Home");
+                return RedirectToAction("Index","Home");
             }
             catch (Exception ex) { throw ex; }
         }
@@ -410,7 +433,7 @@ namespace HRPortal.Controllers
             }
             catch (Exception ex) { throw ex; }
         }
-
+        
         protected override void OnException(ExceptionContext filterContext)
         {
             Exception e = filterContext.Exception;

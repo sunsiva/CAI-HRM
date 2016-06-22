@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<h2>Create Staffing Partner</h2>
 
 
 @using (Html.BeginForm()) 
@@ -13,14 +13,13 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>STAFFING PARTNER</h4>
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @*@Html.ValidationSummary("", new { @class = "text-danger" })*@
         <div class="form-group form-group-required">
             @Html.Label("PARTNER NAME", new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.VENDOR_NAME, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
-                @Html.ValidationMessageFor(model => model.VENDOR_NAME, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.VENDOR_NAME, new { @class = "form-control", @required = "mandatory" })
+                @Html.ValidationMessageFor(m => m.VENDOR_NAME, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -102,6 +101,7 @@
 
 <div>
     @Html.ActionLink("Back to List", "Index")
+    <br /><br /><br /><br />
 </div>
 
 @section Scripts {

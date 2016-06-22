@@ -9,10 +9,12 @@ using Microsoft.Owin.Security;
 using HRPortal.Models;
 using System.Data.Entity;
 using HRPortal.Helper;
+using HRPortal.Common;
 
 namespace HRPortal.Controllers
 {
     [Authorize]
+    [LogActionFilter]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;

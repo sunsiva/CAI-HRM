@@ -106,12 +106,18 @@ namespace HRPortal.Models
 
         public void SetUserToCache(string email)
         {
-            var user = db.AspNetUsers.ToList().Where(m => m.UserName == email).FirstOrDefault();
-            var rolename = (from usr in db.AspNetUsers.ToList()
-                            join rlx in db.UserXRoles.ToList() on Guid.Parse(usr.Id) equals rlx.UserId
-                            join rle in db.AspNetRoles.ToList() on rlx.RoleId equals Guid.Parse(rle.Id)
-                            where usr.Id == user.Id
+            var user = db.AspNetUsers.Where(x=>x.UserName==email).FirstOrDefault();
+            var rolename = (from rle in db.AspNetRoles.ToList()
+                            join rlx in db.UserXRoles.ToList() on Guid.Parse(rle.Id) equals rlx.RoleId
+                            where rlx.UserId == Guid.Parse(user.Id)
                             select rle.Name).FirstOrDefault();
+
+            //var rolename = (from usr in db.AspNetUsers.ToList()
+            //                join rlx in db.UserXRoles.ToList() on Guid.Parse(usr.Id) equals rlx.UserId
+            //                join rle in db.AspNetRoles.ToList() on rlx.RoleId equals Guid.Parse(rle.Id)
+            //                where usr.Id == id
+            //                select rle.Name).FirstOrDefault();
+
             HttpContext.Current.Session[CacheKey.VendorId.ToString()]= user.Vendor_Id;
             HttpContext.Current.Session[CacheKey.RoleName.ToString()]= rolename;
             HttpContext.Current.Session[CacheKey.Uid.ToString()]= user.Id;

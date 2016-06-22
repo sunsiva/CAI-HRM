@@ -5,7 +5,8 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int sl = 0;
+    int pNo = Model.PageNumber;
+    int sl = (pNo == 1 ? 0 : (pNo - 1) * 10);
 }
 
 <link href="~/Content/tags/jquery.tagit.css" rel="stylesheet" />
@@ -24,7 +25,7 @@
                             @Html.ActionLink("CANDIDATE NAME", "Index", new { sOdr = ViewBag.CNameSort })
                         </th>
                         <th>
-                            YEARS OF EXP.
+                            YEARS OF EXP
                         </th>
                         <th>
                             MOBILE NO
@@ -108,7 +109,7 @@
                         <input type="hidden" id="hdnCandidateId" />
                         <a href="@Url.Action("ExportToExcel", "Candidate")" title="Export To Excel" id="btnExport"><img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a>
                     </td>
-                    <td align="right" class="" colspan="10">@Model.Count() Record(s) found.</td></tr>
+                    <td align="right" class="" colspan="10">@ViewBag.TotalRecord Record(s) Found.</td></tr>
                 </table>
                 <div class="clearfix"></div>
                 <table align="right">

@@ -79,7 +79,7 @@ namespace HRPortal.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Email.ToLower(), model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -167,7 +167,7 @@ namespace HRPortal.Controllers
             {
                 using (var dbContextTransaction = db.Database.BeginTransaction())
                 {
-                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber };
+                    var user = new ApplicationUser { UserName = model.Email.ToLower(), Email = model.Email.ToLower(), PhoneNumber = model.PhoneNumber };
                     var result = await UserManager.CreateAsync(user, model.Password);
                     //string sqlqry = "UPDATE[dbo].[AspNetUsers] SET[Vendor_Id] = '"+Guid.NewGuid()+"',[IsAdmin] = 0,[CreatedBy] ='" + user.Id + "',[CreatedOn] = GETDATE() WHERE Id = '" + user.Id+"'";
                     //await db.Database.ExecuteSqlCommandAsync(sqlqry);
@@ -204,6 +204,8 @@ namespace HRPortal.Controllers
                             return View(model);
                        
                          }
+
+                        ViewBag.RegFail = result.Errors.FirstOrDefault();
                         AddErrors(result);
                     }
                     catch (Exception) {

@@ -5,7 +5,7 @@
     int pSize = ViewBag.PageSize;
     int pNo = ViewBag.PageNo;
     var modal = Model.ToPagedList(pNo, pSize);
-    int sl = 0;
+    int sl = (pNo == 1 ? 0 : (pNo - 1) * 10);
 }
 
 <div class="container" id="JobDetailsPartial">
@@ -76,7 +76,7 @@
                     }
 
                     <tr><td align="left"><a href="@Url.Action("ExportToExcel","Job")" title="Export To Excel" id="btnExport"><img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a></td>
-                    <td align="right" class="" colspan="11">@Model.Count() Record(s) found.</td></tr>
+                    <td align="right" class="" colspan="11">@Model.Count() Record(s) Found.</td></tr>
                 </table>
                 <table align="right">
                     <tr>

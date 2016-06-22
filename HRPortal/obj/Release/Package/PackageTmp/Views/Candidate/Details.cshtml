@@ -98,11 +98,16 @@
         <dt>
             @Html.DisplayName("COMMENTS")
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.COMMENTS)
         </dd>
-
+        <dt>
+            @Html.DisplayName("STATUS COMMENTS")
+        </dt>
+        <dd>
+            @ViewBag.StatusComments
+        </dd>
+        
         <dt>
             @Html.DisplayName("STATUS")
         </dt>

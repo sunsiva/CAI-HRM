@@ -149,6 +149,17 @@
           <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
+        <EntityType Name="JOB_HISTORY">
+          <Key>
+            <PropertyRef Name="JOB_HIST_ID" />
+          </Key>
+          <Property Name="JOB_HIST_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="JOB_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="JOB_COMMENTS" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IS_ACTIVE" Type="bit" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="150" />
+          <Property Name="CREATED_ON" Type="datetime" />
+        </EntityType>
         <EntityType Name="JOBPOSTING">
           <Key>
             <PropertyRef Name="JOB_ID" />
@@ -310,6 +321,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_JOB_HISTORY_JOBPOSTING">
+          <End Role="JOBPOSTING" Type="Self.JOBPOSTING" Multiplicity="1" />
+          <End Role="JOB_HISTORY" Type="Self.JOB_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="JOBPOSTING">
+              <PropertyRef Name="JOB_ID" />
+            </Principal>
+            <Dependent Role="JOB_HISTORY">
+              <PropertyRef Name="JOB_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
           <End Role="STATUS_MASTER" Type="Self.STATUS_MASTER" Multiplicity="1" />
           <End Role="STATUS_HISTORY" Type="Self.STATUS_HISTORY" Multiplicity="*" />
@@ -333,6 +356,7 @@
           <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EVENTSCHEDULE" EntityType="Self.EVENTSCHEDULE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EXCEPTION_LOGGING" EntityType="Self.EXCEPTION_LOGGING" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JOB_HISTORY" EntityType="Self.JOB_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JOBPOSTING" EntityType="Self.JOBPOSTING" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" Schema="dbo" store:Type="Tables" />
@@ -359,6 +383,10 @@
           <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JOB_HISTORY_JOBPOSTING" Association="Self.FK_JOB_HISTORY_JOBPOSTING">
+            <End Role="JOBPOSTING" EntitySet="JOBPOSTING" />
+            <End Role="JOB_HISTORY" EntitySet="JOB_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="Self.FK_STATUS_HISTORY_STATUS_MASTER">
             <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
@@ -446,6 +474,11 @@
             <End Role="CANDIDATE" EntitySet="CANDIDATES" />
           </AssociationSet>
           <EntitySet Name="EXCEPTION_LOGGING" EntityType="HRPortalModel.EXCEPTION_LOGGING" />
+          <EntitySet Name="JOB_HISTORY" EntityType="HRPortalModel.JOB_HISTORY" />
+          <AssociationSet Name="FK_JOB_HISTORY_JOBPOSTING" Association="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING">
+            <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
+            <End Role="JOB_HISTORY" EntitySet="JOB_HISTORY" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="UserLog">
           <Key>
@@ -509,6 +542,7 @@
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="CANDIDATES" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="JOBPOSTING" ToRole="CANDIDATE" />
+          <NavigationProperty Name="JOB_HISTORY" Relationship="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOBPOSTING" ToRole="JOB_HISTORY" />
         </EntityType>
         <EntityType Name="UserXRole">
           <Key>
@@ -707,6 +741,30 @@
           <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CREATED_BY" Type="Guid" Nullable="false" />
         </EntityType>
+        <EntityType Name="JOB_HISTORY">
+          <Key>
+            <PropertyRef Name="JOB_HIST_ID" />
+          </Key>
+          <Property Name="JOB_HIST_ID" Type="Guid" Nullable="false" />
+          <Property Name="JOB_ID" Type="Guid" Nullable="false" />
+          <Property Name="JOB_COMMENTS" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IS_ACTIVE" Type="Boolean" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="JOBPOSTING" Relationship="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOB_HISTORY" ToRole="JOBPOSTING" />
+        </EntityType>
+        <Association Name="FK_JOB_HISTORY_JOBPOSTING">
+          <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
+          <End Type="HRPortalModel.JOB_HISTORY" Role="JOB_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="JOBPOSTING">
+              <PropertyRef Name="JOB_ID" />
+            </Principal>
+            <Dependent Role="JOB_HISTORY">
+              <PropertyRef Name="JOB_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -966,6 +1024,18 @@
                 <ScalarProperty Name="EXCEPTION_TYPE" ColumnName="EXCEPTION_TYPE" />
                 <ScalarProperty Name="EXCEPTION_MSG" ColumnName="EXCEPTION_MSG" />
                 <ScalarProperty Name="LOG_ID" ColumnName="LOG_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="JOB_HISTORY">
+            <EntityTypeMapping TypeName="HRPortalModel.JOB_HISTORY">
+              <MappingFragment StoreEntitySet="JOB_HISTORY">
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+                <ScalarProperty Name="JOB_COMMENTS" ColumnName="JOB_COMMENTS" />
+                <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+                <ScalarProperty Name="JOB_HIST_ID" ColumnName="JOB_HIST_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

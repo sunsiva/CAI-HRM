@@ -15,6 +15,7 @@ using HRPortal.Common.Enums;
 
 namespace HRPortal.Controllers
 {
+    [LogActionFilter]
     public class AppointmentController : Controller
     {
         private HRPortalEntities db = new HRPortalEntities();

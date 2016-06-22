@@ -228,6 +228,7 @@
     <Compile Include="Common\DiaryEvents.cs" />
     <Compile Include="Common\HRPConst.cs" />
     <Compile Include="Common\IContext.cs" />
+    <Compile Include="Common\LogActionFilter.cs" />
     <Compile Include="Common\LoggingUtil.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppointmentController.cs" />
@@ -272,6 +273,9 @@
       <DependentUpon>HRPortal.edmx</DependentUpon>
     </Compile>
     <Compile Include="JOBPOSTING.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="JOB_HISTORY.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
@@ -344,6 +348,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -413,7 +418,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />

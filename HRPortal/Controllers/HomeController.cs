@@ -14,9 +14,11 @@ using PagedList;
 using HRPortal.Common;
 using HRPortal.Common.Enums;
 using System.Security.Claims;
+using Microsoft.AspNet.Identity;
 
 namespace HRPortal.Controllers
 {
+    [LogActionFilter]
     public class HomeController : Controller
     {
         ApplicationDbContext ctxt = new ApplicationDbContext();
@@ -28,7 +30,7 @@ namespace HRPortal.Controllers
 
         public async Task<ActionResult> Index(string sOdr, int? page)
         {
-            try { 
+            try {
                 if (User.Identity.IsAuthenticated)
                 {
                     CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
@@ -48,12 +50,14 @@ namespace HRPortal.Controllers
                         jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
                         ViewBag.StatusList = vmodelCan.GetStatusList();
                     }
-                    else {
+                    else
+                    {
                         jobCanObj.JobItems = dbJobs;
                     }
 
                     jobCanObj = (jobCanObj.CandidateItems != null && jobCanObj.CandidateItems.Count > 0)
                         || (jobCanObj.JobItems != null && jobCanObj.JobItems.Count > 0) ? GetPagination(jobCanObj, sOdr, page) : jobCanObj;
+
                     return View(jobCanObj);
                 }
                 return RedirectToAction("Login", "Account");
@@ -70,7 +74,7 @@ namespace HRPortal.Controllers
                     CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
                     var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                     jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                    ViewBag.StatusList = vmodelCan.GetStatusList();
+                        ViewBag.StatusList = vmodelCan.GetStatusList();
                     if (jobCanObj.CandidateItems.Count > 0) { 
                         jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
                     return PartialView("_CandidateList", jobCanObj.CandidateItems);
@@ -380,7 +384,7 @@ namespace HRPortal.Controllers
             Exception e = filterContext.Exception;
             //Log Exception e to DB.
             if (!filterContext.ExceptionHandled) { 
-           // LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
+                LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
                 filterContext.ExceptionHandled = true;
             }
             //filterContext.Result = new ViewResult()

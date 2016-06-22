@@ -6,7 +6,8 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int sl = 0;
+    int pNo = Model.PageNumber;
+    int sl = (pNo == 1 ? 0 : (pNo - 1) * 10);
 }
 <br />
 <h2>Job Posting</h2>
@@ -31,13 +32,13 @@
                             @Html.DisplayName("JOB DESCRIPTION")
                         </th>
                         <th>
-                            @Html.DisplayName("NO.OF VACANCIES")
+                            @Html.DisplayName("NO OF VACANCIES")
                         </th>
                         <th>
-                            @Html.DisplayName("CUSTOMER NAME")
+                            @Html.ActionLink("CUSTOMER NAME", "Index", new { sOdr = ViewBag.CustSort })
                         </th>
                         <th>
-                            @Html.DisplayName("YEARS OF EXP.TOTAL")
+                            @Html.DisplayName("YEARS OF EXP TOTAL")
                         </th>
                         <th>
                            PUBLISHED DATE
@@ -53,7 +54,8 @@
                         <tr class="text-center">
                             <td>@(sl = sl + 1) </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.JOB_CODE)
+                                @Html.ActionLink(item.JOB_CODE.ToString(), "Create", "Candidate", new { JCode = item.JOB_CODE, JID = item.JOB_ID, styp = "A" }, htmlAttributes: new { @title = "Click To Map Profile" })
+                                @*@Html.DisplayFor(modelItem => item.JOB_CODE)*@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.POSITION_NAME)
@@ -105,7 +107,7 @@
                             </td>
                         </tr>
                     }
-                    <tr><td align="right" class="" colspan="12">@Model.Count() Record(s) found.</td></tr>
+                    <tr><td align="right" class="" colspan="12">@ViewBag.TotalRecord Record(s) Found.</td></tr>
                 </table>
                 <div class="clearfix"></div>
                 <table align="right">

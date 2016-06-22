@@ -41,5 +41,6 @@ namespace HRPortal
         public virtual DbSet<EVENTSCHEDULE> EVENTSCHEDULEs { get; set; }
         public virtual DbSet<CANDIDATE> CANDIDATES { get; set; }
         public virtual DbSet<EXCEPTION_LOGGING> EXCEPTION_LOGGING { get; set; }
+        public virtual DbSet<JOB_HISTORY> JOB_HISTORY { get; set; }
     }
 }

@@ -14,12 +14,13 @@ using HRPortal.Helper;
 using PagedList;
 using HRPortal.Common;
 using HRPortal.Common.Enums;
+using Microsoft.AspNet.Identity;
 
 namespace HRPortal.Controllers
 {
+    [LogActionFilter]
     public class JobController : Controller
     {
-
         private HRPortalEntities dbContext = new HRPortalEntities();
         const int pageSize = 10;
 
@@ -29,7 +30,7 @@ namespace HRPortal.Controllers
 
             var jobLst = await dbContext.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
             jobLst = GetPagination(jobLst, sOdr, page);
-
+            ViewBag.TotalRecord = jobLst.Count();
             int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
             int pNo = ViewBag.PageNo == null ? 0 : ViewBag.PageNo;
 
@@ -108,15 +109,15 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_ON,CREATED_BY")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file)
+        public async Task<ActionResult> Edit([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_ON,CREATED_BY")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file, FormCollection frm)
         {
             try { 
             if (ModelState.IsValid)
             {
-                jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
-                jOBPOSTING.MODIFIED_ON = DateTime.Now;
-                jOBPOSTING.JD_FILE_PATH = FileUpload(file);
-                dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
+                    jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                    jOBPOSTING.MODIFIED_ON = DateTime.Now;
+                    jOBPOSTING.JD_FILE_PATH = (file == null ? frm["JD_FILE_PATH"] : FileUpload(file));
+                    dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
 
                 return RedirectToAction("Index");
@@ -144,7 +145,7 @@ namespace HRPortal.Controllers
         // POST: Job/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(Guid id)
+        public async Task<ActionResult> DeleteConfirmed(Guid id, JOBPOSTING model)
         {
             try { 
             JOBPOSTING jOBPOSTING = await dbContext.JOBPOSTINGs.FindAsync(id);
@@ -154,11 +155,22 @@ namespace HRPortal.Controllers
             }
             else {
                     //dbContext.JOBPOSTINGs.Remove(jOBPOSTING);
-                    jOBPOSTING.COMMENTS = "";
+                    jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                    jOBPOSTING.MODIFIED_ON = DateTime.Now;
                     jOBPOSTING.ISACTIVE = false;
                     dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
                     await dbContext.SaveChangesAsync();
-            }
+
+                    JOB_HISTORY jobhist = new JOB_HISTORY();
+                    jobhist.JOB_HIST_ID = Guid.NewGuid();
+                    jobhist.JOB_ID = id;
+                    jobhist.JOB_COMMENTS = model.COMMENTS;
+                    jobhist.IS_ACTIVE = false;
+                    jobhist.CREATED_BY = Session[CacheKey.Uid.ToString()] == null ? User.Identity.Name : Session[CacheKey.Uid.ToString()].ToString();
+                    jobhist.CREATED_ON = DateTime.Now;
+                    dbContext.JOB_HISTORY.Add(jobhist);
+                    await dbContext.SaveChangesAsync();
+                }
             return RedirectToAction("Index");
             }
             catch (Exception ex) { throw ex; }
@@ -251,7 +263,7 @@ namespace HRPortal.Controllers
             {
                 ViewBag.JCodeSort = string.IsNullOrEmpty(sOdr) ? "JCode_desc" : "";
                 ViewBag.PosSort = sOdr == "Pos_desc" ? "Pos_asc" : "Pos_desc";
-
+                ViewBag.CustSort = sOdr == "Cust_desc" ? "Cust_asc" : "Cust_desc";
                 switch (sOdr)
                 {
                     case "JCode_desc":
@@ -262,6 +274,12 @@ namespace HRPortal.Controllers
                         break;
                     case "Pos_asc":
                         jobCanObj = jobCanObj.OrderBy(s => s.POSITION_NAME).ToList();
+                        break;
+                    case "Cust_desc":
+                        jobCanObj = jobCanObj.OrderByDescending(s => s.CUSTOMER_NAME).ToList();
+                        break;
+                    case "Cust_asc":
+                        jobCanObj = jobCanObj.OrderBy(s => s.CUSTOMER_NAME).ToList();
                         break;
                     default:
                         jobCanObj = jobCanObj.OrderBy(s => s.JOB_CODE).ToList();

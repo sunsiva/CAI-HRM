@@ -5,10 +5,11 @@
 @{
     ViewBag.Title = "SquadJobs";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int sl = 0;
+    int pNo = Model.PageNumber;
+    int sl = (pNo == 1 ? 0 : (pNo - 1) * 10);
 }
 
-<h2>Profile submissions by squad</h2>
+<h2>Profile Submissions By Squad</h2>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -97,7 +98,7 @@
                 </td>*@
                 </tr>
     }
-                    <tr><td><input type="hidden" id="hdnCandidateId" /><input type="hidden" id="hdnStatusId" /></td><td align="right" class="" colspan="11">@Model.Count() Record(s) found.</td></tr>
+                    <tr><td><input type="hidden" id="hdnCandidateId" /><input type="hidden" id="hdnStatusId" /></td><td align="right" class="" colspan="11">@ViewBag.TotalRecord Record(s) Found.</td></tr>
                 </table>
                 <div class="clearfix"></div>
                 <table align="right">

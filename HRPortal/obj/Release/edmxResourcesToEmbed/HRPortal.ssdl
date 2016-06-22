@@ -144,6 +144,17 @@
     <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
     <Property Name="CREATED_BY" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
+  <EntityType Name="JOB_HISTORY">
+    <Key>
+      <PropertyRef Name="JOB_HIST_ID" />
+    </Key>
+    <Property Name="JOB_HIST_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="JOB_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="JOB_COMMENTS" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="IS_ACTIVE" Type="bit" />
+    <Property Name="CREATED_BY" Type="nvarchar" MaxLength="150" />
+    <Property Name="CREATED_ON" Type="datetime" />
+  </EntityType>
   <EntityType Name="JOBPOSTING">
     <Key>
       <PropertyRef Name="JOB_ID" />
@@ -305,6 +316,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_JOB_HISTORY_JOBPOSTING">
+    <End Role="JOBPOSTING" Type="Self.JOBPOSTING" Multiplicity="1" />
+    <End Role="JOB_HISTORY" Type="Self.JOB_HISTORY" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="JOBPOSTING">
+        <PropertyRef Name="JOB_ID" />
+      </Principal>
+      <Dependent Role="JOB_HISTORY">
+        <PropertyRef Name="JOB_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
     <End Role="STATUS_MASTER" Type="Self.STATUS_MASTER" Multiplicity="1" />
     <End Role="STATUS_HISTORY" Type="Self.STATUS_HISTORY" Multiplicity="*" />
@@ -328,6 +351,7 @@
     <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="EVENTSCHEDULE" EntityType="Self.EVENTSCHEDULE" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="EXCEPTION_LOGGING" EntityType="Self.EXCEPTION_LOGGING" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="JOB_HISTORY" EntityType="Self.JOB_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="JOBPOSTING" EntityType="Self.JOBPOSTING" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" Schema="dbo" store:Type="Tables" />
@@ -354,6 +378,10 @@
     <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+    </AssociationSet>
+    <AssociationSet Name="FK_JOB_HISTORY_JOBPOSTING" Association="Self.FK_JOB_HISTORY_JOBPOSTING">
+      <End Role="JOBPOSTING" EntitySet="JOBPOSTING" />
+      <End Role="JOB_HISTORY" EntitySet="JOB_HISTORY" />
     </AssociationSet>
     <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="Self.FK_STATUS_HISTORY_STATUS_MASTER">
       <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />

@@ -48,7 +48,7 @@ namespace HRPortal.Models
         {
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
             var stsId = dbContext.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID;
-            var uid = HttpContext.Current.Session[CacheKey.Uid.ToString()] == null ? Guid.NewGuid() : HttpContext.Current.Session[CacheKey.Uid.ToString()];
+            var uid = HttpContext.Current.Session[CacheKey.Uid.ToString()] == null ? HttpContext.Current.User.Identity.Name : HttpContext.Current.Session[CacheKey.Uid.ToString()];
             stsHist = new STATUS_HISTORY();
             stsHist.STATUS_ID = ((stid == null || stid == Guid.Empty) ? stsId : stid);
             stsHist.CANDIDATE_ID = cId;
@@ -70,7 +70,7 @@ namespace HRPortal.Models
             var sHist = dbContext.STATUS_HISTORY.Where(i => i.SCHEDULED_TO != null && i.SCHEDULED_TO <= DateTime.Now && i.ISACTIVE==true).ToList();
             if (sHist.Count > 0)
             { 
-                var uid = HttpContext.Current.Session[CacheKey.Uid.ToString()] == null ? Guid.NewGuid() : HttpContext.Current.Session[CacheKey.Uid.ToString()];
+                var uid = HttpContext.Current.Session[CacheKey.Uid.ToString()] == null ? HttpContext.Current.User.Identity.Name : HttpContext.Current.Session[CacheKey.Uid.ToString()];
                 var stsLst = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).ToList();
 
                 foreach (var item in sHist)
@@ -97,7 +97,7 @@ namespace HRPortal.Models
 
         public string GetStatusNameById(Guid id)
         {
-            string stsName = "Screening–Submitted";// "SCR -SBM";
+            string stsName = "Screening Submitted";// "SCR -SBM";
             var stsSrc = dbContext.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).ToList();
             if (stsSrc.Count > 0)
             {

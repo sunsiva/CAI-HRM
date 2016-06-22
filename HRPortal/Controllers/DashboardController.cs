@@ -1,10 +1,12 @@
-﻿using HRPortal.Models;
+﻿using HRPortal.Common;
+using HRPortal.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
 
 namespace HRPortal.Controllers
 {
+    [LogActionFilter]
     public class DashboardController : Controller
     {
         private HRPortalEntities db = new HRPortalEntities();

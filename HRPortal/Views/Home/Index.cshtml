@@ -26,7 +26,7 @@
     @Scripts.Render("~/bundles/jqueryval")
 <script src="~/Scripts/moment.js"></script>
 <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
-    <script lang="ja" type="text/javascript">
+<script lang="ja" type="text/javascript">
     $(document).ready(function () {
         $('.date-picker').datetimepicker({
             format: 'MM/DD/YYYY'
@@ -38,9 +38,10 @@
             var currentSts = $("#btnStsPnl_" + data.dataset.customValue + "").text();
             $("#ddlStatusList option:contains(" + currentSts + ")").attr("selected", true);
             $("#txtStsComments").val("");
+            $("#btnStatus").removeAttr("data-dismiss", "modal");
         };
 
-        $("#btnStatus").click(function () {
+        window.fnBtnStatusClick = function () {
             if ($("#ddlStatusList").val() == "") {
                 $("#errMsgModal").text("Please select a status to change.");
                 $("#ddlStatusList").focus();
@@ -52,27 +53,29 @@
                 return false;
             }
             else {
-                $.get("/Home/StatusUpdate", { id: $("#hdnCandidateId").val(), status: $("#ddlStatusList").val(), comments: $("#txtStsComments").val() }, function (data) {
-                    $("#btnStsPnl_" + $("#hdnCandidateId").val() + "").text($("#ddlStatusList option:selected").text());
-                });
+                $.get("/Home/StatusUpdate", { id: $("#hdnCandidateId").val(), status: $("#ddlStatusList").val(), comments: $("#txtStsComments").val() },
+                    function (data) {
+                        $("#btnStsPnl_" + $("#hdnCandidateId").val() + "").text($("#ddlStatusList option:selected").text());
+                    });
+                $("#btnStatus").attr("data-dismiss", "modal");
             }
+        };
+
+        $('#CollapseMe').click(function () {
+            $(this).hasClass('glyphicon-triangle-bottom') ? $(this).removeClass('glyphicon-triangle-bottom') && $(this).addClass('glyphicon-triangle-top') : $(this).removeClass('glyphicon-triangle-top') && $(this).addClass('glyphicon-triangle-bottom');
         });
 
-         $('#CollapseMe').click(function () {
-             $(this).hasClass('glyphicon-triangle-bottom') ? $(this).removeClass('glyphicon-triangle-bottom') && $(this).addClass('glyphicon-triangle-top') : $(this).removeClass('glyphicon-triangle-top') && $(this).addClass('glyphicon-triangle-bottom');
-         });
-       
-         $("#btnSearchCriteria").click(function () {
-             $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), position: $("#txtCriteriaPosition").val(), status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
-                 $("#CandidatesPartial").html(data);
-             });
-         });
+        $("#btnSearchCriteria").click(function () {
+            $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), position: $("#txtCriteriaPosition").val(), status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
+                $("#CandidatesPartial").html(data);
+            });
+        });
 
-         $("#btnSearchCriteriaJob").click(function () {
-             $.get("/Home/SearchCriteria", { name: $("#txtPositionName").val(), vendor: "", status: "", stdt: $("#txtPublishedStDate").val(), edt: $("#txtPublishedEndDate").val() }, function (data) {
-                 $("#JobDetailsPartial").html(data);
-             });
-         });
+        $("#btnSearchCriteriaJob").click(function () {
+            $.get("/Home/SearchCriteria", { name: $("#txtPositionName").val(), vendor: "", status: "", stdt: $("#txtPublishedStDate").val(), edt: $("#txtPublishedEndDate").val() }, function (data) {
+                $("#JobDetailsPartial").html(data);
+            });
+        });
     });
 </script>
 }
