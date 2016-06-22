@@ -90,12 +90,12 @@ namespace HRPortal.Models
         public System.Guid VENDOR_ID { get; set; }
         [Required]
         [Display(Name = "PARTNER NAME")]
-        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         public string VENDOR_NAME { get; set; }
 
         [Required]
         [Display(Name = "PARTNER SPOC")]
-        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         public string VENDOR_SPOC { get; set; }
 
         [Required]
@@ -105,8 +105,9 @@ namespace HRPortal.Models
 
         [Required]
         [Display(Name = "CONTACT NO")]
-        [RegularExpression("([1-9][0-9]*)")]
-        [StringLength(11, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 10)]
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression("^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$", ErrorMessage = "Please provide a valid number.")]
+        [StringLength(13, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
         public string VENDOR_CONTACT_NO { get; set; }
 
         public bool ISACTIVE { get; set; }
