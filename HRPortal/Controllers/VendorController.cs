@@ -1,6 +1,7 @@
 ﻿using HRPortal.Common;
 using HRPortal.Common.Enums;
 using HRPortal.Helper;
+using HRPortal.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,7 +22,7 @@ namespace HRPortal
 
         public ActionResult Index()
         {
-            return View(db.VENDOR_MASTER.ToList());
+            return View(db.VENDOR_MASTER.Where(i=>i.ISACTIVE== true).ToList());
         }
 
         // GET: Vendor/Details/5
@@ -50,21 +51,27 @@ namespace HRPortal
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "VENDOR_ID,VENDOR_NAME,VENDOR_SPOC,EMAIL,VENDOR_CONTACT_NO,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] VENDOR_MASTER vENDOR_MASTER)
+        public ActionResult Create([Bind(Include = "VENDOR_ID,VENDOR_NAME,VENDOR_SPOC,EMAIL,VENDOR_CONTACT_NO")] VendorMasterViewModel vendor)
         {
-            try { 
+            try
+            { 
             if (ModelState.IsValid)
             {
-                vENDOR_MASTER.VENDOR_ID = Guid.NewGuid();
+                VENDOR_MASTER vENDOR_MASTER = new VENDOR_MASTER();
+                    vENDOR_MASTER.VENDOR_NAME = vendor.VENDOR_NAME;
+                    vENDOR_MASTER.VENDOR_SPOC = vendor.VENDOR_SPOC;
+                    vENDOR_MASTER.EMAIL = vendor.EMAIL;
+                    vENDOR_MASTER.VENDOR_CONTACT_NO = vendor.VENDOR_CONTACT_NO;
+                    vENDOR_MASTER.VENDOR_ID = Guid.NewGuid();
                 vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                 vENDOR_MASTER.CREATED_ON = DateTime.Now;
-                    vENDOR_MASTER.ISACTIVE = true;
+                vENDOR_MASTER.ISACTIVE = true;
                 db.VENDOR_MASTER.Add(vENDOR_MASTER);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(vENDOR_MASTER);
+            return View(vendor);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -82,7 +89,20 @@ namespace HRPortal
             {
                 return HttpNotFound();
             }
-            return View(vENDOR_MASTER);
+
+                VendorMasterViewModel vendor = new VendorMasterViewModel();
+                vendor.VENDOR_ID = vENDOR_MASTER.VENDOR_ID;
+                vendor.VENDOR_NAME = vENDOR_MASTER.VENDOR_NAME;
+                vendor.VENDOR_SPOC = vENDOR_MASTER.VENDOR_SPOC;
+                vendor.EMAIL = vENDOR_MASTER.EMAIL;
+                vendor.VENDOR_CONTACT_NO = vENDOR_MASTER.VENDOR_CONTACT_NO;
+                vendor.MODIFIED_BY = vENDOR_MASTER.MODIFIED_BY;
+                vendor.MODIFIED_ON = vENDOR_MASTER.MODIFIED_ON;
+                vendor.CREATED_BY = vENDOR_MASTER.CREATED_BY;
+                vendor.CREATED_ON = vENDOR_MASTER.CREATED_ON;
+                vendor.ISACTIVE = vENDOR_MASTER.ISACTIVE;
+
+                return View(vendor);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -92,19 +112,25 @@ namespace HRPortal
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "VENDOR_ID,VENDOR_NAME,VENDOR_SPOC,EMAIL,VENDOR_CONTACT_NO,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] VENDOR_MASTER vENDOR_MASTER)
+        public ActionResult Edit([Bind(Include = "VENDOR_ID,VENDOR_NAME,VENDOR_SPOC,EMAIL,VENDOR_CONTACT_NO,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] VendorMasterViewModel vendor)
         {
             try
             { 
             if (ModelState.IsValid)
             {
-                vENDOR_MASTER.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
-                vENDOR_MASTER.MODIFIED_ON = DateTime.Now;
-                db.Entry(vENDOR_MASTER).State = EntityState.Modified;
-                db.SaveChanges();
+                    VENDOR_MASTER vENDOR_MASTER = db.VENDOR_MASTER.Find(vendor.VENDOR_ID);
+                    vENDOR_MASTER.VENDOR_NAME = vendor.VENDOR_NAME;
+                    vENDOR_MASTER.VENDOR_SPOC = vendor.VENDOR_SPOC;
+                    vENDOR_MASTER.EMAIL = vendor.EMAIL;
+                    vENDOR_MASTER.VENDOR_CONTACT_NO = vendor.VENDOR_CONTACT_NO;
+                    vENDOR_MASTER.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                    vENDOR_MASTER.MODIFIED_ON = DateTime.Now;
+                    db.Entry(vENDOR_MASTER).State = EntityState.Modified;
+                    db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
-            return View(vENDOR_MASTER);
+            return View(vendor);
             }
             catch(Exception ex)
             { throw ex;
@@ -132,7 +158,11 @@ namespace HRPortal
         public ActionResult DeleteConfirmed(Guid id)
         {
             VENDOR_MASTER vENDOR_MASTER = db.VENDOR_MASTER.Find(id);
-            db.VENDOR_MASTER.Remove(vENDOR_MASTER);
+           // db.VENDOR_MASTER.Remove(vENDOR_MASTER);
+            vENDOR_MASTER.MODIFIED_BY = Session[CacheKey.Uid.ToString()] == null ? User.Identity.Name : Session[CacheKey.Uid.ToString()].ToString();
+            vENDOR_MASTER.MODIFIED_ON = DateTime.Now;
+            vENDOR_MASTER.ISACTIVE = false;
+            db.Entry(vENDOR_MASTER).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

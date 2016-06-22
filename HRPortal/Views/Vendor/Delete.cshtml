@@ -13,21 +13,35 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.MODIFIED_BY)
+            @Html.DisplayName("PARTNER NAME")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.MODIFIED_BY)
+            @Html.DisplayFor(model => model.VENDOR_NAME)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.MODIFIED_ON)
+            @Html.DisplayName("PARTNER SPOC")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.MODIFIED_ON)
+            @Html.DisplayFor(model => model.VENDOR_SPOC)
+        </dd>
+        <dt>
+            @Html.DisplayName("EMAIL")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EMAIL)
         </dd>
 
+        <dt>
+            @Html.DisplayName("CONTACT NO")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VENDOR_CONTACT_NO)
+        </dd>
     </dl>
 
     @using (Html.BeginForm()) {

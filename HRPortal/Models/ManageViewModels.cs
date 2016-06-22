@@ -83,4 +83,36 @@ namespace HRPortal.Models
         public string SelectedProvider { get; set; }
         public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
     }
+
+    public class VendorMasterViewModel
+    {
+        
+        public System.Guid VENDOR_ID { get; set; }
+        [Required]
+        [Display(Name = "PARTNER NAME")]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
+        public string VENDOR_NAME { get; set; }
+
+        [Required]
+        [Display(Name = "PARTNER SPOC")]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
+        public string VENDOR_SPOC { get; set; }
+
+        [Required]
+        [Display(Name = "EMAIL")]
+        [EmailAddress]
+        public string EMAIL { get; set; }
+
+        [Required]
+        [Display(Name = "CONTACT NO")]
+        [RegularExpression("([1-9][0-9]*)")]
+        [StringLength(11, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 10)]
+        public string VENDOR_CONTACT_NO { get; set; }
+
+        public bool ISACTIVE { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public System.DateTime? MODIFIED_ON { get; set; }
+        public string CREATED_BY { get; set; }
+        public System.DateTime CREATED_ON { get; set; }
+    }
 }
