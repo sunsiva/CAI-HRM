@@ -56,7 +56,6 @@
                 $.get("/Home/StatusUpdate", { id: $("#hdnCandidateId").val(), status: $("#ddlStatusList").val(), comments: $("#txtStsComments").val() },
                     function (data) {
                         $("#btnStsPnl_" + $("#hdnCandidateId").val() + "").text($("#ddlStatusList option:selected").text());
-                        return false;
                     });
                 $("#btnStatus").attr("data-dismiss", "modal");
             }
@@ -69,7 +68,6 @@
         $("#btnSearchCriteria").click(function () {
             $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), position: $("#txtCriteriaPosition").val(), status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
                 $("#CandidatesPartial").html(data);
-
             });
         });
 

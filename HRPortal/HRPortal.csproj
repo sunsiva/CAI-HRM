@@ -256,6 +256,7 @@
     <Compile Include="Helper\ErrorLevels.cs" />
     <Compile Include="Helper\HelperFuntions.cs" />
     <Compile Include="Helper\Keys.cs" />
+    <Compile Include="Helper\Menu.cs" />
     <Compile Include="Helper\Utils.cs" />
     <Compile Include="HRPortal.Context.cs">
       <AutoGen>True</AutoGen>

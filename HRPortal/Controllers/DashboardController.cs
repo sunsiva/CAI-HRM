@@ -21,6 +21,7 @@ namespace HRPortal.Controllers
             obj.ToT_Candidates_OFRD = data.Where(x => x.STATUS_NAME.Contains("OFFRD")).Count();
             obj.ToT_Candidates_PRGS = data.Where(x => !x.STATUS_NAME.Contains("OFFRD") && !x.STATUS_NAME.Contains("RJ")).Count();
             obj.ToT_Candidates_RJTD = data.Where(x => x.STATUS_NAME.Contains("RJ")).Count();
+            obj.ToT_Candidates_JOIN = data.Where(x => x.STATUS_NAME.Contains("JOIN")).Count();
             obj.ToT_Active_Jobs = db.JOBPOSTINGs.Where(x => x.ISACTIVE == true).ToList().Count();
             return View(obj);
         }

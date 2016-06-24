@@ -21,14 +21,6 @@
         </dd>
 
         <dt>
-            @Html.DisplayName("JOB ID")
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.JOB_ID)
-        </dd>
-
-        <dt>
             @Html.DisplayName("TOTAL EXPERIENCE")
         </dt>
 
@@ -162,7 +154,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-group form-group-required">
-            @Html.LabelFor(model => model.COMMENTS, "COMMENTS FOR THIS ACTION", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.COMMENTS, "COMMENTS FOR THE ACTION", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextAreaFor(model => model.COMMENTS, new { @class = "textarea-input-custom", @required = "mandatory" })
                 @Html.ValidationMessageFor(model => model.COMMENTS, "", new { @class = "text-danger" })

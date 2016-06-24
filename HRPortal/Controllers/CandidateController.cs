@@ -138,19 +138,20 @@ namespace HRPortal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,LAST_WORKING_DATE")] CANDIDATE cANDIDATE, HttpPostedFileBase file,FormCollection frm)
         {
-            if (IsCandidateDuplicate(cANDIDATE.MOBILE_NO, cANDIDATE.DOB.ToShortDateString()))
+            string _qryString = Request.UrlReferrer.Query.ToString();
+            string _uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+            var jid = _qryString.Split('&').Count() > 1 ? _qryString.Split('&')[1] : cANDIDATE.JOB_ID.ToString();
+            cANDIDATE.JOB_ID = new Guid(jid.Replace("JID=", ""));
+            if (IsProfileDuplicate(cANDIDATE.MOBILE_NO, cANDIDATE.DOB.ToShortDateString()))
             {
                 ViewBag.IsExist = "Candidate is already exist.";
             }
             else
             {
-                string _uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
                 if (ModelState.IsValid && file != null && _uid != string.Empty)
                 {
-                    var jid = Request.UrlReferrer.Query.ToString().Split('&').Count() > 1 ? Request.UrlReferrer.Query.ToString().Split('&')[1] : cANDIDATE.JOB_ID.ToString();
                     cANDIDATE.CANDIDATE_ID = Guid.NewGuid();
                     cANDIDATE.CANDIDATE_NAME = cANDIDATE.CANDIDATE_NAME.Trim();
-                    cANDIDATE.JOB_ID = new Guid(jid.Replace("JID=", string.Empty));
                     cANDIDATE.ISACTIVE = true;
                     cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
                     cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
@@ -162,12 +163,11 @@ namespace HRPortal.Controllers
                     await db.SaveChangesAsync();
 
                     vmodel.UpdateStatus(Guid.Empty, cANDIDATE.CANDIDATE_ID, string.Empty);
-
-                    string _admin = (Request.UrlReferrer.Query.ToString().Split('&').Count() > 1 ? Request.UrlReferrer.Query.ToString().Split('&')[2] : string.Empty);
-                    if(_admin.ToString().ToLower().Contains("styp=a")) //For redirecting to Admin's job list page
+                     bool isSuperAdmin = HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
+                     if (isSuperAdmin) //For redirecting to Admin's job list page
                         return RedirectToAction("Index","Job");
 
-                    return RedirectToAction("Index");
+                        return RedirectToAction("Index");
                 }
             }
             ModelState.AddModelError("FAILED", "Failed to Insert");
@@ -291,7 +291,11 @@ namespace HRPortal.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
-            if (cANDIDATE == null)
+            var userLst = db.AspNetUsers.ToList();
+            cANDIDATE.CREATED_BY = userLst.Where(u => u.Id == cANDIDATE.CREATED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
+            cANDIDATE.MODIFIED_BY = userLst.Where(u => u.Id == cANDIDATE.MODIFIED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
+
+                if (cANDIDATE == null)
             {
                 return HttpNotFound();
             }
@@ -326,10 +330,27 @@ namespace HRPortal.Controllers
         /// <param name="mob"></param>
         /// <param name="dob"></param>
         /// <returns></returns>
-        private bool IsCandidateDuplicate(string mob, string dob)
+        [HttpGet]
+        public ActionResult IsCandidateDuplicate(string mob, string dob)
         {
-            var dupli = db.CANDIDATES.Where(u => u.MOBILE_NO == mob).FirstOrDefault();
-            bool isDupli = dupli != null && dupli.DOB.ToShortDateString() == dob ? true : false;
+            try
+            {
+                var model = new
+                {
+                    IsDuplicate = IsProfileDuplicate(mob, dob),
+                };
+                return Json(model, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private bool IsProfileDuplicate(string mob, string dob)
+        {
+            var dupli = db.CANDIDATES.Where(u => u.MOBILE_NO == mob).ToList();
+            bool isDupli = (dupli != null && dupli.Where(u=>u.DOB.ToShortDateString() == (!string.IsNullOrEmpty(dob) ? DateTime.Parse(dob).ToShortDateString() : string.Empty)).Count()>0 ? true : false);
             return isDupli;
         }
 

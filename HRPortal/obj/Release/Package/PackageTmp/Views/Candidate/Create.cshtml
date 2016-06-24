@@ -1,9 +1,10 @@
 ﻿@model CANDIDATE
-
+@using HRPortal.Helper;
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var JCod = Request.QueryString.Count>0? Request.QueryString[0]:string.Empty;
+    bool isSuperAdmin = HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
 }
 
 <h2 align="center">Create Candidate Profile</h2>
@@ -19,7 +20,8 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
              <div class="form-group">
                 <span align="right" class="text-danger">@ViewBag.IsExist</span>
-                
+                 @Html.HiddenFor(model => model.JOB_ID)
+                 @Html.Hidden("hdnIsValidated")
             </div>
             <div class="form-group">
                 @Html.Label("JOB CODE", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -37,10 +39,11 @@
             </div>
 
             <div class="form-group form-group-required">
-                @Html.LabelFor(model => model.YEARS_OF_EXP_TOTAL, "YEARS OF EXP TOTAL", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.YEARS_OF_EXP_TOTAL, "TOTAL YEARS OF EXP.", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.YEARS_OF_EXP_TOTAL, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
-                    @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_TOTAL, "", new { @class = "text-danger" })
+                    @*@Html.ValidationMessageFor(model => model.YEARS_OF_EXP_TOTAL, "", new { @class = "text-danger" })*@
+                    <span align="right" id="errMsgTotExp" class="text-danger"></span>
                 </div>
             </div>
 
@@ -53,7 +56,7 @@
             </div>
 
             <div class="form-group form-group-required">
-                @Html.LabelFor(model => model.MOBILE_NO, "MOBILE NO", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.MOBILE_NO, "MOBILE NO.", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
                     @Html.ValidationMessageFor(model => model.MOBILE_NO, "", new { @class = "text-danger" })
@@ -75,6 +78,7 @@
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control date-picker", placeholder = "Select a date..." } })
                     @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger", @required = "mandatory" })
+                    <span align="right" id="errMsgIsDuplicate" class="text-danger"></span>
                 </div>
             </div>
 
@@ -176,7 +180,7 @@
 {
     @Html.ActionLink("Back to List", "Index", "Home")
 }
-else if (Request.QueryString.Count > 0 && Request.QueryString["styp"] == "A")
+else if (isSuperAdmin)
 {
     @Html.ActionLink("Back to List", "Index", "Job")
 }
@@ -204,39 +208,141 @@ else
             });
 
             $("#btnCandiCreate").click(function () {
-                if ($("#rdoIsNPYes").is(":Checked") && $("#LAST_WORKING_DATE").val() == "")
-                {
-                    $("#errMsgLWD").text("Last working date is required.");
+                var dtEmail = $("#EMAIL").val(), dtAltEmail = $("#ALTERNATE_EMAIL_ID").val(), dtPh = $("#MOBILE_NO").val(), dtAltPh = $("#ALTERNATE_MOBILE_NO").val();
+                clearCandidateInput();
+                if (dtEmail != "" && !validateEmail(dtEmail)) {
+                    $("#errMsgEmail").text("Invalid Email.");
                     return false;
-                }else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "")
-                {
+                } else if (dtAltEmail != "" && !validateEmail(dtAltEmail)) {
+                    $("#errMsgAltEmail").text("Invalid Email.");
+                    return false;
+                }
+                else if (dtPh != "" && !validatePhone(dtPh)) {
+                    $("#errMsgMob").text("Invalid Phone No.");
+                    return false;
+                } else if (dtAltPh != "" && !validatePhone(dtAltPh)) {
+                    $("#errMsgAltMob").text("Invalid Phone No.");
+                    return false;
+                }
+                else if ($("#YEARS_OF_EXP_TOTAL").val() == "") {
+                    $("#errMsgTotExp").focus();
+                    $("#errMsgTotExp").text("This field is required.");
+                    return false;
+                }
+                else if ($("#rdoIsNPYes").is(":Checked") && !validateLWD()) {
+                    return false;
+                } else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "") {
                     $("#errMsgNP").text("Notice Period is required.");
                     return false;
-                }else if ($("#file").val() == "") 
-                {
+                } else if ($("#file").val() == "") {
                     $("#errMsgCVUpload").text("Please upload a resume.");
                     return false;
                 }
+                else if (!validateDOB()) {
+                    return false;
+                }
                 else {
-                    $("#CandidateForm").submit()
+                    IsDuplicateProf();
+                    if ($("#hdnIsValidated").val() != "") {
+                        $("#CandidateForm").submit()
+                    }
+                    else { return false; }
                 }
             });
 
-            $("#btnCandiCreate1").click(function () {
-                if ($("#CandidateForm").validate()) { // Not Valid
-                    if ($("#rdoIsNPYes").is(":Checked") && $("#LAST_WORKING_DATE").val() == "")
-                        $("#errMsgLWD").text("Last working date is required.");
-                    else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "")
-                        $("#errMsgNP").text("Notice Period is required.");
-                    else if ($("#file").val() == "")
-                        $("#errMsgCVUpload").text("Please upload a resume.");
-                    else
-                        $("#errMsg").text("Required field is empty.");
+            window.clearCandidateInput = function ()
+            {
+                $("#errMsgTotExp").text(""); $("#errMsgEmail").text(""); $("#errMsgAltEmail").text("");
+                $("#errMsgAltMob").text(""); $("#errMsgMob").text(""); $("#errMsgCVUpload").text(""); $("#errMsgNP").text("");
+            };
+
+            window.validateEmail = function(dt){
+                var filter = /^[a-zA-Z0-9_.-]+@@[a-zA-Z0-9]+[a-zA-Z0-9.-]+[a-zA-Z0-9]+.[a-z]{0,4}$/;
+            if(filter.test(dt)){
+                return true;
+            }
+            else{
+                return false;
+            }
+            };
+
+            window.validateLWD = function ()
+            {
+                $("#errMsgLWD").text("");
+                var lwd = $("#LAST_WORKING_DATE").val();
+                if (lwd == "") {
+                    $("#errMsgLWD").text("Last working date is required.");
                     return false;
-                } else {
-                    $("#CandidateForm").submit()
+                } else if (lwd != "") {
+                    var _now = new Date(), day = _now.getDate().toString(), month = (1 + _now.getMonth()).toString();
+                    day = day.length > 1 ? day : '0' + day;
+                    month = month.length > 1 ? month : '0' + month;
+                    if (lwd < (month + '/' + day + '/' + _now.getFullYear())) {
+                        $("#errMsgLWD").text("Last working date is invalid.");
+                        return false;
+                    }
+                    else { return true;}
+                   }
+                };
+
+            window.validateDOB = function () {
+                var value = $("#DOB").val();
+                if (value != "") {
+                    var year = value.split('/');
+                    if (parseInt(year[2]) >= 2000) {
+                        $("#errMsgIsDuplicate").text("DOB is not valid.");
+                        return false;
+                    }
+                    else {
+                        $("#errMsgIsDuplicate").text("");
+                        return true;
+                    }
                 }
+                else {
+                    $("#errMsgIsDuplicate").text("The DOB field is required.");
+                    return false;
+                }
+            };
+
+            window.validatePhone = function (dt) {
+                //validate phone
+                var intRegex = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+                if ((dt.length < 6) || (!intRegex.test(dt))) {
+                    return false;
+                }
+                else { return true;}
+            };
+
+            $('#DOB').on('blur', function () {
+                $("#hdnIsValidated").val("");
+                if(validateDOB()){
+                   IsDuplicateProf();
+               }
             });
+
+            $('#MOBILE_NO').on('blur', function () {
+                IsDuplicateProf();
+            });
+
+            function IsDuplicateProf() {
+                $("#errMsgIsDuplicate").text("");
+                if ($("#MOBILE_NO").val() != "" && $("#DOB").val() != "")
+                {
+                    $.get("/Candidate/IsCandidateDuplicate", { mob: $("#MOBILE_NO").val(), dob: $("#DOB").val() },
+                        function (data) {
+                           if (!data.IsDuplicate){
+                               $("#errMsgIsDuplicate").text("");
+                               $("#hdnIsValidated").val("valid");
+                               return true;
+                           }
+                           else {
+                               $("#errMsgIsDuplicate").text("This candidate's profile is already exist in database.");
+                               $("#hdnIsValidated").val("");
+                               return false;
+                           }
+                   });
+                }
+            };
 
         $('.date-picker').datetimepicker({
             format: 'MM/DD/YYYY'

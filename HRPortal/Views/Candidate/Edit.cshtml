@@ -36,7 +36,8 @@
             @Html.LabelFor(model => model.YEARS_OF_EXP_TOTAL,"TOTAL EXPERIENCE", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.YEARS_OF_EXP_TOTAL, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_TOTAL, "", new { @class = "text-danger", @required = "mandatory" })
+                @*@Html.ValidationMessageFor(model => model.YEARS_OF_EXP_TOTAL, "", new { @class = "text-danger", @required = "mandatory" })*@
+                <span align="right" id="errMsgTotExp" class="text-danger"></span>
             </div>
         </div>
 
@@ -45,6 +46,7 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.MOBILE_NO, "", new { @class = "text-danger", @required = "mandatory" })
+                <span align="right" id="errMsgMob" class="text-danger"></span>
             </div>
         </div>
 
@@ -53,6 +55,7 @@
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.EMAIL, "", new { @class = "text-danger", @required = "mandatory" })
+                    <span align="right" id="errMsgEmail" class="text-danger"></span>
                 </div>
             </div>
 
@@ -61,6 +64,7 @@
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control date-picker", @required = "mandatory", placeholder = "Select a date..." } })
                     @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+                    <span align="right" id="errMsgDOB" class="text-danger"></span>
                 </div>
             </div>
 
@@ -93,6 +97,7 @@
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.ALTERNATE_MOBILE_NO, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.ALTERNATE_MOBILE_NO, "", new { @class = "text-danger" })
+                    <span align="right" id="errMsgAltMob" class="text-danger"></span>
                 </div>
             </div>
 
@@ -101,6 +106,7 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.ALTERNATE_EMAIL_ID, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.ALTERNATE_EMAIL_ID, "", new { @class = "text-danger" })
+                <span align="right" id="errMsgAltEmail" class="text-danger"></span>
             </div>
         </div>
 
@@ -163,7 +169,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" id="btnCandiEdit" value="Save" class="btn btn-default" />
                 <input type="button" value="Clear" onclick="this.form.reset()" class="btn btn-default" />
             </div>
         </div>
@@ -201,20 +207,105 @@
 
 
         $("#btnCandiEdit").click(function () {
-            if ($("#CandidateFormEdit").validate()) { // Not Valid
-                if ($("#rdoIsNPYes").is(":Checked") && $("#LAST_WORKING_DATE").val() == "")
-                    $("#errMsgLWD").text("Last working date is required.");
-                else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "")
+                var dtEmail = $("#EMAIL").val(), dtAltEmail = $("#ALTERNATE_EMAIL_ID").val(), dtPh = $("#MOBILE_NO").val(), dtAltPh = $("#ALTERNATE_MOBILE_NO").val();
+                $("#errMsgTotExp").text(""); $("#errMsgEmail").text(""); $("#errMsgAltEmail").text("");
+                $("#errMsgAltMob").text(""); $("#errMsgMob").text("");
+                if (dtEmail != "" && !validateEmail(dtEmail)) {
+                    $("#errMsgEmail").text("Invalid Email.");
+                    return false;
+                } else if (dtAltEmail != "" && !validateEmail(dtAltEmail)) {
+                    $("#errMsgAltEmail").text("Invalid Email.");
+                    return false;
+                }
+                else if (dtPh != "" && !validatePhone(dtPh)) {
+                    $("#errMsgMob").text("Invalid Phone No.");
+                    return false;
+                } else if (dtAltPh != "" && !validatePhone(dtAltPh)) {
+                    $("#errMsgAltMob").text("Invalid Phone No.");
+                    return false;
+                }
+                else if ($("#YEARS_OF_EXP_TOTAL").val() == "") {
+                    $("#errMsgTotExp").focus();
+                    $("#errMsgTotExp").text("This field is required.");
+                    return false;
+                }
+                else if ($("#rdoIsNPYes").is(":Checked") && !validateLWD()) {
+                    return false;
+                } else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "") {
                     $("#errMsgNP").text("Notice Period is required.");
-                else if ($("#file").val() == "")
-                    $("#errMsgCVUpload").text("Please upload a resume.");
-                else
-                    $("#errMsg").text("Required field is empty.");
-                return false;
-            } else {
-                $("#CandidateFormEdit").submit()
+                    return false;
+                } 
+                else if (!validateDOB()) {
+                    return false;
+                }
+                else {
+                        $("#CandidateFormEdit").submit()
+                }
             }
+        );
+
+
+        window.validateLWD = function () {
+            $("#errMsgLWD").text("");
+            var lwd = $("#LAST_WORKING_DATE").val();
+            if (lwd == "") {
+                $("#errMsgLWD").text("Last working date is required.");
+                return false;
+            } else if (lwd != "") {
+                var _now = new Date(), day = _now.getDate().toString(), month = (1 + _now.getMonth()).toString();
+                day = day.length > 1 ? day : '0' + day;
+                month = month.length > 1 ? month : '0' + month;
+                if (lwd < (month + '/' + day + '/' + _now.getFullYear())) {
+                    $("#errMsgLWD").text("Last working date is invalid.");
+                    return false;
+                }
+                else { return true; }
+            }
+        };
+
+
+        $('#DOB').on('blur', function () {
+            validateDOB()
         });
+
+        window.validateDOB = function () {
+            var value = $("#DOB").val();
+            if (value != "") {
+                var year = value.split('/');
+                if (parseInt(year[2]) >= 2000) {
+                    $("#errMsgDOB").text("DOB is not valid.");
+                    return false;
+                }
+                else {
+                    $("#errMsgDOB").text("");
+                    return true;
+                }
+            }
+            else {
+                $("#errMsgDOB").text("The DOB field is required.");
+                return false;
+            }
+        };
+
+
+        window.validateEmail = function (dt) {
+            var filter = /^[a-zA-Z0-9_.-]+@@[a-zA-Z0-9]+[a-zA-Z0-9.-]+[a-zA-Z0-9]+.[a-z]{0,4}$/;
+            if (filter.test(dt)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+
+        window.validatePhone = function (dt) {
+            //validate phone
+            var intRegex = /[0-9 -()+]+$/;
+            if ((dt.length < 6) || (!intRegex.test(dt))) {
+                return false;
+            }
+            else { return true; }
+        };
 
     });
 </script>

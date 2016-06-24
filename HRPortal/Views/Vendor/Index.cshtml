@@ -1,12 +1,14 @@
 ﻿@model IEnumerable<HRPortal.VENDOR_MASTER>
-
+@using HRPortal.Helper;
 @{
     ViewBag.Title = "Staffing Partner";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Staffing Partners</h2>
-<br />
+@if (HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN"))
+{ 
+    <h2>Staffing Partners</h2>
+    <br />
 <h4 align="right">
     @Html.ActionLink("Create New", "Create", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
 </h4>
@@ -60,3 +62,11 @@
 }
     <tr><td align="right" class="" colspan="6">@Model.Count() Record(s) Found.</td></tr>
 </table>
+}
+else
+{
+<br /><br />
+<div>
+    <marquee class="text-danger"> Sorry!!..You are not authorized...</marquee>
+</div>
+}

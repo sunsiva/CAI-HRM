@@ -190,6 +190,8 @@ namespace HRPortal.Models
 
         [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 9)]
         [Display(Name = "Phone Number")]
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression("^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$", ErrorMessage = "Please provide a valid number.")]
         public string PhoneNumber { get; set; }
 
         [Required]

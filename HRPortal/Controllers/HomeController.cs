@@ -43,7 +43,7 @@ namespace HRPortal.Controllers
 
                     vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
 
-                    var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
+                    var dbJobs = await db.JOBPOSTINGs.ToListAsync();
                     if (HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN"))
                     {
                         var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
@@ -52,7 +52,7 @@ namespace HRPortal.Controllers
                     }
                     else
                     {
-                        jobCanObj.JobItems = dbJobs;
+                        jobCanObj.JobItems = dbJobs.Where(row => row.ISACTIVE == true).ToList();
                     }
 
                     jobCanObj = (jobCanObj.CandidateItems != null && jobCanObj.CandidateItems.Count > 0)
@@ -68,7 +68,7 @@ namespace HRPortal.Controllers
         public async Task<ActionResult> SearchCriteria(string name, string vendor, string position, string status, string stdt, string edt)
         {
             try { 
-                var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
+                var dbJobs = await db.JOBPOSTINGs.ToListAsync();
                 if (HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN"))
                 {
                     CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
@@ -84,7 +84,7 @@ namespace HRPortal.Controllers
                 }
                 else {
                     CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
-                    jobCanObj.JobItems=dbJobs;
+                    jobCanObj.JobItems=dbJobs.Where(row => row.ISACTIVE == true).ToList();
                     GetJobSearchResults(dbJobs);
                     jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
                     return PartialView("_JobList", jobCanObj.JobItems);
@@ -98,7 +98,7 @@ namespace HRPortal.Controllers
             try { 
             System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
             var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
-            var dbJobs = await db.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
+            var dbJobs = await db.JOBPOSTINGs.ToListAsync();
             var srchSrc = GetCandidateSearchResults(dbCan, dbJobs).CandidateItems.ToList();
             var dataSrc = srchSrc.Select(i => new {
                 CandidateName= i.CANDIDATE_NAME,

@@ -14,5 +14,6 @@ namespace HRPortal.Models
         public int ToT_Candidates_PRGS { get; set; }
         public int ToT_Candidates_OFRD { get; set; }
         public int ToT_Candidates_RJTD { get; set; }
+        public int ToT_Candidates_JOIN { get; set; }
     }
 }

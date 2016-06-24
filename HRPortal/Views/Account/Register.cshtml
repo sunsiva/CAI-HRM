@@ -51,6 +51,7 @@
         @Html.LabelFor(m => m.PhoneNumber, "PHONE NUMBER", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+            <span align="right" id="errMsgMob" class="text-danger"></span>
         </div>
     </div>
     <div class="form-group form-group-required">
@@ -97,12 +98,28 @@
     $(document).ready(function () {
 
         $("#btnUserReg").click(function () {
+            var dtPh = $("#PhoneNumber").val();
+            $("#errMsgMob").text("");
             $("#errMsgStaf").text(""); $("#errMsgRole").text("");
             if ($("#ddlVendorList").val() == "")
                 $("#errMsgStaf").text("This Staffing Partner field is required.");
             else if ($("#ddlRoleList").val() == "")
                 $("#errMsgRole").text("This User Role field is required.");
+            else if (dtPh != "" && !validatePhone(dtPh)) {
+                $("#errMsgMob").text("Invalid Phone No.");
+                return false;
+            }
+
             });
+
+        window.validatePhone = function (dt) {
+            //validate phone
+            var intRegex = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+            if ((dt.length < 6) || (!intRegex.test(dt))) {
+                return false;
+            }
+            else { return true; }
+        };
 
     });
 </script>

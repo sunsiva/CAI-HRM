@@ -46,10 +46,12 @@ namespace HRPortal.Controllers
             }
             JOBPOSTING jOBPOSTING = await dbContext.JOBPOSTINGs.FindAsync(id);
             var owner = (from j in dbContext.JOBPOSTINGs.ToList()
-                          join u in dbContext.AspNetUsers.ToList() on j.CREATED_BY equals u.Id
                           where j.JOB_ID == id
-                          select new {uid = u.FirstName + " " + u.LastName, jd=j.JD_FILE_PATH }).FirstOrDefault();
-            jOBPOSTING.CREATED_BY = owner.uid.ToString();
+                          select new {jd=j.JD_FILE_PATH }).FirstOrDefault();
+            var userLst = dbContext.AspNetUsers.ToList();
+            jOBPOSTING.CREATED_BY = userLst.Where(u => u.Id == jOBPOSTING.CREATED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
+            jOBPOSTING.MODIFIED_BY = userLst.Where(u => u.Id == jOBPOSTING.MODIFIED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
+
             jOBPOSTING.JD_FILE_PATH = string.IsNullOrEmpty(owner.jd) ? string.Empty : Path.Combine("/UploadDocument/", owner.jd);
             if (jOBPOSTING == null)
             {

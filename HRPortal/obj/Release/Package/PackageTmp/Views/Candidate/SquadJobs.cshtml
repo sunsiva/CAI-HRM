@@ -29,9 +29,7 @@
                         <th>
                             @Html.ActionLink("EMAIL", "SquadJobs", new { sOdr = ViewBag.EmailSort })
                         </th>
-                        <th>
-                            @Html.DisplayName("CURRENT COMPANY")
-                        </th>
+                        
                         <th>
                             @Html.DisplayName("NOTICE PERIOD/LWD")
                         </th>
@@ -58,9 +56,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.EMAIL)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CURRENT_COMPANY)
                     </td>
                     <td>
                         @(item.LAST_WORKING_DATE != null ? (item.LAST_WORKING_DATE.Value.ToString("dd-MMM-yyyy")) : item.NOTICE_PERIOD)
