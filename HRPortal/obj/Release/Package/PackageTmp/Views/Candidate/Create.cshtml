@@ -246,7 +246,10 @@ else
                     if ($("#hdnIsValidated").val() != "") {
                         $("#CandidateForm").submit()
                     }
-                    else { return false; }
+                    else {
+                        $("#errMsgIsDuplicate").text("This candidate's profile is already exist in database.");
+                        return false;
+                    }
                 }
             });
 

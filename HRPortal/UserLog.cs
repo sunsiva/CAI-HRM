@@ -20,8 +20,8 @@ namespace HRPortal
         public string LoggedInBy { get; set; }
         public Nullable<System.DateTime> LoggedInOn { get; set; }
         public Nullable<System.DateTime> LoggedOutOn { get; set; }
-        public Nullable<bool> IsOnline { get; set; }
         public string UserIP { get; set; }
         public string UserMAC { get; set; }
+        public Nullable<bool> IsOnline { get; set; }
     }
 }

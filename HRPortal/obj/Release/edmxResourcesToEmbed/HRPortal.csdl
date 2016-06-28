@@ -1,58 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="HRPortalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-  <EntityType Name="C__MigrationHistory">
-    <Key>
-      <PropertyRef Name="MigrationId" />
-      <PropertyRef Name="ContextKey" />
-    </Key>
-    <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
-    <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
-  </EntityType>
-  <EntityType Name="ERROR_LOG">
-    <Key>
-      <PropertyRef Name="ERR_ID" />
-    </Key>
-    <Property Name="ERR_ID" Type="Guid" Nullable="false" />
-    <Property Name="ERR_TYPE" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="ERR_DESC" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="ERR_CODE" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="ERR_SYSTEM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="ERR_SYSTEM_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="ERR_PAGE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="ERR_EVENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-  </EntityType>
-  <EntityType Name="VENDOR_MASTER">
-    <Key>
-      <PropertyRef Name="VENDOR_ID" />
-    </Key>
-    <Property Name="VENDOR_ID" Type="Guid" Nullable="false" />
-    <Property Name="VENDOR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="VENDOR_SPOC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="EMAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="VENDOR_CONTACT_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
-    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-    <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-  </EntityType>
   <EntityContainer Name="HRPortalEntities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
-    <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" />
-    <EntitySet Name="VENDOR_MASTER" EntityType="Self.VENDOR_MASTER" />
-    <EntitySet Name="UserLogs" EntityType="HRPortalModel.UserLog" />
-    <EntitySet Name="STATUS_MASTER" EntityType="HRPortalModel.STATUS_MASTER" />
-    <EntitySet Name="sysdiagrams" EntityType="HRPortalModel.sysdiagram" />
-    <EntitySet Name="JOBPOSTINGs" EntityType="HRPortalModel.JOBPOSTING" />
-    <EntitySet Name="UserXRoles" EntityType="HRPortalModel.UserXRole" />
+    <EntitySet Name="C__MigrationHistory" EntityType="HRPortalModel.C__MigrationHistory" />
     <EntitySet Name="AspNetRoles" EntityType="HRPortalModel.AspNetRole" />
     <EntitySet Name="AspNetUserClaims" EntityType="HRPortalModel.AspNetUserClaim" />
     <EntitySet Name="AspNetUserLogins" EntityType="HRPortalModel.AspNetUserLogin" />
     <EntitySet Name="AspNetUsers" EntityType="HRPortalModel.AspNetUser" />
+    <EntitySet Name="CANDIDATES" EntityType="HRPortalModel.CANDIDATE" />
+    <EntitySet Name="ERROR_LOG" EntityType="HRPortalModel.ERROR_LOG" />
+    <EntitySet Name="EVENTSCHEDULEs" EntityType="HRPortalModel.EVENTSCHEDULE" />
+    <EntitySet Name="EXCEPTION_LOGGING" EntityType="HRPortalModel.EXCEPTION_LOGGING" />
+    <EntitySet Name="JOB_HISTORY" EntityType="HRPortalModel.JOB_HISTORY" />
+    <EntitySet Name="JOBPOSTINGs" EntityType="HRPortalModel.JOBPOSTING" />
+    <EntitySet Name="STATUS_HISTORY" EntityType="HRPortalModel.STATUS_HISTORY" />
+    <EntitySet Name="STATUS_MASTER" EntityType="HRPortalModel.STATUS_MASTER" />
+    <EntitySet Name="UserLogs" EntityType="HRPortalModel.UserLog" />
+    <EntitySet Name="UserXRoles" EntityType="HRPortalModel.UserXRole" />
+    <EntitySet Name="VENDOR_MASTER" EntityType="HRPortalModel.VENDOR_MASTER" />
     <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
       <End Role="AspNetUser" EntitySet="AspNetUsers" />
       <End Role="AspNetUserClaim" EntitySet="AspNetUserClaims" />
@@ -61,98 +25,32 @@
       <End Role="AspNetUser" EntitySet="AspNetUsers" />
       <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
     </AssociationSet>
-    <AssociationSet Name="AspNetUserRoles" Association="HRPortalModel.AspNetUserRoles">
-      <End Role="AspNetRole" EntitySet="AspNetRoles" />
-      <End Role="AspNetUser" EntitySet="AspNetUsers" />
-    </AssociationSet>
-    <EntitySet Name="STATUS_HISTORY" EntityType="HRPortalModel.STATUS_HISTORY" />
-    <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER">
-      <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
-      <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
-    </AssociationSet>
-    <EntitySet Name="EVENTSCHEDULEs" EntityType="HRPortalModel.EVENTSCHEDULE" />
-    <EntitySet Name="CANDIDATES" EntityType="HRPortalModel.CANDIDATE" />
     <AssociationSet Name="FK_CANDIDATES_JOBPOSTING" Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING">
       <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
       <End Role="CANDIDATE" EntitySet="CANDIDATES" />
     </AssociationSet>
-    <EntitySet Name="EXCEPTION_LOGGING" EntityType="HRPortalModel.EXCEPTION_LOGGING" />
-    <EntitySet Name="JOB_HISTORY" EntityType="HRPortalModel.JOB_HISTORY" />
     <AssociationSet Name="FK_JOB_HISTORY_JOBPOSTING" Association="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING">
       <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
       <End Role="JOB_HISTORY" EntitySet="JOB_HISTORY" />
     </AssociationSet>
+    <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER">
+      <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
+      <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
+    </AssociationSet>
+    <AssociationSet Name="AspNetUserRoles" Association="HRPortalModel.AspNetUserRoles">
+      <End Role="AspNetRole" EntitySet="AspNetRoles" />
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+    </AssociationSet>
   </EntityContainer>
-  <EntityType Name="UserLog">
+  <EntityType Name="C__MigrationHistory">
     <Key>
-      <PropertyRef Name="UserLogId" />
+      <PropertyRef Name="MigrationId" />
+      <PropertyRef Name="ContextKey" />
     </Key>
-    <Property Name="UserLogId" Type="Int32" Nullable="false" />
-    <Property Name="UserLogName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="UserLogDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="LoggedInBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="LoggedInOn" Type="DateTime" Precision="3" />
-    <Property Name="LoggedOutOn" Type="DateTime" Precision="3" />
-    <Property Name="IsOnline" Type="Boolean" />
-    <Property Name="UserIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="UserMAC" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-  </EntityType>
-  <EntityType Name="STATUS_MASTER">
-    <Key>
-      <PropertyRef Name="STATUS_ID" />
-    </Key>
-    <Property Name="STATUS_ID" Type="Guid" Nullable="false" />
-    <Property Name="STATUS_NAME" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
-    <Property Name="STATUS_DESCRIPTION" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
-    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="STATUS_ORDER" Type="Int32" />
-    <NavigationProperty Name="STATUS_HISTORY" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_MASTER" ToRole="STATUS_HISTORY" />
-  </EntityType>
-  <EntityType Name="sysdiagram">
-    <Key>
-      <PropertyRef Name="diagram_id" />
-    </Key>
-    <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="principal_id" Type="Int32" Nullable="false" />
-    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="version" Type="Int32" />
-    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-  </EntityType>
-  <EntityType Name="JOBPOSTING">
-    <Key>
-      <PropertyRef Name="JOB_ID" />
-    </Key>
-    <Property Name="JOB_ID" Type="Guid" Nullable="false" />
-    <Property Name="JOB_CODE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="JOB_DESCRIPTION" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="POSITION_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="NO_OF_VACANCIES" Type="Int32" Nullable="false" />
-    <Property Name="YEARS_OF_EXP_TOTAL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="YEARS_OF_EXP_RELEVANT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="WORK_LOCATION" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
-    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="JD_FILE_PATH" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="JD_SOURCE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="CUSTOMER_NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-    <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
-    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-    <NavigationProperty Name="CANDIDATES" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="JOBPOSTING" ToRole="CANDIDATE" />
-    <NavigationProperty Name="JOB_HISTORY" Relationship="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOBPOSTING" ToRole="JOB_HISTORY" />
-  </EntityType>
-  <EntityType Name="UserXRole">
-    <Key>
-      <PropertyRef Name="UserId" />
-    </Key>
-    <Property Name="UserId" Type="Guid" Nullable="false" />
-    <Property Name="RoleId" Type="Guid" />
+    <Property Name="MigrationId" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="ContextKey" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="Model" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+    <Property Name="ProductVersion" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="AspNetRole">
     <Key>
@@ -210,82 +108,6 @@
     <NavigationProperty Name="AspNetUserLogins" Relationship="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
     <NavigationProperty Name="AspNetRole" Relationship="HRPortalModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
   </EntityType>
-  <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="HRPortalModel.AspNetUserClaim" Role="AspNetUserClaim" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetUser">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AspNetUserClaim">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="HRPortalModel.AspNetUserLogin" Role="AspNetUserLogin" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetUser">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AspNetUserLogin">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="AspNetUserRoles">
-    <End Type="HRPortalModel.AspNetRole" Role="AspNetRole" Multiplicity="0..1" />
-    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
-  </Association>
-  <EntityType Name="STATUS_HISTORY">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="STATUS_ID" Type="Guid" Nullable="false" />
-    <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
-    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
-    <Property Name="SCHEDULED_TO" Type="DateTime" Precision="3" />
-    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="STATUS_MASTER" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
-    <Property Name="SCHEDULE_LENGTH_MINS" Type="Int32" />
-  </EntityType>
-  <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
-    <End Type="HRPortalModel.STATUS_MASTER" Role="STATUS_MASTER" Multiplicity="1" />
-    <End Type="HRPortalModel.STATUS_HISTORY" Role="STATUS_HISTORY" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="STATUS_MASTER">
-        <PropertyRef Name="STATUS_ID" />
-      </Principal>
-      <Dependent Role="STATUS_HISTORY">
-        <PropertyRef Name="STATUS_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <EntityType Name="EVENTSCHEDULE">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="TITLE" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="KEY" Type="Int32" Nullable="false" />
-    <Property Name="DATETIMESCHEDULED" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="APPOINTMENTLENGTH" Type="Int32" Nullable="false" />
-    <Property Name="STATUSENUM" Type="Int32" Nullable="false" />
-    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="ISACTIVE" Type="Boolean" />
-    <Property Name="MODIFIED_BY" Type="Guid" />
-    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-    <Property Name="CREATED_BY" Type="Guid" />
-    <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
-  </EntityType>
   <EntityType Name="CANDIDATE">
     <Key>
       <PropertyRef Name="CANDIDATE_ID" />
@@ -317,18 +139,38 @@
     <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
     <NavigationProperty Name="JOBPOSTING" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="CANDIDATE" ToRole="JOBPOSTING" />
   </EntityType>
-  <Association Name="FK_CANDIDATES_JOBPOSTING">
-    <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
-    <End Type="HRPortalModel.CANDIDATE" Role="CANDIDATE" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="JOBPOSTING">
-        <PropertyRef Name="JOB_ID" />
-      </Principal>
-      <Dependent Role="CANDIDATE">
-        <PropertyRef Name="JOB_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
+  <EntityType Name="ERROR_LOG">
+    <Key>
+      <PropertyRef Name="ERR_ID" />
+    </Key>
+    <Property Name="ERR_ID" Type="Guid" Nullable="false" />
+    <Property Name="ERR_TYPE" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="ERR_DESC" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ERR_CODE" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="ERR_SYSTEM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ERR_SYSTEM_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ERR_PAGE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ERR_EVENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="EVENTSCHEDULE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TITLE" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="KEY" Type="Int32" Nullable="false" />
+    <Property Name="DATETIMESCHEDULED" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="APPOINTMENTLENGTH" Type="Int32" Nullable="false" />
+    <Property Name="STATUSENUM" Type="Int32" Nullable="false" />
+    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="MODIFIED_BY" Type="Guid" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="Guid" />
+    <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
+  </EntityType>
   <EntityType Name="EXCEPTION_LOGGING">
     <Key>
       <PropertyRef Name="LOG_ID" />
@@ -356,6 +198,137 @@
     <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
     <NavigationProperty Name="JOBPOSTING" Relationship="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOB_HISTORY" ToRole="JOBPOSTING" />
   </EntityType>
+  <EntityType Name="JOBPOSTING">
+    <Key>
+      <PropertyRef Name="JOB_ID" />
+    </Key>
+    <Property Name="JOB_ID" Type="Guid" Nullable="false" />
+    <Property Name="JOB_CODE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="JOB_DESCRIPTION" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="POSITION_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NO_OF_VACANCIES" Type="Int32" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_TOTAL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="YEARS_OF_EXP_RELEVANT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="WORK_LOCATION" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="JD_FILE_PATH" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="JD_SOURCE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CUSTOMER_NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="CANDIDATES" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="JOBPOSTING" ToRole="CANDIDATE" />
+    <NavigationProperty Name="JOB_HISTORY" Relationship="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOBPOSTING" ToRole="JOB_HISTORY" />
+  </EntityType>
+  <EntityType Name="STATUS_HISTORY">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="STATUS_ID" Type="Guid" Nullable="false" />
+    <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
+    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="SCHEDULED_TO" Type="DateTime" Precision="3" />
+    <Property Name="SCHEDULE_LENGTH_MINS" Type="Int32" />
+    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="STATUS_MASTER" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
+  </EntityType>
+  <EntityType Name="STATUS_MASTER">
+    <Key>
+      <PropertyRef Name="STATUS_ID" />
+    </Key>
+    <Property Name="STATUS_ID" Type="Guid" Nullable="false" />
+    <Property Name="STATUS_NAME" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="STATUS_DESCRIPTION" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="STATUS_ORDER" Type="Int32" />
+    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="STATUS_HISTORY" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_MASTER" ToRole="STATUS_HISTORY" />
+  </EntityType>
+  <EntityType Name="UserLog">
+    <Key>
+      <PropertyRef Name="UserLogId" />
+    </Key>
+    <Property Name="UserLogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserLogName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UserLogDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LoggedInBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="LoggedInOn" Type="DateTime" Precision="3" />
+    <Property Name="LoggedOutOn" Type="DateTime" Precision="3" />
+    <Property Name="UserIP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="UserMAC" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="IsOnline" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="UserXRole">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="RoleId" Type="Guid" />
+  </EntityType>
+  <EntityType Name="VENDOR_MASTER">
+    <Key>
+      <PropertyRef Name="VENDOR_ID" />
+    </Key>
+    <Property Name="VENDOR_ID" Type="Guid" Nullable="false" />
+    <Property Name="VENDOR_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="VENDOR_SPOC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="VENDOR_CONTACT_NO" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="HRPortalModel.AspNetUserClaim" Role="AspNetUserClaim" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserClaim">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="HRPortalModel.AspNetUserLogin" Role="AspNetUserLogin" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserLogin">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CANDIDATES_JOBPOSTING">
+    <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
+    <End Type="HRPortalModel.CANDIDATE" Role="CANDIDATE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="JOBPOSTING">
+        <PropertyRef Name="JOB_ID" />
+      </Principal>
+      <Dependent Role="CANDIDATE">
+        <PropertyRef Name="JOB_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_JOB_HISTORY_JOBPOSTING">
     <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
     <End Type="HRPortalModel.JOB_HISTORY" Role="JOB_HISTORY" Multiplicity="*" />
@@ -367,5 +340,21 @@
         <PropertyRef Name="JOB_ID" />
       </Dependent>
     </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
+    <End Type="HRPortalModel.STATUS_MASTER" Role="STATUS_MASTER" Multiplicity="1" />
+    <End Type="HRPortalModel.STATUS_HISTORY" Role="STATUS_HISTORY" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="STATUS_MASTER">
+        <PropertyRef Name="STATUS_ID" />
+      </Principal>
+      <Dependent Role="STATUS_HISTORY">
+        <PropertyRef Name="STATUS_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AspNetUserRoles">
+    <End Type="HRPortalModel.AspNetRole" Role="AspNetRole" Multiplicity="0..1" />
+    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
   </Association>
 </Schema>

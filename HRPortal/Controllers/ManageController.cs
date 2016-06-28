@@ -333,12 +333,10 @@ namespace HRPortal.Controllers
         // POST: USer/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,CANDIDATE_NAME,JOB_ID,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] AspNetUser user)
+        public async Task<ActionResult> Edit(AspNetUser user)
         {
             if (ModelState.IsValid)
             {
-                //cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(HttpRuntime.Cache.Get("user"));
-                //cANDIDATE.MODIFIED_ON = DateTime.Now;
                 dbContext.Entry(user).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
 

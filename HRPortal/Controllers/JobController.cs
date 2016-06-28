@@ -27,13 +27,11 @@ namespace HRPortal.Controllers
         // GET: Job
         public async Task<ActionResult> Index(string sOdr, int? page)
         {
-
             var jobLst = await dbContext.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
             jobLst = GetPagination(jobLst, sOdr, page);
             ViewBag.TotalRecord = jobLst.Count();
             int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
             int pNo = ViewBag.PageNo == null ? 0 : ViewBag.PageNo;
-
             return View(jobLst.ToPagedList(pNo, pSize));
         }
 
@@ -71,6 +69,7 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file)
         {
             try { 
@@ -92,6 +91,7 @@ namespace HRPortal.Controllers
         }
 
         // GET: Job/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -130,6 +130,7 @@ namespace HRPortal.Controllers
         }
 
         // GET: Job/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Delete(Guid? id)
         {
             if (id == null)

@@ -14,12 +14,12 @@ using System.Web.Mvc;
 namespace HRPortal
 {
     [LogActionFilter]
+    [Authorize(Roles = "Admin,SuperUser")]
     public class VendorController : Controller
     {
         private HRPortalEntities db = new HRPortalEntities();
 
         // GET: Vendor
-
         public ActionResult Index()
         {
             return View(db.VENDOR_MASTER.Where(i=>i.ISACTIVE== true).ToList());

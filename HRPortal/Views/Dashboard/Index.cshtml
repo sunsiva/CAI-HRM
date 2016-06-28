@@ -8,8 +8,7 @@
 <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
 <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
 <link href="~/Content/timeline.css" rel="stylesheet" />
-@if (HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN"))
-{
+
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
@@ -27,7 +26,7 @@
                             <i class="fa fa-comments fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">@Model.ToT_Active_Jobs</div>
+                            <div class="huge" id="dtJobs">@Model.ToT_Active_Jobs</div>
                             <div>Active Jobs</div>
                         </div>
                     </div>
@@ -49,7 +48,7 @@
                             <i class="fa fa-thumb-tack fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">@Model.ToT_Candidates_PRGS</div>
+                            <div class="huge" id="dtPrgs">@Model.ToT_Candidates_PRGS</div>
                         </div>
                         <div class="text-right">Candidates - InProgress</div>
                     </div>
@@ -71,7 +70,7 @@
                             <i class="fa fa-tasks fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">@Model.ToT_Candidates_OFRD</div>
+                            <div class="huge" id="dtOfrd">@Model.ToT_Candidates_OFRD</div>
                         </div>
                         <div class="text-right">Candidates - Offered</div>
                     </div>
@@ -93,7 +92,7 @@
                             <i class="fa fa-users fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">@Model.ToT_Candidates_JOIN</div>
+                            <div class="huge" id="dtJoined">@Model.ToT_Candidates_JOIN</div>
                         </div>
                         <div class="text-right">Candidates Joined</div>
                     </div>
@@ -115,9 +114,9 @@
                             <i class="fa fa-close fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">@Model.ToT_Candidates_RJTD</div>
+                            <div class="huge" id="dtRejected">@Model.ToT_Candidates_RJTD</div>
                         </div>
-                        <div class="text-right">No. of Candidates Rejected!</div>
+                        <div class="text-right">Candidates Rejected</div>
                     </div>
                 </div>
                 <a href="#">
@@ -131,19 +130,82 @@
         </div>
         
     </div>
-    <!-- /.row -->
-    <div class="row">
+
+    @using (Html.BeginForm())
+    {
+    <div class="">
+        <div class="panel-group" id="SearchCriteriaPartial">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span data-toggle="collapse" href="#collapse1" id="CollapseMe" class="glyphicon glyphicon-plus"></span> Filters
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse form-horizontal table">
+                    <div class="form-group panel-body">
+                        <div class="col-md-11" align="center">
+                            <br />
+                                <div id="srchCandidates">
+                                    <input type="text" id="txtPartner" placeholder="Partner" />
+                                    <input type="text" id="txtPosition" placeholder="Position Name" />
+                                    <input type="text" id="txtStDate" class="date-picker" placeholder="Start Date" />
+                                    <input type="text" id="txtEndDate" class="date-picker" placeholder="End Date" />
+                                    <a class="btn btn-danger btn-xs" id="btnSearch" onclick="getCount()">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                    </a>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="">
+    </div>
+    }
+   
+   <div class="">
             <marquee class="text-danger" width=400 height=20> *View Details - is not functioning right now. Under progress.</marquee>
         </div>
     
-    </div>
-}
-else
-{
-    <br /><br />
-    <div>
-    <marquee class="text-danger"> Sorry!!..You are not authorized...</marquee>
 </div>
+
+@section Scripts {
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script lang="ja" type="text/javascript">
+        $(document).ready(function () {
+            $('.date-picker').datetimepicker({
+                format: 'MM/DD/YYYY'
+            });
+        });
+        
+    $('#CollapseMe').click(function () {
+        $(this).hasClass('glyphicon-plus') ? $(this).removeClass('glyphicon-plus') && $(this).addClass('glyphicon-minus') : $(this).removeClass('glyphicon-minus')
+        && $(this).addClass('glyphicon-plus');
+    });
+    
+    $('#txtPosition').on('keyup', function () {
+            getCount();
+    });
+    $('#txtPartner').on('keyup', function () {
+            getCount();
+    });
+
+    $('#txtStDate').on('blur', function () {
+        getCount();
+    });
+    $('#txtEndDate').on('blur', function () {
+        getCount();
+    });
+
+    window.getCount = function () {
+        $.get("/Dashboard/GetCount", { partner: $("#txtPartner").val(), position: $("#txtPosition").val(), stdt: $("#txtStDate").val(), edt: $("#txtEndDate").val() },
+            function (data) {
+                    $("#dtOfrd").text(data.ToT_Candidates_OFRD);
+                    $("#dtPrgs").text(data.ToT_Candidates_PRGS);
+                    $("#dtJoined").text(data.ToT_Candidates_JOIN);
+                    $("#dtRejected").text(data.ToT_Candidates_RJTD);
+            });
+    };
+
+    </script>
 }

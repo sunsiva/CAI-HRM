@@ -11,6 +11,7 @@ using System.Data.Entity;
 using HRPortal.Helper;
 using HRPortal.Common;
 using HRPortal.Common.Enums;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace HRPortal.Controllers
 {
@@ -62,6 +63,10 @@ namespace HRPortal.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            // User was redirected here because of authorization section
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+                return RedirectToAction("Unauthorized","Home");
+
             return View();
         }
 
@@ -186,19 +191,34 @@ namespace HRPortal.Controllers
                             db.Entry(objUser).State = EntityState.Modified;
                             await db.SaveChangesAsync();
 
-                            //Mapping user to the role..
+                            //Assign Role to user Here: Note:-the type2,type3 are not working due to various reasons so implemented type1.
+                            //TYPE:1
                             string roleid = !string.IsNullOrEmpty(frm["ddlRoleList"]) ? frm["ddlRoleList"] : string.Empty;
-                            UserXRole role = new UserXRole();
-                            role.UserId = Guid.Parse(user.Id);
-                            role.RoleId = Guid.Parse(roleid);
-                            db.UserXRoles.Add(role);
-                            await db.SaveChangesAsync();
+                            string sqlqry = "INSERT INTO [DBO].[AspNetUserRoles] VALUES('" + user.Id + "','" + roleid + "')";
+                            await db.Database.ExecuteSqlCommandAsync(sqlqry);
+
+                            //TYPE:2                           
+                            //string rolename = db.AspNetRoles.Find(roleid).Name;
+                            //await UserManager.AddToRoleAsync(user.Id, rolename);
+
+                            //TYPE:3
+                            //var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+                            //userManager.AddToRole(user.Id, rolename);
+
+                            //Obsolete: Mapping user to the role..
+                            //UserXRole role = new UserXRole();
+                            //role.UserId = Guid.Parse(user.Id);
+                            //role.RoleId = Guid.Parse(roleid);
+                            //db.UserXRoles.Add(role);
+                            //await db.SaveChangesAsync();
+
                             dbContextTransaction.Commit();
+
                             // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                             // Send an email with this link
-                            // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                            // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                            //string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                            //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                            //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
                             ViewBag.RegSuccess = "User registered successfully.";
                             return View(model);
@@ -208,7 +228,8 @@ namespace HRPortal.Controllers
                         ViewBag.RegFail = result.Errors.FirstOrDefault();
                         AddErrors(result);
                     }
-                    catch (Exception) {
+                    catch (Exception ex) {
+                        ViewBag.RegFail = result.Errors.FirstOrDefault();
                         dbContextTransaction.Rollback();
                         AddErrors(result);
                     }

@@ -23,12 +23,12 @@ namespace HRPortal
         public System.Guid STATUS_ID { get; set; }
         public string STATUS_NAME { get; set; }
         public string STATUS_DESCRIPTION { get; set; }
+        public Nullable<int> STATUS_ORDER { get; set; }
         public bool ISACTIVE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_ON { get; set; }
-        public Nullable<int> STATUS_ORDER { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STATUS_HISTORY> STATUS_HISTORY { get; set; }

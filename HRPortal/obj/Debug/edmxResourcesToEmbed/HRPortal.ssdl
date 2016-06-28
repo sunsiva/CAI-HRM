@@ -206,16 +206,6 @@
     <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
   </EntityType>
-  <EntityType Name="sysdiagrams">
-    <Key>
-      <PropertyRef Name="diagram_id" />
-    </Key>
-    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-    <Property Name="principal_id" Type="int" Nullable="false" />
-    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="version" Type="int" />
-    <Property Name="definition" Type="varbinary(max)" />
-  </EntityType>
   <EntityType Name="UserLog">
     <Key>
       <PropertyRef Name="UserLogId" />
@@ -355,7 +345,6 @@
     <EntitySet Name="JOBPOSTING" EntityType="Self.JOBPOSTING" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserLog" EntityType="Self.UserLog" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserXRole" EntityType="Self.UserXRole" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="VENDOR_MASTER" EntityType="Self.VENDOR_MASTER" Schema="dbo" store:Type="Tables" />

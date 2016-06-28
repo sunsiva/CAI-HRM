@@ -4022,25 +4022,25 @@ ATTACH;X-FILENAME="D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPo
  AAAAAAAAAAAAAAOFcDAGRvY1Byb3BzL2NvcmUueG1sUEsBAi0AFAAGAAgAAAAhAK6xaBByAwAA
  gDkAACcAAAAAAAAAAAAAAAAAu1kDAHhsL3ByaW50ZXJTZXR0aW5ncy9wcmludGVyU2V0dGluZ3
  MxLmJpblBLBQYAAAAAIQAhADoJAAByXQMAAAA=
-ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;ROLE=REQ-PARTICIPANT;CN=madhu s:ma
- ilto:Madhu@viruntha.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;ROLE=REQ-PARTICIPANT;CN=tech suppo
+ rt:mailto:techsupport@caihrops.in
 CLASS:PUBLIC
-CREATED:20160608T190220
-DESCRIPTION:Hi\, Interview has been scheduled for the possition of Content 
- Writer. Please let me know if you have any quries on this. Regards\, madhu
-  s.
-DTEND:20160608T193000
-DTSTAMP:20160608T133220Z
-DTSTART:20160608T190000
+CREATED:20160627T222412
+DESCRIPTION:Hi\, Interview has been scheduled for the possition of IT Admin
+ . Please let me know if you have any quries on this. Regards\, tech suppor
+ t.
+DTEND:20160628T143000
+DTSTAMP:20160627T165412Z
+DTSTART:20160628T140000
 LOCATION:Available
-ORGANIZER:mailto:Madhu@viruntha.com
+ORGANIZER:mailto:techsupport@caihrops.in
 PRIORITY:1
 SEQUENCE:0
-SUMMARY:Interview Scheduled for Calvin
+SUMMARY:Interview Scheduled for DEV_TEST
 TRANSP:Transparent
-UID:bc30bed0-8f41-4ce0-b8bd-df47b30060cb
+UID:a6231a48-be39-43c8-99b1-021a7059b6a4
 X-ALT-DESC;FMTTYPE=text/html:Hi\, <br><br> Interview has been scheduled for
-  the possition of <b>Content Writer</b>. <br> <br> Please let me know if y
- ou have any quries on this. <br> <br> Regards\,<br><b>madhu s</b>.
+  the possition of <b>IT Admin</b>. <br> <br> Please let me know if you hav
+ e any quries on this. <br> <br> Regards\,<br><b>tech support</b>.
 END:VEVENT
 END:VCALENDAR

@@ -268,11 +268,17 @@ namespace HRPortal.Models
 
                 // Add an attachment to this event
                 filename = Path.Combine(serverPath, canLst.RESUME_FILE_PATH);
-                if (!string.IsNullOrEmpty(filename)) { 
-                    IAttachment attachment = new DDay.iCal.Attachment();
-                    attachment.Data = ReadBinary(filename);
-                    attachment.Parameters.Add("X-FILENAME", filename);
-                    evt.Attachments.Add(attachment);
+                if (!string.IsNullOrEmpty(filename))
+                {
+                    try
+                    {
+                        IAttachment attachment = new DDay.iCal.Attachment();
+                        attachment.Data = ReadBinary(filename);
+                        attachment.Parameters.Add("X-FILENAME", filename);
+                        evt.Attachments.Add(attachment);
+                    }
+                    catch(Exception ex)
+                    { }
                 }
 
                 iCalendarSerializer serializer = new iCalendarSerializer();

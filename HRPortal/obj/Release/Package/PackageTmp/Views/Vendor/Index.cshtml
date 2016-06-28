@@ -5,8 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN"))
-{ 
+
     <h2>Staffing Partners</h2>
     <br />
 <h4 align="right">
@@ -62,11 +61,3 @@
 }
     <tr><td align="right" class="" colspan="6">@Model.Count() Record(s) Found.</td></tr>
 </table>
-}
-else
-{
-<br /><br />
-<div>
-    <marquee class="text-danger"> Sorry!!..You are not authorized...</marquee>
-</div>
-}

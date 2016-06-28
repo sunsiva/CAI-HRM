@@ -334,8 +334,7 @@ namespace HRPortal.Controllers
                 return Json("{'ex':'Exception'}");
             }
         }
-
-
+        
         private string GetPartnerName(string pId)
         {
             var vendor = (from u in db.AspNetUsers.Where(i => i.Id == pId)
@@ -367,6 +366,13 @@ namespace HRPortal.Controllers
             return context.Users.FirstOrDefault(u => u.Id == identityClaim.Value);
         }
 
+        [AllowAnonymous]
+        public ActionResult Unauthorized()
+        {
+            return View("_Unauthorized");
+        }
+
+        [AllowAnonymous]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

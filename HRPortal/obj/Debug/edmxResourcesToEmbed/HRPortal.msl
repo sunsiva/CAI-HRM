@@ -4,115 +4,10 @@
     <EntitySetMapping Name="C__MigrationHistory">
       <EntityTypeMapping TypeName="HRPortalModel.C__MigrationHistory">
         <MappingFragment StoreEntitySet="__MigrationHistory">
-          <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
-          <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
-          <ScalarProperty Name="Model" ColumnName="Model" />
           <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="ERROR_LOG">
-      <EntityTypeMapping TypeName="HRPortalModel.ERROR_LOG">
-        <MappingFragment StoreEntitySet="ERROR_LOG">
-          <ScalarProperty Name="ERR_ID" ColumnName="ERR_ID" />
-          <ScalarProperty Name="ERR_TYPE" ColumnName="ERR_TYPE" />
-          <ScalarProperty Name="ERR_DESC" ColumnName="ERR_DESC" />
-          <ScalarProperty Name="ERR_CODE" ColumnName="ERR_CODE" />
-          <ScalarProperty Name="ERR_SYSTEM_ID" ColumnName="ERR_SYSTEM_ID" />
-          <ScalarProperty Name="ERR_SYSTEM_NAME" ColumnName="ERR_SYSTEM_NAME" />
-          <ScalarProperty Name="ERR_PAGE" ColumnName="ERR_PAGE" />
-          <ScalarProperty Name="ERR_EVENT" ColumnName="ERR_EVENT" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="VENDOR_MASTER">
-      <EntityTypeMapping TypeName="HRPortalModel.VENDOR_MASTER">
-        <MappingFragment StoreEntitySet="VENDOR_MASTER">
-          <ScalarProperty Name="VENDOR_ID" ColumnName="VENDOR_ID" />
-          <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
-          <ScalarProperty Name="VENDOR_SPOC" ColumnName="VENDOR_SPOC" />
-          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
-          <ScalarProperty Name="VENDOR_CONTACT_NO" ColumnName="VENDOR_CONTACT_NO" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="UserLogs">
-      <EntityTypeMapping TypeName="HRPortalModel.UserLog">
-        <MappingFragment StoreEntitySet="UserLog">
-          <ScalarProperty Name="UserMAC" ColumnName="UserMAC" />
-          <ScalarProperty Name="UserIP" ColumnName="UserIP" />
-          <ScalarProperty Name="IsOnline" ColumnName="IsOnline" />
-          <ScalarProperty Name="LoggedOutOn" ColumnName="LoggedOutOn" />
-          <ScalarProperty Name="LoggedInOn" ColumnName="LoggedInOn" />
-          <ScalarProperty Name="LoggedInBy" ColumnName="LoggedInBy" />
-          <ScalarProperty Name="UserLogDesc" ColumnName="UserLogDesc" />
-          <ScalarProperty Name="UserLogName" ColumnName="UserLogName" />
-          <ScalarProperty Name="UserLogId" ColumnName="UserLogId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="STATUS_MASTER">
-      <EntityTypeMapping TypeName="HRPortalModel.STATUS_MASTER">
-        <MappingFragment StoreEntitySet="STATUS_MASTER">
-          <ScalarProperty Name="STATUS_ORDER" ColumnName="STATUS_ORDER" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="STATUS_DESCRIPTION" ColumnName="STATUS_DESCRIPTION" />
-          <ScalarProperty Name="STATUS_NAME" ColumnName="STATUS_NAME" />
-          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="sysdiagrams">
-      <EntityTypeMapping TypeName="HRPortalModel.sysdiagram">
-        <MappingFragment StoreEntitySet="sysdiagrams">
-          <ScalarProperty Name="definition" ColumnName="definition" />
-          <ScalarProperty Name="version" ColumnName="version" />
-          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-          <ScalarProperty Name="name" ColumnName="name" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="JOBPOSTINGs">
-      <EntityTypeMapping TypeName="HRPortalModel.JOBPOSTING">
-        <MappingFragment StoreEntitySet="JOBPOSTING">
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-          <ScalarProperty Name="CUSTOMER_NAME" ColumnName="CUSTOMER_NAME" />
-          <ScalarProperty Name="JD_SOURCE" ColumnName="JD_SOURCE" />
-          <ScalarProperty Name="JD_FILE_PATH" ColumnName="JD_FILE_PATH" />
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="WORK_LOCATION" ColumnName="WORK_LOCATION" />
-          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
-          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
-          <ScalarProperty Name="NO_OF_VACANCIES" ColumnName="NO_OF_VACANCIES" />
-          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
-          <ScalarProperty Name="JOB_DESCRIPTION" ColumnName="JOB_DESCRIPTION" />
-          <ScalarProperty Name="JOB_CODE" ColumnName="JOB_CODE" />
-          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="UserXRoles">
-      <EntityTypeMapping TypeName="HRPortalModel.UserXRole">
-        <MappingFragment StoreEntitySet="UserXRole">
-          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="Model" ColumnName="Model" />
+          <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
+          <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -168,48 +63,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="AspNetUserRoles" TypeName="HRPortalModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
-      <EndProperty Name="AspNetUser">
-        <ScalarProperty Name="Id" ColumnName="UserId" />
-      </EndProperty>
-      <EndProperty Name="AspNetRole">
-        <ScalarProperty Name="Id" ColumnName="RoleId" />
-      </EndProperty>
-      <Condition ColumnName="RoleId" IsNull="false" />
-    </AssociationSetMapping>
-    <EntitySetMapping Name="STATUS_HISTORY">
-      <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
-        <MappingFragment StoreEntitySet="STATUS_HISTORY">
-          <ScalarProperty Name="SCHEDULE_LENGTH_MINS" ColumnName="SCHEDULE_LENGTH_MINS" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="SCHEDULED_TO" ColumnName="SCHEDULED_TO" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
-          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="EVENTSCHEDULEs">
-      <EntityTypeMapping TypeName="HRPortalModel.EVENTSCHEDULE">
-        <MappingFragment StoreEntitySet="EVENTSCHEDULE">
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="STATUSENUM" ColumnName="STATUSENUM" />
-          <ScalarProperty Name="APPOINTMENTLENGTH" ColumnName="APPOINTMENTLENGTH" />
-          <ScalarProperty Name="DATETIMESCHEDULED" ColumnName="DATETIMESCHEDULED" />
-          <ScalarProperty Name="KEY" ColumnName="KEY" />
-          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="CANDIDATES">
       <EntityTypeMapping TypeName="HRPortalModel.CANDIDATE">
         <MappingFragment StoreEntitySet="CANDIDATES">
@@ -241,6 +94,40 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="ERROR_LOG">
+      <EntityTypeMapping TypeName="HRPortalModel.ERROR_LOG">
+        <MappingFragment StoreEntitySet="ERROR_LOG">
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="ERR_EVENT" ColumnName="ERR_EVENT" />
+          <ScalarProperty Name="ERR_PAGE" ColumnName="ERR_PAGE" />
+          <ScalarProperty Name="ERR_SYSTEM_NAME" ColumnName="ERR_SYSTEM_NAME" />
+          <ScalarProperty Name="ERR_SYSTEM_ID" ColumnName="ERR_SYSTEM_ID" />
+          <ScalarProperty Name="ERR_CODE" ColumnName="ERR_CODE" />
+          <ScalarProperty Name="ERR_DESC" ColumnName="ERR_DESC" />
+          <ScalarProperty Name="ERR_TYPE" ColumnName="ERR_TYPE" />
+          <ScalarProperty Name="ERR_ID" ColumnName="ERR_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EVENTSCHEDULEs">
+      <EntityTypeMapping TypeName="HRPortalModel.EVENTSCHEDULE">
+        <MappingFragment StoreEntitySet="EVENTSCHEDULE">
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="STATUSENUM" ColumnName="STATUSENUM" />
+          <ScalarProperty Name="APPOINTMENTLENGTH" ColumnName="APPOINTMENTLENGTH" />
+          <ScalarProperty Name="DATETIMESCHEDULED" ColumnName="DATETIMESCHEDULED" />
+          <ScalarProperty Name="KEY" ColumnName="KEY" />
+          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="EXCEPTION_LOGGING">
       <EntityTypeMapping TypeName="HRPortalModel.EXCEPTION_LOGGING">
         <MappingFragment StoreEntitySet="EXCEPTION_LOGGING">
@@ -269,5 +156,107 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="JOBPOSTINGs">
+      <EntityTypeMapping TypeName="HRPortalModel.JOBPOSTING">
+        <MappingFragment StoreEntitySet="JOBPOSTING">
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="CUSTOMER_NAME" ColumnName="CUSTOMER_NAME" />
+          <ScalarProperty Name="JD_SOURCE" ColumnName="JD_SOURCE" />
+          <ScalarProperty Name="JD_FILE_PATH" ColumnName="JD_FILE_PATH" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="WORK_LOCATION" ColumnName="WORK_LOCATION" />
+          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
+          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+          <ScalarProperty Name="NO_OF_VACANCIES" ColumnName="NO_OF_VACANCIES" />
+          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+          <ScalarProperty Name="JOB_DESCRIPTION" ColumnName="JOB_DESCRIPTION" />
+          <ScalarProperty Name="JOB_CODE" ColumnName="JOB_CODE" />
+          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="STATUS_HISTORY">
+      <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
+        <MappingFragment StoreEntitySet="STATUS_HISTORY">
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="SCHEDULE_LENGTH_MINS" ColumnName="SCHEDULE_LENGTH_MINS" />
+          <ScalarProperty Name="SCHEDULED_TO" ColumnName="SCHEDULED_TO" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="STATUS_MASTER">
+      <EntityTypeMapping TypeName="HRPortalModel.STATUS_MASTER">
+        <MappingFragment StoreEntitySet="STATUS_MASTER">
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="STATUS_ORDER" ColumnName="STATUS_ORDER" />
+          <ScalarProperty Name="STATUS_DESCRIPTION" ColumnName="STATUS_DESCRIPTION" />
+          <ScalarProperty Name="STATUS_NAME" ColumnName="STATUS_NAME" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserLogs">
+      <EntityTypeMapping TypeName="HRPortalModel.UserLog">
+        <MappingFragment StoreEntitySet="UserLog">
+          <ScalarProperty Name="IsOnline" ColumnName="IsOnline" />
+          <ScalarProperty Name="UserMAC" ColumnName="UserMAC" />
+          <ScalarProperty Name="UserIP" ColumnName="UserIP" />
+          <ScalarProperty Name="LoggedOutOn" ColumnName="LoggedOutOn" />
+          <ScalarProperty Name="LoggedInOn" ColumnName="LoggedInOn" />
+          <ScalarProperty Name="LoggedInBy" ColumnName="LoggedInBy" />
+          <ScalarProperty Name="UserLogDesc" ColumnName="UserLogDesc" />
+          <ScalarProperty Name="UserLogName" ColumnName="UserLogName" />
+          <ScalarProperty Name="UserLogId" ColumnName="UserLogId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserXRoles">
+      <EntityTypeMapping TypeName="HRPortalModel.UserXRole">
+        <MappingFragment StoreEntitySet="UserXRole">
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="VENDOR_MASTER">
+      <EntityTypeMapping TypeName="HRPortalModel.VENDOR_MASTER">
+        <MappingFragment StoreEntitySet="VENDOR_MASTER">
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="VENDOR_CONTACT_NO" ColumnName="VENDOR_CONTACT_NO" />
+          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+          <ScalarProperty Name="VENDOR_SPOC" ColumnName="VENDOR_SPOC" />
+          <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
+          <ScalarProperty Name="VENDOR_ID" ColumnName="VENDOR_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="AspNetUserRoles" TypeName="HRPortalModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+      <EndProperty Name="AspNetUser">
+        <ScalarProperty Name="Id" ColumnName="UserId" />
+      </EndProperty>
+      <EndProperty Name="AspNetRole">
+        <ScalarProperty Name="Id" ColumnName="RoleId" />
+      </EndProperty>
+      <Condition ColumnName="RoleId" IsNull="false" />
+    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping>

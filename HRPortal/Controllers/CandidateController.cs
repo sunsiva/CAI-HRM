@@ -65,6 +65,7 @@ namespace HRPortal.Controllers
         }
 
         // GET: Squads Candidates
+        [Authorize(Roles = "SuperUser")]
         public async Task<ActionResult> SquadJobs(string sOdr, int? page)
         {
             try
