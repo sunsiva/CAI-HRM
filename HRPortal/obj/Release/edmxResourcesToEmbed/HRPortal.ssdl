@@ -122,6 +122,7 @@
     <Property Name="DATETIMESCHEDULED" Type="datetime" Nullable="false" />
     <Property Name="APPOINTMENTLENGTH" Type="int" Nullable="false" />
     <Property Name="STATUSENUM" Type="int" Nullable="false" />
+    <Property Name="SCHEDULED_FOR" Type="nvarchar" MaxLength="500" />
     <Property Name="COMMENTS" Type="nvarchar(max)" />
     <Property Name="ISACTIVE" Type="bit" />
     <Property Name="MODIFIED_BY" Type="uniqueidentifier" />
@@ -189,6 +190,7 @@
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
     <Property Name="SCHEDULED_TO" Type="datetime" />
     <Property Name="SCHEDULE_LENGTH_MINS" Type="int" />
+    <Property Name="SCHEDULED_FOR" Type="nvarchar" MaxLength="500" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
   </EntityType>

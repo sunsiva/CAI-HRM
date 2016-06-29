@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using HRPortal.Models;
+using System.Net.Mail;
+using HRPortal.Common;
 
 namespace HRPortal
 {
@@ -19,6 +21,14 @@ namespace HRPortal
         public Task SendAsync(IdentityMessage message)
         {
             // Plug in your email service here to send an email.
+            SmtpClient client = new SmtpClient();
+            // Create the message:
+            string sentFrom = HRPConst.PRIM_EMAIL_FROM;
+            var mail = new MailMessage(sentFrom, message.Destination);
+            mail.Subject = message.Subject;
+            mail.Body = message.Body;
+            client.Send(mail);
+
             return Task.FromResult(0);
         }
     }

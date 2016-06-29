@@ -151,6 +151,7 @@
                     @Html.Label("Comments", new { @class = "col-md-2 control-label" })
                     <div class="col-md-8">
                         @Html.TextArea("Comments", new { @id = "txtStsComments", @class = "textarea-input-custom", @required = "mandatory" })
+                        <div class="pull-left"><span class="text-info" id="infoMsgModal"><small>Note:- This appointment will be sent with profile attached.</small></span></div>
                     </div>
                 </div>
                 <br />
@@ -180,7 +181,6 @@
             $(function () {
                 $('#txtdatetimepicker').datetimepicker();
             });
-
 
             //-------------------------------
             // Single field

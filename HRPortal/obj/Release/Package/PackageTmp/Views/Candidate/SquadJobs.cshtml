@@ -9,6 +9,9 @@
     int sl = (pNo == 1 ? 0 : (pNo - 1) * 10);
 }
 
+<link href="~/Content/tags/jquery.tagit.css" rel="stylesheet" />
+<link href="~/Content/tags/tagit.ui-zendesk.css" rel="stylesheet" />
+
 <h2>Profile Submissions By Squad</h2>
 <div class="container">
     <div class="row">
@@ -119,21 +122,44 @@
             </div>
             <div class="modal-body">
                 <div class="form-group form-group-required">
+                    <input name="tags" type="hidden" id="sendTo" value="">
                     @Html.Label("Date", new { @class = "col-md-2 control-label" })
-                    <div class='col-sm-6'>
-                        <input type='text' class="form-control" id='datetimepicker' />
+                    <div class='col-sm-4'>
+                        <input type='text' class="form-control" id='txtdatetimepicker' />
+                    </div>
+                    @Html.Label("Length", new { @class = "col-md-2 control-label", @title = "Please choose the length of the schedule." })
+                    <div class='col-sm-4'>
+                        <select id="ddlScheduleLength" name="ddlScheduleLength" class="form-control">
+                            <option value="">Schedule</option>
+                            <option value="30">30 Mins</option>
+                            <option value="60">60 Mins</option>
+                        </select>
                     </div>
                 </div>
+                <br />
+                <br />
+                <div class="form-group form-group-required">
+                    @Html.Label("Email To", new { @class = "col-md-2 control-label" })
+                    <div class='col-sm-9'>
+                        <ul id="singleFieldTags"></ul>
+                    </div>
+                </div>
+                <br />
                 <br /><br />
+                <br />
                 <div class="form-group form-group-required">
                     @Html.Label("Comments", new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                         @Html.TextArea("Comments", new { @id = "txtStsComments", @class = "textarea-input-custom", @required = "mandatory" })
+                        <div class="pull-left"><span class="text-info" id="infoMsgModal"><small>Note:- This appointment will be sent with profile attached.</small></span></div>
                     </div>
                 </div>
-                <span class="text-danger" id="errMsgModal"><small>If you don't save, your changes will be lost.</small></span>
+                <br />
+                <br />
+
             </div>
             <div class="modal-footer">
+                <div class="pull-left"><span class="text-danger" id="errMsgModal"><small>If you don't save, your changes will be lost.</small></span></div>
                 <div class="pull-right">
                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Close</button>
                     <button type="button" id="btnStatus" class="btn btn-success" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Save</button>
@@ -147,13 +173,32 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/moment.js"></script>
     <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+<script src="~/Scripts/tags/tag-it.js" type="text/javascript" charset="utf-8"></script>
 
     <script lang="ja" type="text/javascript">
         $(document).ready(function () {
 
             $(function () {
-                $('#datetimepicker').datetimepicker();
+                $('#txtdatetimepicker').datetimepicker();
             });
+
+            //-------------------------------
+            // Single field
+            //-------------------------------
+            var sampleTags = ['c++', 'java'];
+            $('#singleFieldTags').tagit({
+                availableTags: sampleTags,
+                // This will make Tag-it submit a single form value, as a comma-delimited field.
+                singleField: true,
+                singleFieldNode: $('#sendTo')
+            });
+
+            function myPanel(data) {
+                $(".candidate-name").text(data.dataset.customName);
+                $("#hdnCandidateId").val(data.dataset.customValue);
+                $("#hdnStatusId").val(data.dataset.customStatusid);
+                $("#txtStsComments").val('');
+            }
 
             window.myPanel = function (data) {
                 $(".candidate-name").text(data.dataset.customName);
@@ -163,9 +208,18 @@
             };
 
             $("#btnStatus").click(function () {
-                if ($("#txtSchDate").val() == "") {
-                    $("#errMsgModal").text("Please schedule a candidate.");
-                    $("#txtSchDate").focus();
+                if ($("#txtdatetimepicker").val() == "") {
+                    $("#errMsgModal").text("Please schedule a date.");
+                    $("#txtdatetimepicker").focus();
+                    return false;
+                }
+                else if ($("#ddlScheduleLength").val() == "") {
+                    $("#errMsgModal").text("Please select a length(duration).");
+                    $("#ddlScheduleLength").focus();
+                    return false;
+                }
+                else if ($("#sendTo").val() == "") {
+                    $("#errMsgModal").text("Please enter email address whom to be sent.");
                     return false;
                 }
                 else if ($("#txtStsComments").val() == "") {
@@ -174,7 +228,7 @@
                     return false;
                 }
                 else {
-                    $.get("/Candidate/ScheduleCandidate", { id: $("#hdnCandidateId").val(), date: $("#datetimepicker").val(), comments: $("#txtStsComments").val(), statusId: $("#hdnStatusId").val() },
+                    $.get("/Candidate/ScheduleCandidate", { id: $("#hdnCandidateId").val(), date: $("#txtdatetimepicker").val(), length: $("#ddlScheduleLength").val(), sendTo: $("#sendTo").val(), comments: $("#txtStsComments").val(), statusId: $("#hdnStatusId").val() },
                         function (data) {
                             var id = $("#hdnCandidateId").val();
                             $("#stsSecondTxt_" + id).text(data);

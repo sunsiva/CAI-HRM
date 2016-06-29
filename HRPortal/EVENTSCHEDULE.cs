@@ -26,5 +26,6 @@ namespace HRPortal
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
         public Nullable<System.Guid> CREATED_BY { get; set; }
         public Nullable<System.DateTime> CREATED_ON { get; set; }
+        public string SCHEDULED_FOR { get; set; }
     }
 }

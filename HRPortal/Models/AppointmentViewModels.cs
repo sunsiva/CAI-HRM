@@ -161,7 +161,7 @@ namespace HRPortal.Models
             return Json(rows, JsonRequestBehavior.AllowGet);
         }
         
-        public async Task SendInvite(string NewEventDate, string NewEventDuration, string sendTo, Guid canId)
+        public async Task SendInvite(string NewEventDate, string NewEventDuration, string sendTo, Guid canId, string comments)
         {
             try
             {
@@ -190,9 +190,10 @@ namespace HRPortal.Models
                 // Properties of the meeting request
                 // keep guid in sending program to modify or cancel the request later
                 string strSubject = "Interview Scheduled for "+ canName;
-                string toEmail = "Chandrashekhar_Yarashi@compaid.co.in";// "Mohan_Kumar@compaid.co.in";// "Chandrashekhar_Yarashi@compaid.co.in";// "Nagaraju_Chinnapalle@compaid.co.in";
+                string toEmail = "sivaprakasam_sundaram@compaid.co.in";
                 string bodyPlainText = "Hi, Interview has been scheduled for the possition of "+job.POSITION_NAME+". Please let me know if you have any quries on this. Regards, "+UserName+".";
-                string bodyHtml = "Hi, <br><br> Interview has been scheduled for the possition of <b>" + job.POSITION_NAME + "</b>. <br> <br> Please let me know if you have any quries on this. <br> <br> Regards,<br><b>" + UserName +"</b>.";
+                string bodyHtml = "Hi, <br><br> Interview has been scheduled for the possition of <b>" + job.POSITION_NAME +
+                    "</b>. <br> <br>COMMENTS: " + comments+"<br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
                 string location = "Available";
                 string organizerMail = UserEmail;
                 string filename = "Test.txt";//--- Attachments

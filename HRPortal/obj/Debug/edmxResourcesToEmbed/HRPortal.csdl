@@ -170,6 +170,7 @@
     <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
     <Property Name="CREATED_BY" Type="Guid" />
     <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
+    <Property Name="SCHEDULED_FOR" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="EXCEPTION_LOGGING">
     <Key>
@@ -237,6 +238,7 @@
     <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
     <NavigationProperty Name="STATUS_MASTER" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
+    <Property Name="SCHEDULED_FOR" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="STATUS_MASTER">
     <Key>

@@ -49,8 +49,8 @@ namespace HRPortal.Controllers
                         join usr in db.AspNetUsers on item.CREATED_BY equals usr.Id
                         join ven in db.VENDOR_MASTER on usr.Vendor_Id equals ven.VENDOR_ID
                         where ven.ISACTIVE == true
-                        && ven.VENDOR_NAME.ToUpper().Contains(partner.ToUpper())
-                        && job.POSITION_NAME.ToUpper().Contains(position.ToUpper())
+                        && ven.VENDOR_NAME.ToUpper().Trim().Contains(partner.ToUpper())
+                        && job.POSITION_NAME.ToUpper().Trim().Contains(position.ToUpper())
                         && (stdt != string.Empty ? ((item.MODIFIED_ON.HasValue? Convert.ToDateTime(item.MODIFIED_ON.Value.ToShortDateString()):
                         Convert.ToDateTime(item.CREATED_ON.ToShortDateString())) >= Convert.ToDateTime(stdt)) : true)
                         && (edt != string.Empty ? ((item.MODIFIED_ON.HasValue ? Convert.ToDateTime(item.MODIFIED_ON.Value.ToShortDateString()) : 

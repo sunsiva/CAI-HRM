@@ -113,6 +113,7 @@
     <EntitySetMapping Name="EVENTSCHEDULEs">
       <EntityTypeMapping TypeName="HRPortalModel.EVENTSCHEDULE">
         <MappingFragment StoreEntitySet="EVENTSCHEDULE">
+          <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
           <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
           <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
           <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
@@ -183,6 +184,7 @@
     <EntitySetMapping Name="STATUS_HISTORY">
       <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
         <MappingFragment StoreEntitySet="STATUS_HISTORY">
+          <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
           <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
           <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
           <ScalarProperty Name="SCHEDULE_LENGTH_MINS" ColumnName="SCHEDULE_LENGTH_MINS" />

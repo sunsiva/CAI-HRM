@@ -188,6 +188,7 @@ namespace HRPortal.Controllers
                 sHist.CANDIDATE_ID = Guid.Parse(id);
                 sHist.ISACTIVE = true;
                 sHist.SCHEDULED_TO = Convert.ToDateTime(date);
+                sHist.SCHEDULED_FOR = sendTo;
                 sHist.SCHEDULE_LENGTH_MINS = int.Parse(length);
                 sHist.COMMENTS = comments;
                 sHist.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
@@ -197,7 +198,7 @@ namespace HRPortal.Controllers
 
                 if (System.Configuration.ConfigurationManager.AppSettings["IsAppointmentMail"] == "true")
                 {
-                    await appointmentVM.SendInvite(date, length, sendTo, Guid.Parse(id));
+                    await appointmentVM.SendInvite(date, length, sendTo, Guid.Parse(id), comments);
                 }
 
                 return Json(stsId.STATUS_DESCRIPTION.ToString(), JsonRequestBehavior.AllowGet);

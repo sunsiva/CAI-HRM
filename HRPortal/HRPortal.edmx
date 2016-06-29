@@ -127,6 +127,7 @@
           <Property Name="DATETIMESCHEDULED" Type="datetime" Nullable="false" />
           <Property Name="APPOINTMENTLENGTH" Type="int" Nullable="false" />
           <Property Name="STATUSENUM" Type="int" Nullable="false" />
+          <Property Name="SCHEDULED_FOR" Type="nvarchar" MaxLength="500" />
           <Property Name="COMMENTS" Type="nvarchar(max)" />
           <Property Name="ISACTIVE" Type="bit" />
           <Property Name="MODIFIED_BY" Type="uniqueidentifier" />
@@ -194,6 +195,7 @@
           <Property Name="ISACTIVE" Type="bit" Nullable="false" />
           <Property Name="SCHEDULED_TO" Type="datetime" />
           <Property Name="SCHEDULE_LENGTH_MINS" Type="int" />
+          <Property Name="SCHEDULED_FOR" Type="nvarchar" MaxLength="500" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
           <Property Name="MODIFIED_ON" Type="datetime" />
         </EntityType>
@@ -556,6 +558,7 @@
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="Guid" />
           <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
+          <Property Name="SCHEDULED_FOR" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EXCEPTION_LOGGING">
           <Key>
@@ -623,6 +626,7 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
           <NavigationProperty Name="STATUS_MASTER" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
+          <Property Name="SCHEDULED_FOR" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="STATUS_MASTER">
           <Key>
@@ -861,6 +865,7 @@
           <EntitySetMapping Name="EVENTSCHEDULEs">
             <EntityTypeMapping TypeName="HRPortalModel.EVENTSCHEDULE">
               <MappingFragment StoreEntitySet="EVENTSCHEDULE">
+                <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
                 <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
@@ -931,6 +936,7 @@
           <EntitySetMapping Name="STATUS_HISTORY">
             <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
               <MappingFragment StoreEntitySet="STATUS_HISTORY">
+                <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
                 <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="SCHEDULE_LENGTH_MINS" ColumnName="SCHEDULE_LENGTH_MINS" />
