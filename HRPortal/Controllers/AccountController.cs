@@ -88,6 +88,7 @@ namespace HRPortal.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    loginVM.ClearCookie();
                     loginVM.SetUserToCache(model.Email);
                     //loginVM.UserLogs(true,model.Email, HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString()); //TODO:disabed the feature temporarily
                     return RedirectToLocal(returnUrl);
@@ -191,27 +192,25 @@ namespace HRPortal.Controllers
                             db.Entry(objUser).State = EntityState.Modified;
                             await db.SaveChangesAsync();
 
-                            //Assign Role to user Here: Note:-the type2,type3 are not working due to various reasons so implemented type1.
+                            //Assign Role to user Here: Note:-the type2,type3 are not working, so implemented type1.
                             //TYPE:1
                             string roleid = !string.IsNullOrEmpty(frm["ddlRoleList"]) ? frm["ddlRoleList"] : string.Empty;
                             string sqlqry = "INSERT INTO [DBO].[AspNetUserRoles] VALUES('" + user.Id + "','" + roleid + "')";
                             await db.Database.ExecuteSqlCommandAsync(sqlqry);
+                            //Insert role here, to access while log in to the system.
+                            UserXRole role = new UserXRole();
+                            role.UserId = Guid.Parse(user.Id);
+                            role.RoleId = Guid.Parse(roleid);
+                            db.UserXRoles.Add(role);
+                            await db.SaveChangesAsync();
 
-                            //TYPE:2                           
+                            //TYPE:2
                             //string rolename = db.AspNetRoles.Find(roleid).Name;
                             //await UserManager.AddToRoleAsync(user.Id, rolename);
-
                             //TYPE:3
                             //var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
                             //userManager.AddToRole(user.Id, rolename);
-
-                            //Obsolete: Mapping user to the role..
-                            //UserXRole role = new UserXRole();
-                            //role.UserId = Guid.Parse(user.Id);
-                            //role.RoleId = Guid.Parse(roleid);
-                            //db.UserXRoles.Add(role);
-                            //await db.SaveChangesAsync();
-
+                            
                             dbContextTransaction.Commit();
 
                             // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -244,9 +243,9 @@ namespace HRPortal.Controllers
         {
             var usrs = db.AspNetUsers.ToList().Select(x => new RegisterViewModel {
                 Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber, Vendor_Id=x.Vendor_Id, CreatedBy=x.CreatedBy }).ToList();
-            if (Session[CacheKey.RoleName.ToString()].ToString().ToUpper().Contains("SUPERUSER"))
+            if (CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
             {
-                var vendorId = Guid.Parse(HelperFuntions.HasValue(Session[CacheKey.VendorId.ToString()]));
+                var vendorId = Guid.Parse(HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.VendorId.ToString())));
                 usrs = usrs.Where(i => i.Vendor_Id == vendorId).ToList();
             }
             return View("UserIndex", usrs);
@@ -494,7 +493,7 @@ namespace HRPortal.Controllers
         //
         // POST: /Account/LogOff
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
@@ -514,9 +513,9 @@ namespace HRPortal.Controllers
         private void SetVendorList()
         {
             var query = db.VENDOR_MASTER.Where(s=>s.ISACTIVE==true).Select(i => new { i.VENDOR_ID, i.VENDOR_NAME });
-            if(Session[CacheKey.RoleName.ToString()].ToString().ToUpper().Contains("SUPERUSER"))
+            if(CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
             {
-                var vendorId = Guid.Parse(HelperFuntions.HasValue(Session[CacheKey.VendorId.ToString()]));
+                var vendorId = Guid.Parse(HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.VendorId.ToString())));
                 query = query.Where(i => i.VENDOR_ID == vendorId);
             }
             ViewBag.VendorList = new SelectList(query.AsEnumerable(), "VENDOR_ID", "VENDOR_NAME", 3);
@@ -525,7 +524,7 @@ namespace HRPortal.Controllers
         private void SetRoleList()
         {
             var query = db.AspNetRoles.Select(i => new { i.Id, i.Name });
-            if (Session[CacheKey.RoleName.ToString()].ToString().ToUpper().Contains("SUPERUSER"))
+            if (CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
             {
                 query = query.Where(i => i.Name == "User");
             }
@@ -606,7 +605,7 @@ namespace HRPortal.Controllers
             {
                 return Redirect(returnUrl);
             }
-            bool isSuperAdmin = HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
+            bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString())).ToUpper().Contains("ADMIN") ? true : false;
             var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
             return RedirectToAction("Index", isHome);
         }

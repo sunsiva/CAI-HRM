@@ -48,7 +48,7 @@ namespace HRPortal.Models
         {
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
             var stsId = dbContext.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID;
-            var uid = HttpContext.Current.Session[CacheKey.Uid.ToString()] == null ? HttpContext.Current.User.Identity.Name : HttpContext.Current.Session[CacheKey.Uid.ToString()];
+            var uid = CookieStore.GetCookie(CacheKey.Uid.ToString()) == null ? HttpContext.Current.User.Identity.Name : CookieStore.GetCookie(CacheKey.Uid.ToString());
             stsHist = new STATUS_HISTORY();
             stsHist.STATUS_ID = ((stid == null || stid == Guid.Empty) ? stsId : stid);
             stsHist.CANDIDATE_ID = cId;
@@ -70,7 +70,7 @@ namespace HRPortal.Models
             var sHist = dbContext.STATUS_HISTORY.Where(i => i.SCHEDULED_TO != null && i.SCHEDULED_TO <= DateTime.Now && i.ISACTIVE==true).ToList();
             if (sHist.Count > 0)
             { 
-                var uid = HttpContext.Current.Session[CacheKey.Uid.ToString()] == null ? HttpContext.Current.User.Identity.Name : HttpContext.Current.Session[CacheKey.Uid.ToString()];
+                var uid = CookieStore.GetCookie(CacheKey.Uid.ToString()) == null ? HttpContext.Current.User.Identity.Name : CookieStore.GetCookie(CacheKey.Uid.ToString());
                 var stsLst = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).ToList();
 
                 foreach (var item in sHist)
@@ -93,6 +93,26 @@ namespace HRPortal.Models
         {
             var sts = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).Select(s => new { s.STATUS_ID, s.STATUS_NAME, s.STATUS_DESCRIPTION, s.STATUS_ORDER }).OrderBy(v => v.STATUS_ORDER).ToList();
            return new SelectList(sts.AsEnumerable(), "STATUS_ID", "STATUS_DESCRIPTION", 1);
+        }
+
+        /// <summary>
+        /// Get the list of active vendors
+        /// </summary>
+        /// <returns></returns>
+        public SelectList GetVendorList()
+        {
+            var sts = dbContext.VENDOR_MASTER.Where(i => i.ISACTIVE == true).Select(s => new { s.VENDOR_ID, s.VENDOR_NAME}).OrderBy(v => v.VENDOR_NAME).ToList();
+            return new SelectList(sts.AsEnumerable(), "VENDOR_NAME", "VENDOR_NAME", 1);
+        }
+
+        /// <summary>
+        /// Get the list of all the active positions
+        /// </summary>
+        /// <returns></returns>
+        public SelectList GetPositionList()
+        {
+            var sts = dbContext.JOBPOSTINGs.Where(i => i.ISACTIVE == true).Select(s => new { s.JOB_ID, s.POSITION_NAME, s.JOB_DESCRIPTION}).OrderBy(v => v.POSITION_NAME).ToList();
+            return new SelectList(sts.AsEnumerable(), "POSITION_NAME", "POSITION_NAME", 1);
         }
 
         public string GetStatusNameById(Guid id)

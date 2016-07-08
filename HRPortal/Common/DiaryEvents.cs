@@ -115,7 +115,7 @@ namespace HRPortal.Models
             {
                 HRPortalEntities ent = new HRPortalEntities();
                 EVENTSCHEDULE rec = new EVENTSCHEDULE();
-                Guid uid = HttpContext.Current.Session[CacheKey.Uid.ToString()] == null ? Guid.NewGuid() : Guid.Parse(HttpContext.Current.Session[CacheKey.Uid.ToString()].ToString());
+                Guid uid = CookieStore.GetCookie(CacheKey.Uid.ToString()) == null ? Guid.NewGuid() : Guid.Parse(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 rec.TITLE = Title;
                 rec.DATETIMESCHEDULED = DateTime.Parse(NewEventDate + " " + NewEventTime);//, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
                 rec.APPOINTMENTLENGTH = int.Parse(NewEventDuration);

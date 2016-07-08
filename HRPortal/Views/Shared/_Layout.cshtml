@@ -1,8 +1,10 @@
 ﻿<!DOCTYPE html>
 <html>
 @using HRPortal.Helper;
-@{  bool isSuperAdmin = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
-    bool isSuperUser = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("SUPERUSER") ? true : false;
+@{ 
+    var role = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper();
+    bool isSuperAdmin = role.Contains("ADMIN") ? true : false;
+    bool isSuperUser = role.Contains("SUPERUSER") ? true : false;
     var dashboardTxt = isSuperAdmin == true ? "Candidates" : "Jobs";
     var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
     }

@@ -63,7 +63,7 @@ namespace HRPortal
                     vENDOR_MASTER.EMAIL = vendor.EMAIL;
                     vENDOR_MASTER.VENDOR_CONTACT_NO = vendor.VENDOR_CONTACT_NO;
                     vENDOR_MASTER.VENDOR_ID = Guid.NewGuid();
-                vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 vENDOR_MASTER.CREATED_ON = DateTime.Now;
                 vENDOR_MASTER.ISACTIVE = true;
                 db.VENDOR_MASTER.Add(vENDOR_MASTER);
@@ -123,7 +123,7 @@ namespace HRPortal
                     vENDOR_MASTER.VENDOR_SPOC = vendor.VENDOR_SPOC;
                     vENDOR_MASTER.EMAIL = vendor.EMAIL;
                     vENDOR_MASTER.VENDOR_CONTACT_NO = vendor.VENDOR_CONTACT_NO;
-                    vENDOR_MASTER.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                    vENDOR_MASTER.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                     vENDOR_MASTER.MODIFIED_ON = DateTime.Now;
                     db.Entry(vENDOR_MASTER).State = EntityState.Modified;
                     db.SaveChanges();
@@ -159,7 +159,7 @@ namespace HRPortal
         {
             VENDOR_MASTER vENDOR_MASTER = db.VENDOR_MASTER.Find(id);
            // db.VENDOR_MASTER.Remove(vENDOR_MASTER);
-            vENDOR_MASTER.MODIFIED_BY = Session[CacheKey.Uid.ToString()] == null ? User.Identity.Name : Session[CacheKey.Uid.ToString()].ToString();
+            vENDOR_MASTER.MODIFIED_BY = CookieStore.GetCookie(CacheKey.Uid.ToString()) == null ? User.Identity.Name : CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString();
             vENDOR_MASTER.MODIFIED_ON = DateTime.Now;
             vENDOR_MASTER.ISACTIVE = false;
             db.Entry(vENDOR_MASTER).State = EntityState.Modified;

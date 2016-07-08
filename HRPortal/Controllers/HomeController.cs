@@ -31,24 +31,30 @@ namespace HRPortal.Controllers
         public async Task<ActionResult> Index(string sOdr, int? page)
         {
             try {
+
                 if (User.Identity.IsAuthenticated)
                 {
-                    CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
-                    CookieStore.ClearCookie(CacheKey.JobSearchHome.ToString());
-                    
                     //GetCurrentUser(ctxt); TODO: get everything form application db context for initial setup
 
-                    if (Session[CacheKey.Uid.ToString()] == null)
+                    if (CookieStore.GetCookie(CacheKey.Uid.ToString()) == null) { 
                         loginVM.SetUserToCache(User.Identity.Name);
+                    }
 
                     vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
+                    if (string.IsNullOrEmpty(sOdr) && page == null)
+                    { 
+                        CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
+                        CookieStore.ClearCookie(CacheKey.JobSearchHome.ToString());
+                    }
 
                     var dbJobs = await db.JOBPOSTINGs.ToListAsync();
-                    if (HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN"))
+                    if (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                     {
                         var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                         jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
                         ViewBag.StatusList = vmodelCan.GetStatusList();
+                        ViewBag.VendorList = vmodelCan.GetVendorList();
+                        ViewBag.PositionList = vmodelCan.GetPositionList();
                     }
                     else
                     {
@@ -67,23 +73,28 @@ namespace HRPortal.Controllers
 
         public async Task<ActionResult> SearchCriteria(string name, string vendor, string position, string status, string stdt, string edt)
         {
-            try { 
+            try
+            { 
                 var dbJobs = await db.JOBPOSTINGs.ToListAsync();
-                if (HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN"))
+                if (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                 {
-                    CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
+                    CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
                     var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                     jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                        ViewBag.StatusList = vmodelCan.GetStatusList();
-                    if (jobCanObj.CandidateItems.Count > 0) { 
+                    ViewBag.StatusList = vmodelCan.GetStatusList();
+                    ViewBag.VendorList = vmodelCan.GetVendorList();
+                    ViewBag.PositionList = vmodelCan.GetPositionList();
+
+                    if (jobCanObj.CandidateItems.Count > 0)
+                    { 
                         jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
-                    return PartialView("_CandidateList", jobCanObj.CandidateItems);
+                        return PartialView("_CandidateList", jobCanObj.CandidateItems);
                     }
                     else
                         return PartialView("_CandidateList");
                 }
                 else {
-                    CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromMinutes(2));
+                    CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
                     jobCanObj.JobItems=dbJobs.Where(row => row.ISACTIVE == true).ToList();
                     GetJobSearchResults(dbJobs);
                     jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
@@ -145,7 +156,7 @@ namespace HRPortal.Controllers
             sHist.COMMENTS = comments;
             sHist.CANDIDATE_ID = Guid.Parse(id);
             sHist.ISACTIVE = true;
-            sHist.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+            sHist.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
             sHist.MODIFIED_ON = DateTime.Now;
             db.STATUS_HISTORY.Add(sHist);
             await db.SaveChangesAsync();
@@ -153,7 +164,7 @@ namespace HRPortal.Controllers
             var cId = Guid.Parse(id);
             CANDIDATE cANDIDATE = db.CANDIDATES.Where(i => i.CANDIDATE_ID == cId).FirstOrDefault();
             cANDIDATE.STATUS =  status;
-            cANDIDATE.MODIFIED_BY= HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+            cANDIDATE.MODIFIED_BY= HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
             cANDIDATE.MODIFIED_ON = DateTime.Now;
             db.Entry(cANDIDATE).State = EntityState.Modified;
             await db.SaveChangesAsync();
@@ -251,7 +262,6 @@ namespace HRPortal.Controllers
                     string[] val = cookie.Split('|');
                     name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5];
                 }
-
                 jobCanObj.CandidateItems = (from c in dbCan
                                             join j in dbJobs on c.JOB_ID equals j.JOB_ID
                                             join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id 
@@ -260,8 +270,8 @@ namespace HRPortal.Controllers
                                             && (status != string.Empty ? c.STATUS == status : true)
                                             && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
                                             && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
-                                            && v.VENDOR_NAME.ToUpper().Contains(vendor.ToUpper())
-                                            && j.POSITION_NAME.ToUpper().Contains(position.ToUpper())
+                                            && (!string.IsNullOrEmpty(vendor) ? vendor.Split(',').Contains(v.VENDOR_NAME):true)
+                                            && (!string.IsNullOrEmpty(position) ? position.Split(',').Contains(j.POSITION_NAME):true)
                                             select new { Candidate = c, Job = j }).Select(i => new CandidateViewModels
                                             {
                                                 CANDIDATE_ID = i.Candidate.CANDIDATE_ID,

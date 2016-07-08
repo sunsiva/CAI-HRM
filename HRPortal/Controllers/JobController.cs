@@ -79,7 +79,7 @@ namespace HRPortal.Controllers
                 jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
                 jOBPOSTING.ISACTIVE = true;
                     jOBPOSTING.JD_FILE_PATH = FileUpload(file);
-                    jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                    jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 jOBPOSTING.CREATED_ON = DateTime.Now;
                 dbContext.JOBPOSTINGs.Add(jOBPOSTING);
                 await dbContext.SaveChangesAsync();
@@ -116,7 +116,7 @@ namespace HRPortal.Controllers
             try { 
             if (ModelState.IsValid)
             {
-                    jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                    jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                     jOBPOSTING.MODIFIED_ON = DateTime.Now;
                     jOBPOSTING.JD_FILE_PATH = (file == null ? frm["JD_FILE_PATH"] : FileUpload(file));
                     dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
@@ -152,13 +152,14 @@ namespace HRPortal.Controllers
         {
             try { 
             JOBPOSTING jOBPOSTING = await dbContext.JOBPOSTINGs.FindAsync(id);
+                string _uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
             if (jOBPOSTING == null)
             {
                 return HttpNotFound();
             }
             else {
                     //dbContext.JOBPOSTINGs.Remove(jOBPOSTING);
-                    jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                    jOBPOSTING.MODIFIED_BY = _uid;
                     jOBPOSTING.MODIFIED_ON = DateTime.Now;
                     jOBPOSTING.ISACTIVE = false;
                     dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
@@ -169,7 +170,7 @@ namespace HRPortal.Controllers
                     jobhist.JOB_ID = id;
                     jobhist.JOB_COMMENTS = model.COMMENTS;
                     jobhist.IS_ACTIVE = false;
-                    jobhist.CREATED_BY = Session[CacheKey.Uid.ToString()] == null ? User.Identity.Name : Session[CacheKey.Uid.ToString()].ToString();
+                    jobhist.CREATED_BY = string.IsNullOrEmpty(_uid) ? User.Identity.Name : _uid;
                     jobhist.CREATED_ON = DateTime.Now;
                     dbContext.JOB_HISTORY.Add(jobhist);
                     await dbContext.SaveChangesAsync();

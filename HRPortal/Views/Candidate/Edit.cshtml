@@ -10,7 +10,7 @@
 
 @using (Html.BeginForm("Edit", "Candidate", FormMethod.Post, new { enctype = "multipart/form-data", @Id = "CandidateFormEdit" })) 
 {
-            @Html.AntiForgeryToken()
+        @*@Html.AntiForgeryToken()*@
         <span align="right" id="errMsg" class="text-danger col-lg-offset-4"></span>
         <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -162,7 +162,7 @@
             <div class="form-group form-group-required">
                 <label for="file" class="control-label col-md-2">RESUME UPLOAD :</label>
                 <div class="col-md-10">
-                    <input class="form-control" type="file" name="file" id="file" />
+                    <input class="form-control" type="file" name="file" size="335" accept="Application/*,Text/*,.doc,.docx,.rtf" id="file" />
                     <span align="right" id="errMsgCVUpload" class="text-danger"></span>
                 </div>
             </div>
@@ -234,16 +234,29 @@
                 } else if ($("#rdoIsNPNo").is(":Checked") && $("#ddlNoticePeriod").val() == "") {
                     $("#errMsgNP").text("Notice Period is required.");
                     return false;
-                } 
+                } else if ($("#file").val() != "" && fileSizeExceed()) {
+                    $("#errMsgCVUpload").text("Please upload a file which is less than 350KBs.");
+                    return false;
+                }
                 else if (!validateDOB()) {
                     return false;
                 }
                 else {
-                        $("#CandidateFormEdit").submit()
+                    $("#CandidateFormEdit").submit()
                 }
             }
         );
 
+        window.fileSizeExceed = function () {
+            var fileInput = $("#file")[0];
+            var imgbytes = fileInput.files[0].size; // Size returned in bytes.
+            var imgkbytes = Math.round(parseInt(imgbytes) / 1024);
+            if (imgkbytes > 335) {
+                return true;
+            } else {
+                return false;
+            }
+        };
 
         window.validateLWD = function () {
             $("#errMsgLWD").text("");

@@ -39,18 +39,18 @@ namespace HRPortal.Helper
             return value;
         }
 
+        /// <summary>
+        /// Clears the cookie value by the key provided...
+        /// </summary>
+        /// <param name="key"></param>
         public static void ClearCookie(string key)
         {
-            if (string.IsNullOrEmpty(key))
-            { 
-                string[] myCookies = HttpContext.Current.Request.Cookies.AllKeys;
-                foreach (string cookie in myCookies)
-                    HttpContext.Current.Response.Cookies[cookie].Expires = DateTime.Now.AddDays(-1);
-            }
-            else {
-                var cookie = HttpContext.Current.Request.Cookies[key];
-                if(cookie!=null)
-                    cookie.Expires = DateTime.Now.AddDays(-1d);
+            var cookie = HttpContext.Current.Request.Cookies[key];
+            if(cookie!=null)
+            {
+                cookie.Expires = DateTime.Now.AddYears(-1);
+                cookie.Value = string.Empty;
+                HttpContext.Current.Response.Cookies.Add(cookie);
             }
         }
     }

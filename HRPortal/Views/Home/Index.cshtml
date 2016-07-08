@@ -3,7 +3,7 @@
 
 @{
     ViewBag.Title = "Home Page";
-    bool isSuperAdmin = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
+    bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
 }
 
 <div class="row">
@@ -26,11 +26,43 @@
     @Scripts.Render("~/bundles/jqueryval")
 <script src="~/Scripts/moment.js"></script>
 <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
+
 <script lang="ja" type="text/javascript">
     $(document).ready(function () {
         $('.date-picker').datetimepicker({
             format: 'MM/DD/YYYY'
         });
+
+        $('#ddlCriteriaVendor').multiselect(
+            {
+                includeSelectAllOption: true,
+                enableCaseInsensitiveFiltering: true,
+                nonSelectedText: '-- Select Partner --'
+                //  onChange: function(option, checked, select) {
+              //if (checked === true) {
+              //  //action taken here if true
+              //  alert('Checked' + checked + '.');
+              //  alert('Changed option ' + $(option).val() + '.');
+              //  } },
+            });
+
+        $('#ddlCriteriaPosition').multiselect(
+            {
+                includeSelectAllOption: true,
+                enableCaseInsensitiveFiltering: true,
+                nonSelectedText: '-- Select Position --'
+            });
+      
+        //var PosiIds = "";
+        //$("#ddlCriteriaPosition").each(function () {
+        //    if ($(this).is(":checked")) {
+        //        var userid = $(this).attr("value");
+        //        PosiIds = PosiIds + userid + ',';
+        //    }
+        //});
+        //$("#PositionIds").val(PosiIds);
 
         window.myPanel = function (data) {
             $(".candidate-name").text(data.dataset.customName);
@@ -66,12 +98,13 @@
         });
 
         $("#btnSearchCriteria").click(function () {
-            $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: $("#txtCriteriaVendor").val(), position: $("#txtCriteriaPosition").val(), status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
+            var vendor = $("#ddlCriteriaVendor").val() == null ? "" : $("#ddlCriteriaVendor").val().join(','), position = $("#ddlCriteriaPosition").val() == null ? "" : $("#ddlCriteriaPosition").val().join(',');
+            $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
                 $("#CandidatesPartial").html(data);
             });
         });
 
-        $("#btnSearchCriteriaJob").click(function () {
+        $("#btnSearchCriteriaJob").click(function () {  
             $.get("/Home/SearchCriteria", { name: $("#txtPositionName").val(), vendor: "", status: "", stdt: $("#txtPublishedStDate").val(), edt: $("#txtPublishedEndDate").val() }, function (data) {
                 $("#JobDetailsPartial").html(data);
             });

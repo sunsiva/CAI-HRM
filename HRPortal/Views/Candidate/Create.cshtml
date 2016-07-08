@@ -4,14 +4,14 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var JCod = Request.QueryString.Count>0? Request.QueryString[0]:string.Empty;
-    bool isSuperAdmin = HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
+    bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
 }
 
 <h2 align="center">Create Candidate Profile</h2>
 
 @using (Html.BeginForm("Create", "Candidate", FormMethod.Post, new { enctype = "multipart/form-data",@Id="CandidateForm" }))
     {
-        @Html.AntiForgeryToken()
+        @*@Html.AntiForgeryToken()*@
         <span align="right" id="errMsg" class="text-danger col-lg-offset-4"></span>
         <div class="form-horizontal">
         <h4>@*CANDIDATE*@</h4>
@@ -162,7 +162,7 @@
         <div class="form-group form-group-required">
             <label for="file" class="control-label col-md-2">RESUME UPLOAD :</label>
             <div class="col-md-10">
-                <input class="form-control" type="file" name="file" id="file" />
+                <input class="form-control" type="file" name="file" size="335" accept="Application/*,Text/*,.doc,.docx,.rtf" id="file" />
                 <span align="right" id="errMsgCVUpload" class="text-danger"></span>
             </div>
         </div>
@@ -237,8 +237,10 @@ else
                 } else if ($("#file").val() == "") {
                     $("#errMsgCVUpload").text("Please upload a resume.");
                     return false;
-                }
-                else if (!validateDOB()) {
+                } else if ($("#file").val() != "" && fileSizeExceed()) {
+                    $("#errMsgCVUpload").text("Please upload a file which is less than 350KB.");
+                    return false;
+                } else if (!validateDOB()) {
                     return false;
                 }
                 else {
@@ -267,6 +269,17 @@ else
             else{
                 return false;
             }
+            };
+
+            window.fileSizeExceed = function () {
+                var fileInput = $("#file")[0];
+                var imgbytes = fileInput.files[0].size; // Size returned in bytes.
+                var imgkbytes = Math.round(parseInt(imgbytes) / 1024);
+                if (imgkbytes > 335) {
+                    return true;
+                } else {
+                    return false;
+                }
             };
 
             window.validateLWD = function ()

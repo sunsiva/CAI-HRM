@@ -37,7 +37,7 @@ namespace HRPortal.Controllers
             try
             {
                 List<CANDIDATE> canDb = new List<CANDIDATE>();
-                var uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
 
                 var canLst = canDb.Select(i => new CandidateViewModels
@@ -52,6 +52,7 @@ namespace HRPortal.Controllers
                     LAST_WORKING_DATE = i.LAST_WORKING_DATE,
                     STATUS_ID = i.STATUS,
                     STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
+                    //MODIFIED_BY = GetModifiedById(i.Candidate),
                 }).ToList();
                 ViewBag.TotalRecord = canLst.Count();
                 canLst = canDb != null? GetPagination(canLst, sOdr, page): canLst;
@@ -70,8 +71,8 @@ namespace HRPortal.Controllers
         {
             try
             {
-                var uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
-                var vendorId = Guid.Parse(HelperFuntions.HasValue(Session[CacheKey.VendorId.ToString()]));
+                var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
+                var vendorId = Guid.Parse(HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.VendorId.ToString())));
                 var squadsLst = await db.CANDIDATES.ToListAsync();
                 var usrs = await db.AspNetUsers.Where(i => i.Vendor_Id == vendorId && i.Id != uid).Select(s => s.Id).ToListAsync();
                 var canLst = squadsLst.Where(c => usrs.Contains(c.CREATED_BY) && c.ISACTIVE == true).Select(i => new CandidateViewModels
@@ -136,11 +137,17 @@ namespace HRPortal.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,LAST_WORKING_DATE")] CANDIDATE cANDIDATE, HttpPostedFileBase file,FormCollection frm)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            //System.Web.Helpers.AntiForgery.Validate();
+
             string _qryString = Request.UrlReferrer.Query.ToString();
-            string _uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+            string _uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
             var jid = _qryString.Split('&').Count() > 1 ? _qryString.Split('&')[1] : cANDIDATE.JOB_ID.ToString();
             cANDIDATE.JOB_ID = new Guid(jid.Replace("JID=", ""));
             if (IsProfileDuplicate(cANDIDATE.MOBILE_NO, cANDIDATE.DOB.ToShortDateString()))
@@ -164,7 +171,7 @@ namespace HRPortal.Controllers
                     await db.SaveChangesAsync();
 
                     vmodel.UpdateStatus(Guid.Empty, cANDIDATE.CANDIDATE_ID, string.Empty);
-                     bool isSuperAdmin = HelperFuntions.HasValue(Session[CacheKey.RoleName.ToString()]).ToUpper().Contains("ADMIN") ? true : false;
+                     bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
                      if (isSuperAdmin) //For redirecting to Admin's job list page
                         return RedirectToAction("Index","Job");
 
@@ -191,7 +198,7 @@ namespace HRPortal.Controllers
                 sHist.SCHEDULED_FOR = sendTo;
                 sHist.SCHEDULE_LENGTH_MINS = int.Parse(length);
                 sHist.COMMENTS = comments;
-                sHist.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                sHist.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 sHist.MODIFIED_ON = DateTime.Now;
                 db.STATUS_HISTORY.Add(sHist);
                 await db.SaveChangesAsync();
@@ -248,11 +255,16 @@ namespace HRPortal.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,JOB_ID,CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] CANDIDATE cANDIDATE, HttpPostedFileBase file, FormCollection frm)
         {
             try
             {
+                if (!User.Identity.IsAuthenticated)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+
                 //TODO:duplicate has to be checked
                 //CANDIDATE oldCan = db.CANDIDATES.Find(cANDIDATE.CANDIDATE_ID);
                 //var isExist = (oldCan.MOBILE_NO == cANDIDATE.MOBILE_NO || oldCan.DOB == cANDIDATE.DOB) ? true : false;
@@ -262,11 +274,11 @@ namespace HRPortal.Controllers
                 //}
                 //else
                 //{
-                    if (ModelState.IsValid)
+                if (ModelState.IsValid)
                     {
                         cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
                         cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
-                        cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                        cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                         cANDIDATE.MODIFIED_ON = DateTime.Now;
                         cANDIDATE.LAST_WORKING_DATE = string.IsNullOrEmpty(frm["LAST_WORKING_DATE"]) ? cANDIDATE.LAST_WORKING_DATE : DateTime.Parse(frm["LAST_WORKING_DATE"]);
                         cANDIDATE.RESUME_FILE_PATH = (file == null ? frm["RESUME_FILE_PATH"] : FileUpload(file));
@@ -317,7 +329,7 @@ namespace HRPortal.Controllers
                 //db.CANDIDATES.Remove(cANDIDATE);
                 cANDIDATE.COMMENTS = cANDIDATE.COMMENTS+ " || "+ model.COMMENTS;
                 cANDIDATE.ISACTIVE = false;
-                cANDIDATE.MODIFIED_BY = (HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]) == string.Empty ? User.Identity.Name : Session[CacheKey.Uid.ToString()].ToString());
+                cANDIDATE.MODIFIED_BY = (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString())) == string.Empty ? User.Identity.Name : CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString());
                 cANDIDATE.MODIFIED_ON = DateTime.Now;
                 db.Entry(cANDIDATE).State = EntityState.Modified;
                 await db.SaveChangesAsync();
@@ -423,7 +435,7 @@ namespace HRPortal.Controllers
             {
                 System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
                 List<CANDIDATE> canDb = new List<CANDIDATE>();
-                var uid = HelperFuntions.HasValue(Session[CacheKey.Uid.ToString()]);
+                var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
 
                 var canLst = canDb.Select(i => new 

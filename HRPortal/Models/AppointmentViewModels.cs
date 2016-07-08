@@ -178,7 +178,7 @@ namespace HRPortal.Models
                 string canName = (canLst == null ? string.Empty : canLst.CANDIDATE_NAME);
 
                 var job = dbContext.JOBPOSTINGs.Where(x => x.JOB_ID == canLst.JOB_ID).FirstOrDefault();
-                var uid = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.Uid.ToString()]);
+                var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 var usr = dbContext.AspNetUsers.Where(x => x.Id == uid).FirstOrDefault();
                 string UserName = "Admin";
                 string UserEmail = "Naveen_Sankar@compaid.co.in";

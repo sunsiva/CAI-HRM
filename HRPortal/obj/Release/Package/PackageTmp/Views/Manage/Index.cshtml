@@ -2,7 +2,7 @@
 @using HRPortal.Helper;
 @{
     ViewBag.Title = "Manage System";
-    var role = HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.RoleName.ToString()]).ToUpper();
+    var role = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper();
 }
 
 <h2>@ViewBag.Title</h2>

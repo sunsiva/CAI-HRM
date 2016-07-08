@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using HRPortal.Helper;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Diagnostics;
 using System.Web;
@@ -12,7 +13,7 @@ namespace HRPortal.Common
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated)
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || string.IsNullOrEmpty(CookieStore.GetCookie(CacheKey.Uid.ToString())))
             {
                 filterContext.Result = new RedirectToRouteResult(
                 new RouteValueDictionary

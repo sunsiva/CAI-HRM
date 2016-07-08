@@ -40,7 +40,7 @@
                             @Html.ActionLink("CUSTOMER NAME", "Index", new { sOdr = ViewBag.CustSort })
                         </th>
                         <th>
-                            @Html.DisplayName("TOTAL YEARS OF EXP")
+                            @Html.DisplayName("YEARS OF EXP")
                         </th>
                         <th>
                            PUBLISHED DATE
@@ -89,7 +89,7 @@
                                 </p>
                             </td>
                             <td>
-                                @if(item.CREATED_BY == HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.Uid.ToString()])) {
+                                @if(item.CREATED_BY == HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()))) {
                                 <p data-placement="top" data-toggle="tooltip" title="Edit">
                                     <a href="@Url.Action("Edit", "Job", new { id = item.JOB_ID })" id="btnJobEdit" value="@item.JOB_ID" class="btn btn-primary btn-xs">
                                         <span class="glyphicon glyphicon-pencil"></span>
@@ -98,7 +98,7 @@
                                 }
                             </td>
                             <td>
-                                @if (item.CREATED_BY == HelperFuntions.HasValue(HttpContext.Current.Session[CacheKey.Uid.ToString()]))
+                                @if (item.CREATED_BY == HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString())))
                                 {
                                     <p data-placement="top" data-toggle="tooltip" title="Delete">
                                         <a href="@Url.Action("Delete", "Job", new { id = item.JOB_ID })" class="btn btn-danger btn-xs" id="btnJobDelete" value="@item.JOB_ID">

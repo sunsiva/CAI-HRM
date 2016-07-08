@@ -106,6 +106,7 @@ namespace HRPortal.Models
 
         public void SetUserToCache(string email)
         {
+            int cookieTimeout = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["CookieTimeOutInDays"]);
             var user = db.AspNetUsers.Where(x=>x.UserName==email).FirstOrDefault();
             var rolename = (from rle in db.AspNetRoles.ToList()
                             join rlx in db.UserXRoles.ToList() on Guid.Parse(rle.Id) equals rlx.RoleId
@@ -118,10 +119,26 @@ namespace HRPortal.Models
             //                where usr.Id == id
             //                select rle.Name).FirstOrDefault();
 
-            HttpContext.Current.Session[CacheKey.VendorId.ToString()]= user.Vendor_Id;
-            HttpContext.Current.Session[CacheKey.RoleName.ToString()]= rolename;
-            HttpContext.Current.Session[CacheKey.Uid.ToString()]= user.Id;
-            HttpContext.Current.Session[CacheKey.UserName.ToString()]= user.FirstName + " " + user.LastName;
+            //HttpContext.Current.Session[CacheKey.VendorId.ToString()] = user.Vendor_Id;
+            //HttpContext.Current.Session[CacheKey.RoleName.ToString()] = rolename;
+            //HttpContext.Current.Session[CacheKey.Uid.ToString()]= user.Id;
+            //HttpContext.Current.Session[CacheKey.UserName.ToString()] = user.FirstName + " " + user.LastName;
+            CookieStore.SetCookie(CacheKey.Uid.ToString(), user.Id, TimeSpan.FromDays(cookieTimeout));
+            CookieStore.SetCookie(CacheKey.VendorId.ToString(), user.Vendor_Id.Value.ToString(), TimeSpan.FromDays(cookieTimeout));
+            CookieStore.SetCookie(CacheKey.RoleName.ToString(), rolename, TimeSpan.FromDays(cookieTimeout));
+            CookieStore.SetCookie(CacheKey.UserName.ToString(), user.FirstName + " " + user.LastName, TimeSpan.FromDays(cookieTimeout));
+        }
+
+
+        /// <summary>
+        /// Clears the cookie values
+        /// </summary>
+        public void ClearCookie()
+        {
+            CookieStore.ClearCookie(CacheKey.Uid.ToString());
+            CookieStore.ClearCookie(CacheKey.VendorId.ToString());
+            CookieStore.ClearCookie(CacheKey.RoleName.ToString());
+            CookieStore.ClearCookie(CacheKey.UserName.ToString());
         }
 
         public void UserLogs(bool isIn,string email, string username)
