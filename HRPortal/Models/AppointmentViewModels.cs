@@ -114,11 +114,81 @@ namespace HRPortal.Models
             dEv.UpdateDiaryEvent(id, NewEventStart, NewEventEnd);
         }
 
-
         public bool SaveEvent(string Title, string NewEventDate, string NewEventTime, string NewEventDuration)
         {
             return dEv.CreateNewEvent(Title, NewEventDate, NewEventTime, NewEventDuration);
         }
+
+        /// <summary>
+        /// To trigger e-mail to profile owner when the status changing to "To Be Scheduled".
+        /// </summary>
+        /// <param name="canId"></param>
+        /// <param name="comments"></param>
+        /// <returns></returns>
+        public async Task<string> sendMailTBS(Guid canId, string comments)
+        {
+            try
+            {
+                var canLst = dbContext.CANDIDATES.Where(x => x.CANDIDATE_ID == canId).FirstOrDefault();
+                string canName = (canLst == null ? string.Empty : canLst.CANDIDATE_NAME);
+                var job = dbContext.JOBPOSTINGs.Where(x => x.JOB_ID == canLst.JOB_ID).FirstOrDefault();
+                var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
+                var profOwner = dbContext.AspNetUsers.Where(x => x.Id == canLst.CREATED_BY).FirstOrDefault();
+                string UserName = "Admin";
+                string strSubject = "HROps-Interview To Be Scheduled For " + canName;
+                string bodyHtml = "Hi " + profOwner.FirstName + ", <br><br> FYI - Interview to be scheduled for the candidate <b>" + canName + " </b> and for the position of <b>" + job.POSITION_NAME +
+                    "</b>.<br><br>USER COMMENTS: " + comments + " <br> <br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
+                //=====================================
+
+                UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, UserName);
+                message.To.Add(new MailAddress(profOwner.Email));
+                message.CC.Add(new MailAddress(HttpContext.Current.User.Identity.Name));
+                message.Bcc.Add(new MailAddress("reachsunsiva2015@gmail.com", UserName));
+                message.Subject = strSubject;
+                message.Body = bodyHtml;
+
+                // HTML Version
+                AlternateView HTMLV = AlternateView.CreateAlternateViewFromString(bodyHtml,
+                  new System.Net.Mime.ContentType("text/html"));
+                message.AlternateViews.Add(HTMLV);
+
+                // Send Mail
+                SmtpClient client = new SmtpClient();
+                await client.SendMailAsync(message);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return "Mail Sent";
+        }
+
+        public async Task<string> sendMail()
+        {
+            var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
+            var message = new MailMessage();
+            message.To.Add(new MailAddress("sivaprakasam_sundaram@compaid.co.in"));
+            //message.From = new MailAddress("sivaprakasam_sundaram@compaid.co.in");
+            // message.To.Add(new MailAddress("one@gmail.com"));
+            //message.Bcc.Add(new MailAddress("one@gmail.com"));
+            //if (model.Upload != null && model.Upload.ContentLength > 0)
+            //{
+            //    message.Attachments.Add(new Attachment(model.Upload.InputStream, Path.GetFileName(model.Upload.FileName)));
+            //}
+            //message.Attachments.Add(new Attachment(HttpContext.Server.MapPath("~/App_Data/Test.docx")));
+            message.Subject = "My first mail for HR portal";
+            message.Body = string.Format(body, "siv", "", "its my first mail");
+            message.IsBodyHtml = true;
+
+            using (var smtp = new SmtpClient())
+            {
+                await smtp.SendMailAsync(message);
+            }
+            return "Mail Sent";
+        }
+
 
         public JsonResult GetDiarySummary(double start, double end)
         {
@@ -165,7 +235,7 @@ namespace HRPortal.Models
         {
             try
             {
-                string serverPath = System.Web.HttpContext.Current.Server.MapPath("~/UploadDocument/");
+                string serverPath = HttpContext.Current.Server.MapPath("~/UploadDocument/");
                 string filepath = Path.Combine(serverPath+@"ical\", "ical.test.ics");
                 // use PUBLISH for appointments
                 // use REQUEST for meeting requests

@@ -48,13 +48,41 @@
               //  } },
             });
 
+        $('#ddlStatusSearchList').multiselect(
+            {
+                includeSelectAllOption: true,
+                enableCaseInsensitiveFiltering: true,
+                nonSelectedText: '-- Select Status --'
+            });
+
         $('#ddlCriteriaPosition').multiselect(
             {
                 includeSelectAllOption: true,
                 enableCaseInsensitiveFiltering: true,
                 nonSelectedText: '-- Select Position --'
             });
-      
+
+        $('#btnClearSearchC').click(function () {
+            $("#txtCriteriaCanName").val('');
+            $("#ddlCriteriaVendor").multiselect("clearSelection");
+            $("#ddlCriteriaPosition").multiselect("clearSelection");
+            $("#ddlStatusSearchList").multiselect("clearSelection");
+            $("#txtCriteriaStDate").val(''); $("#txtCriteriaEndDate").val('');
+            $.get("/Home/ClearSearch", { id: "CAN" },
+                function (data) {
+                    $("#CandidatesPartial").html(data);
+                });
+        });
+
+        $('#btnClearSearchJ').click(function () {
+            $("#txtPositionName").val('');
+            $("#txtPublishedStDate").val(''); $("#txtPublishedEndDate").val('');
+            $.get("/Home/ClearSearch", { id: "JOB" },
+                function (data) {
+                    $("#JobDetailsPartial").html(data);
+                });
+        });
+
         //var PosiIds = "";
         //$("#ddlCriteriaPosition").each(function () {
         //    if ($(this).is(":checked")) {
@@ -98,8 +126,9 @@
         });
 
         $("#btnSearchCriteria").click(function () {
-            var vendor = $("#ddlCriteriaVendor").val() == null ? "" : $("#ddlCriteriaVendor").val().join(','), position = $("#ddlCriteriaPosition").val() == null ? "" : $("#ddlCriteriaPosition").val().join(',');
-            $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: $("#ddlStatusSearchList").val(), stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
+            var vendor = $("#ddlCriteriaVendor").val() == null ? "" : $("#ddlCriteriaVendor").val().join(','), position = $("#ddlCriteriaPosition").val() == null ? "" : $("#ddlCriteriaPosition").val().join(',')
+            , status = $("#ddlStatusSearchList").val() == null ? "" : $("#ddlStatusSearchList").val().join(',');
+            $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
                 $("#CandidatesPartial").html(data);
             });
         });

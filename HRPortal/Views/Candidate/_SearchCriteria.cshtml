@@ -14,13 +14,10 @@
                 <div class="form-group">
                     <div class="col-md-11" align="center">
                         <br />
-                        @if (isSuperAdmin)
-                        {
+                        
                         <div id="srchCandidates">
                             <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
-                           @* <input type="text" id="txtCriteriaVendor" placeholder="Partner" />
-                              <input type="text" id="txtCriteriaPosition" placeholder="Position Name" />*@
-                            @Html.DropDownList("ddlCriteriaVendor", (SelectList)ViewBag.VendorList, new { multiple = "multiple" })
+                                @Html.DropDownList("ddlCriteriaVendor", (SelectList)ViewBag.VendorList, new { multiple = "multiple" })
                                 @Html.DropDownList("ddlCriteriaPosition", (SelectList)ViewBag.PositionList, new { multiple = "multiple" })
                                 @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, new { multiple = "multiple" })<br /><br />
                                 <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
@@ -28,21 +25,9 @@
                                 <a class="btn btn-danger btn-xs" id="btnSearchCriteria">
                                     <span class="glyphicon glyphicon-search"></span>
                                 </a>
-                                <a class="btn btn-danger btn-xs" id="btnClearSearchC">Clear Filters</a>
+                                <a class="btn btn-danger btn-xs" id="btnClearSearch">Clear Filters</a>
                             </div>
-                            }
-                            else {
-                            <div id="srchJobs">
-                                <input type="text" id="txtPositionName" placeholder="Position Name" />
-                                <input type="text" id="txtPublishedStDate" class="date-picker" placeholder="Published Start Date" />
-                                <input type="text" id="txtPublishedEndDate" class="date-picker" placeholder="Published End Date" />
-                                <a class="btn btn-danger btn-xs" id="btnSearchCriteriaJob">
-                                    <span class="glyphicon glyphicon-search"></span>
-                                </a>
-                                <a class="btn btn-danger btn-xs" id="btnClearSearchJ">Clear Filters</a>
-                            </div>
-                            }
-                        
+                          
                         </div>
                     </div>
                 </div>

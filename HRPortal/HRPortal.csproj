@@ -349,11 +349,14 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Scripts\bootstrap-multiselect.js" />
+    <Content Include="Views\Candidate\Index.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Home\_Unauthorized.cshtml" />
+    <Content Include="Views\Candidate\_SearchCriteria.cshtml" />
+    <Content Include="Views\Candidate\_CandidateList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -454,7 +457,6 @@
     <Content Include="Views\Candidate\Delete.cshtml" />
     <Content Include="Views\Candidate\Details.cshtml" />
     <Content Include="Views\Candidate\Edit.cshtml" />
-    <Content Include="Views\Candidate\Index.cshtml" />
     <Content Include="Views\Home\_CandidateList.cshtml" />
     <Content Include="Views\Home\_JobList.cshtml" />
     <Content Include="Views\Candidate\_FileUpload.cshtml" />

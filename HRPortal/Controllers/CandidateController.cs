@@ -28,6 +28,7 @@ namespace HRPortal.Controllers
         private HRPortalEntities db = new HRPortalEntities();
         private CandidateViewModels vmodel = new CandidateViewModels();
         private LoginViewModel logvmodel = new LoginViewModel();
+        JobAndCandidateViewModels jobCanObj = new JobAndCandidateViewModels();
         private AppointmentViewModels appointmentVM = new AppointmentViewModels();
         const int pageSize = 10;
 
@@ -36,31 +37,16 @@ namespace HRPortal.Controllers
         {
             try
             {
-                List<CANDIDATE> canDb = new List<CANDIDATE>();
                 var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                canDb = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
-
-                var canLst = canDb.Select(i => new CandidateViewModels
-                {
-                    CANDIDATE_ID = i.CANDIDATE_ID,
-                    CANDIDATE_NAME = i.CANDIDATE_NAME,
-                    MOBILE_NO = i.MOBILE_NO,
-                    EMAIL = i.EMAIL,
-                    CURRENT_COMPANY = i.CURRENT_COMPANY,
-                    NOTICE_PERIOD = i.NOTICE_PERIOD,
-                    YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
-                    LAST_WORKING_DATE = i.LAST_WORKING_DATE,
-                    STATUS_ID = i.STATUS,
-                    STATUS = vmodel.GetStatusNameById(i.CANDIDATE_ID),
-                    //MODIFIED_BY = GetModifiedById(i.Candidate),
-                }).ToList();
-                ViewBag.TotalRecord = canLst.Count();
-                canLst = canDb != null? GetPagination(canLst, sOdr, page): canLst;
-
-                int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
-                int pNo = ViewBag.PageNo == null ? 0 : ViewBag.PageNo;
-
-                return View(canLst.ToPagedList(pNo, pSize));
+                var dbCan = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
+                var dbJobs = await db.JOBPOSTINGs.ToListAsync();
+                
+                jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                ViewBag.StatusList = vmodel.GetStatusList();
+                ViewBag.VendorList = vmodel.GetVendorList();
+                ViewBag.PositionList = vmodel.GetPositionList();
+                jobCanObj.CandidateItems = jobCanObj.CandidateItems != null? GetPagination(jobCanObj.CandidateItems, sOdr, page): jobCanObj.CandidateItems;
+                return View(jobCanObj.CandidateItems);
             }
             catch(Exception ex) { throw ex; }
         }
@@ -256,7 +242,7 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,JOB_ID,CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] CANDIDATE cANDIDATE, HttpPostedFileBase file, FormCollection frm)
+        public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,JOB_ID,CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,STATUS,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] CANDIDATE cANDIDATE, HttpPostedFileBase file, FormCollection frm)
         {
             try
             {
@@ -361,6 +347,37 @@ namespace HRPortal.Controllers
             }
         }
 
+        public async Task<ActionResult> SearchCriteria(string name, string vendor, string position, string status, string stdt, string edt)
+        {
+            try
+            {
+                var dbJobs = await db.JOBPOSTINGs.ToListAsync();
+                var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
+                CookieStore.SetCookie(CacheKey.CANSearch.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
+                var dbCan = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
+                jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                ViewBag.StatusList = vmodel.GetStatusList();
+                ViewBag.VendorList = vmodel.GetVendorList();
+                ViewBag.PositionList = vmodel.GetPositionList();
+
+                if (jobCanObj.CandidateItems.Count > 0)
+                {
+                    jobCanObj.CandidateItems = GetPagination(jobCanObj.CandidateItems, string.Empty, 1);
+                    return PartialView("_CandidateList", jobCanObj.CandidateItems);
+                }
+                else
+                    return PartialView("_CandidateList");
+               
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public async Task<ActionResult> ClearSearch()
+        {
+            CookieStore.ClearCookie(CacheKey.CANSearch.ToString());
+            return await SearchCriteria(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+        }
+
         private bool IsProfileDuplicate(string mob, string dob)
         {
             var dupli = db.CANDIDATES.Where(u => u.MOBILE_NO == mob).ToList();
@@ -427,6 +444,76 @@ namespace HRPortal.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.PageNo = (page ?? 1);
             return jobCanObj;
+        }
+
+        private string GetModifiedById(CANDIDATE objCan)
+        {
+            string strUser = string.Empty;
+            if (!string.IsNullOrEmpty(objCan.STATUS)) //is to check first time candidates-to show admin modified as empty
+            {
+                var stsSrc = db.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == objCan.CANDIDATE_ID && i.ISACTIVE == true).OrderByDescending(j => j.MODIFIED_ON).FirstOrDefault();
+                if (stsSrc != null && stsSrc.MODIFIED_BY != null && stsSrc.MODIFIED_ON != null)
+                {
+                    strUser = db.AspNetUsers.Where(x => x.Id == stsSrc.MODIFIED_BY).Select(u => u.FirstName + " " + u.LastName).FirstOrDefault();
+                    strUser = strUser + " / " + stsSrc.MODIFIED_ON.Value.ToString("dd-MMM");
+                }
+            }
+            return strUser;
+        }
+
+        private JobAndCandidateViewModels GetCandidateSearchResults(List<CANDIDATE> dbCan, List<JOBPOSTING> dbJobs)
+        {
+            try
+            {
+                var cookie = CookieStore.GetCookie(CacheKey.CANSearch.ToString());
+                string name = string.Empty, vendor = string.Empty, position = string.Empty, status = string.Empty, stdt = string.Empty, edt = string.Empty;
+                if (!string.IsNullOrEmpty(cookie))
+                {
+                    string[] val = cookie.Split('|');
+                    name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5];
+                }
+                jobCanObj.CandidateItems = (from c in dbCan
+                                            join j in dbJobs on c.JOB_ID equals j.JOB_ID
+                                            join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id
+                                            join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID
+                                            where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
+                                            && (status != string.Empty ? status.Split(',').Contains(c.STATUS) : true)
+                                            && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
+                                            && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
+                                            && (!string.IsNullOrEmpty(vendor) ? vendor.Split(',').Contains(v.VENDOR_NAME) : true)
+                                            && (!string.IsNullOrEmpty(position) ? position.Split(',').Contains(j.POSITION_NAME) : true)
+                                            select new { Candidate = c, Job = j }).Select(i => new CandidateViewModels
+                                            {
+                                                CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
+                                                CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
+                                                POSITION = i.Job.POSITION_NAME,
+                                                MOBILE_NO=i.Candidate.MOBILE_NO,
+                                                EMAIL=i.Candidate.EMAIL,
+                                                CURRENT_COMPANY = i.Candidate.CURRENT_COMPANY,
+                                                RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH) ? string.Empty : Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
+                                                NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
+                                                YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
+                                                LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
+                                                VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
+                                                STATUS = vmodel.GetStatusNameById(i.Candidate.CANDIDATE_ID),
+                                                CREATED_ON = i.Candidate.CREATED_ON,
+                                                MODIFIED_ON = i.Candidate.MODIFIED_ON,
+                                                MODIFIED_BY = GetModifiedById(i.Candidate),
+                                            }).ToList();
+                return jobCanObj;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private string GetPartnerName(string pId)
+        {
+            var vendor = (from u in db.AspNetUsers.Where(i => i.Id == pId)
+                          join v in db.VENDOR_MASTER on u.Vendor_Id equals v.VENDOR_ID
+                          select v.VENDOR_NAME).FirstOrDefault();
+            return vendor.ToString();
         }
 
         public async Task<ActionResult> ExportToExcel()

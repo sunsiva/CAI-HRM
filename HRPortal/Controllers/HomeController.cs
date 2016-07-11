@@ -26,6 +26,7 @@ namespace HRPortal.Controllers
         LoginViewModel loginVM = new LoginViewModel();
         JobAndCandidateViewModels jobCanObj = new JobAndCandidateViewModels();
         private CandidateViewModels vmodelCan = new CandidateViewModels();
+        AppointmentViewModels appVM = new AppointmentViewModels();
         const int pageSize = 10;
 
         public async Task<ActionResult> Index(string sOdr, int? page)
@@ -41,11 +42,11 @@ namespace HRPortal.Controllers
                     }
 
                     vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
-                    if (string.IsNullOrEmpty(sOdr) && page == null)
-                    { 
-                        CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
-                        CookieStore.ClearCookie(CacheKey.JobSearchHome.ToString());
-                    }
+                    //if (Request.QueryString.Count<=0)
+                    //{ 
+                    //    CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
+                    //    CookieStore.ClearCookie(CacheKey.JobSearchHome.ToString());
+                    //}
 
                     var dbJobs = await db.JOBPOSTINGs.ToListAsync();
                     if (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
@@ -59,6 +60,7 @@ namespace HRPortal.Controllers
                     else
                     {
                         jobCanObj.JobItems = dbJobs.Where(row => row.ISACTIVE == true).ToList();
+                        jobCanObj=GetJobSearchResults(jobCanObj.JobItems);
                     }
 
                     jobCanObj = (jobCanObj.CandidateItems != null && jobCanObj.CandidateItems.Count > 0)
@@ -96,7 +98,7 @@ namespace HRPortal.Controllers
                 else {
                     CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
                     jobCanObj.JobItems=dbJobs.Where(row => row.ISACTIVE == true).ToList();
-                    GetJobSearchResults(dbJobs);
+                    jobCanObj=GetJobSearchResults(jobCanObj.JobItems);
                     jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
                     return PartialView("_JobList", jobCanObj.JobItems);
                 }
@@ -113,6 +115,8 @@ namespace HRPortal.Controllers
             var srchSrc = GetCandidateSearchResults(dbCan, dbJobs).CandidateItems.ToList();
             var dataSrc = srchSrc.Select(i => new {
                 CandidateName= i.CANDIDATE_NAME,
+                MobileNo = i.MOBILE_NO,
+                Email = i.EMAIL,
                 Partner = i.VENDOR_NAME,
                 Position = i.POSITION,
                 NoticePeriod=i.NOTICE_PERIOD,
@@ -150,28 +154,51 @@ namespace HRPortal.Controllers
         /// <returns></returns>
         public async Task<ActionResult> StatusUpdate(string id, string status, string comments)
         {
-            try { 
-            STATUS_HISTORY sHist = new STATUS_HISTORY();
-            sHist.STATUS_ID = Guid.Parse(status);
-            sHist.COMMENTS = comments;
-            sHist.CANDIDATE_ID = Guid.Parse(id);
-            sHist.ISACTIVE = true;
-            sHist.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-            sHist.MODIFIED_ON = DateTime.Now;
-            db.STATUS_HISTORY.Add(sHist);
-            await db.SaveChangesAsync();
+            try
+            {
+                if(string.IsNullOrEmpty(status) && string.IsNullOrEmpty(id))
+                {
+                    return new EmptyResult();
+                }
+                
+                Guid cId = Guid.Parse(id);
+                string uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
+                STATUS_HISTORY sHist = new STATUS_HISTORY();
+                Guid stsId = Guid.Parse(status);
+                var stsMst = db.STATUS_MASTER.Where(s => s.STATUS_ID == stsId).FirstOrDefault();
 
-            var cId = Guid.Parse(id);
-            CANDIDATE cANDIDATE = db.CANDIDATES.Where(i => i.CANDIDATE_ID == cId).FirstOrDefault();
-            cANDIDATE.STATUS =  status;
-            cANDIDATE.MODIFIED_BY= HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-            cANDIDATE.MODIFIED_ON = DateTime.Now;
-            db.Entry(cANDIDATE).State = EntityState.Modified;
-            await db.SaveChangesAsync();
-            
-            return new EmptyResult();
+                if (stsMst != null && stsMst.STATUS_DESCRIPTION.Contains("ToBeSchedule") && System.Configuration.ConfigurationManager.AppSettings["IsTBSMail"] == "true")
+                {
+                    await appVM.sendMailTBS(cId, comments);
+                    sHist.SCHEDULED_FOR = uid; //This is to trace only, if email has sent or not.
+                }
+                                
+                sHist.STATUS_ID = Guid.Parse(status);
+                sHist.COMMENTS = comments;
+                sHist.CANDIDATE_ID = Guid.Parse(id);
+                sHist.ISACTIVE = true;
+                sHist.MODIFIED_BY = uid;
+                sHist.MODIFIED_ON = DateTime.Now;
+                db.STATUS_HISTORY.Add(sHist);
+                await db.SaveChangesAsync();
+
+                CANDIDATE cANDIDATE = db.CANDIDATES.Where(i => i.CANDIDATE_ID == cId).FirstOrDefault();
+                cANDIDATE.STATUS = status;
+                cANDIDATE.MODIFIED_BY = uid;
+                cANDIDATE.MODIFIED_ON = DateTime.Now;
+                db.Entry(cANDIDATE).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+
+                return new EmptyResult();
+
             }
             catch (Exception ex) { throw ex; }
+        }
+
+        public async Task<ActionResult> ClearSearch(string id)
+        {
+            CookieStore.ClearCookie(id == "CAN" ? CacheKey.CANSearchHome.ToString() : CacheKey.JobSearchHome.ToString());
+            return await SearchCriteria(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         }
 
         private JobAndCandidateViewModels GetPagination(JobAndCandidateViewModels jobCanObj, string sOdr, int? page)
@@ -267,7 +294,7 @@ namespace HRPortal.Controllers
                                             join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id 
                                             join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID
                                             where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
-                                            && (status != string.Empty ? c.STATUS == status : true)
+                                            && (status != string.Empty ? status.Split(',').Contains(c.STATUS) : true)
                                             && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
                                             && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
                                             && (!string.IsNullOrEmpty(vendor) ? vendor.Split(',').Contains(v.VENDOR_NAME):true)
@@ -276,6 +303,8 @@ namespace HRPortal.Controllers
                                             {
                                                 CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
                                                 CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
+                                                MOBILE_NO=i.Candidate.MOBILE_NO,
+                                                EMAIL=i.Candidate.EMAIL,
                                                 POSITION = i.Job.POSITION_NAME,
                                                 RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH) ? string.Empty : Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
                                                 NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,

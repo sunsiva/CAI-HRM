@@ -22,12 +22,13 @@
                               <input type="text" id="txtCriteriaPosition" placeholder="Position Name" />*@
                             @Html.DropDownList("ddlCriteriaVendor", (SelectList)ViewBag.VendorList, new { multiple = "multiple" })
                                 @Html.DropDownList("ddlCriteriaPosition", (SelectList)ViewBag.PositionList, new { multiple = "multiple" })
-                                @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, "-- Select a Status --")<br /><br />
+                                @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, new { multiple = "multiple" })<br /><br />
                                 <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
                                 <input type="text" id="txtCriteriaEndDate" class="date-picker" placeholder="Uploaded End Date" />
                                 <a class="btn btn-danger btn-xs" id="btnSearchCriteria">
                                     <span class="glyphicon glyphicon-search"></span>
                                 </a>
+                                <a class="btn btn-danger btn-xs" id="btnClearSearchC">Clear Filters</a>
                             </div>
                             }
                             else {
@@ -38,8 +39,10 @@
                                 <a class="btn btn-danger btn-xs" id="btnSearchCriteriaJob">
                                     <span class="glyphicon glyphicon-search"></span>
                                 </a>
+                                <a class="btn btn-danger btn-xs" id="btnClearSearchJ">Clear Filters</a>
                             </div>
                             }
+                        
                         </div>
                     </div>
                 </div>

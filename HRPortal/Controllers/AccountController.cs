@@ -186,7 +186,7 @@ namespace HRPortal.Controllers
                             objUser.FirstName = model.FirstName;
                             objUser.LastName = model.LastName;
                             objUser.CreatedOn = DateTime.Now;
-                            objUser.CreatedBy = user.Id; //TODO:Change to logged in id
+                            objUser.CreatedBy = CookieStore.GetCookie(CacheKey.Uid.ToString())==string.Empty?User.Identity.Name: CookieStore.GetCookie(CacheKey.Uid.ToString());
                             objUser.IsAdmin = model.IsAdmin;
                             objUser.Vendor_Id = !string.IsNullOrEmpty(frm["ddlVendorList"]) ? Guid.Parse(frm["ddlVendorList"]) : Guid.Empty;// model.Vendor_Id;
                             db.Entry(objUser).State = EntityState.Modified;

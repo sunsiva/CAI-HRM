@@ -80,30 +80,6 @@ namespace HRPortal.Models
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
 
-        public async Task<string> sendMail()
-        {
-            var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
-            var message = new MailMessage();
-            message.To.Add(new MailAddress("sivaprakasam_sundaram@compaid.co.in")); 
-            //message.From = new MailAddress("sivaprakasam_sundaram@compaid.co.in");
-            // message.To.Add(new MailAddress("one@gmail.com"));
-            //message.Bcc.Add(new MailAddress("one@gmail.com"));
-            //if (model.Upload != null && model.Upload.ContentLength > 0)
-            //{
-            //    message.Attachments.Add(new Attachment(model.Upload.InputStream, Path.GetFileName(model.Upload.FileName)));
-            //}
-            //message.Attachments.Add(new Attachment(HttpContext.Server.MapPath("~/App_Data/Test.docx")));
-            message.Subject = "My first mail for HR portal";
-            message.Body = string.Format(body, "siv", "", "its my first mail");
-            message.IsBodyHtml = true;
-
-            using (var smtp = new SmtpClient())
-            {
-              await smtp.SendMailAsync(message);
-            }
-            return "Mail Sent";
-        }
-
         public void SetUserToCache(string email)
         {
             int cookieTimeout = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["CookieTimeOutInDays"]);
@@ -128,8 +104,7 @@ namespace HRPortal.Models
             CookieStore.SetCookie(CacheKey.RoleName.ToString(), rolename, TimeSpan.FromDays(cookieTimeout));
             CookieStore.SetCookie(CacheKey.UserName.ToString(), user.FirstName + " " + user.LastName, TimeSpan.FromDays(cookieTimeout));
         }
-
-
+        
         /// <summary>
         /// Clears the cookie values
         /// </summary>
