@@ -45,8 +45,8 @@ namespace HRPortal.Controllers
                 ViewBag.StatusList = vmodel.GetStatusList();
                 ViewBag.VendorList = vmodel.GetVendorList();
                 ViewBag.PositionList = vmodel.GetPositionList();
-                jobCanObj.CandidateItems = jobCanObj.CandidateItems != null? GetPagination(jobCanObj.CandidateItems, sOdr, page): jobCanObj.CandidateItems;
-                return View(jobCanObj.CandidateItems);
+                var jobCanObjl = jobCanObj.CandidateItems != null? GetPagination(jobCanObj.CandidateItems, sOdr, page): jobCanObj.CandidateItems;
+                return View(jobCanObjl);
             }
             catch(Exception ex) { throw ex; }
         }
@@ -496,6 +496,7 @@ namespace HRPortal.Controllers
                                                 LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
                                                 VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
                                                 STATUS = vmodel.GetStatusNameById(i.Candidate.CANDIDATE_ID),
+                                                STATUS_ID = i.Candidate.STATUS,
                                                 CREATED_ON = i.Candidate.CREATED_ON,
                                                 MODIFIED_ON = i.Candidate.MODIFIED_ON,
                                                 MODIFIED_BY = GetModifiedById(i.Candidate),

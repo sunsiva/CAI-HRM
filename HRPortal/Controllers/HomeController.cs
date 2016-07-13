@@ -41,13 +41,11 @@ namespace HRPortal.Controllers
                         loginVM.SetUserToCache(User.Identity.Name);
                     }
 
-                    vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
-                    //if (Request.QueryString.Count<=0)
-                    //{ 
-                    //    CookieStore.ClearCookie(CacheKey.CANSearchHome.ToString());
-                    //    CookieStore.ClearCookie(CacheKey.JobSearchHome.ToString());
-                    //}
-
+                    if(System.Configuration.ConfigurationManager.AppSettings["IsAutoUpdateFdkPending"]=="true")
+                    { 
+                        vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
+                    }
+                    
                     var dbJobs = await db.JOBPOSTINGs.ToListAsync();
                     if (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                     {
@@ -297,8 +295,8 @@ namespace HRPortal.Controllers
                                             && (status != string.Empty ? status.Split(',').Contains(c.STATUS) : true)
                                             && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
                                             && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
-                                            && (!string.IsNullOrEmpty(vendor) ? vendor.Split(',').Contains(v.VENDOR_NAME):true)
-                                            && (!string.IsNullOrEmpty(position) ? position.Split(',').Contains(j.POSITION_NAME):true)
+                                            && (!string.IsNullOrEmpty(vendor) ? vendor.Split(',').Contains(v.VENDOR_NAME) : true)
+                                            && (!string.IsNullOrEmpty(position) ? position.Split(',').Contains(j.POSITION_NAME) : true)
                                             select new { Candidate = c, Job = j }).Select(i => new CandidateViewModels
                                             {
                                                 CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
@@ -312,6 +310,7 @@ namespace HRPortal.Controllers
                                                 LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
                                                 VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
                                                 STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
+                                                STATUS_ID = i.Candidate.STATUS,
                                                 CREATED_ON = i.Candidate.CREATED_ON,
                                                 MODIFIED_ON = i.Candidate.MODIFIED_ON,
                                                 MODIFIED_BY = GetModifiedById(i.Candidate),

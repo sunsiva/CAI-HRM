@@ -90,7 +90,10 @@ namespace HRPortal.Controllers
                 case SignInStatus.Success:
                     loginVM.ClearCookie();
                     loginVM.SetUserToCache(model.Email);
-                    //loginVM.UserLogs(true,model.Email, HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString()); //TODO:disabed the feature temporarily
+                    if (System.Configuration.ConfigurationManager.AppSettings["IsUserLogEnable"] == "true")
+                    {
+                        loginVM.UserLogs(true, model.Email, CookieStore.GetCookie(CacheKey.UserName.ToString()).ToString()); //TODO:disabed the feature temporarily
+                    }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -490,6 +493,13 @@ namespace HRPortal.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult LogOff(string id)
+        {
+            return RedirectToAction("Login");
+        }
+
         //
         // POST: /Account/LogOff
         [HttpPost]
@@ -605,7 +615,7 @@ namespace HRPortal.Controllers
             {
                 return Redirect(returnUrl);
             }
-            bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString())).ToUpper().Contains("ADMIN") ? true : false;
+            bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
             var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
             return RedirectToAction("Index", isHome);
         }

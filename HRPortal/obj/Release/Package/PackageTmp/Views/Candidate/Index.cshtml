@@ -17,16 +17,20 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-<script src="~/Scripts/moment.js"></script>
-<script src="~/Scripts/bootstrap-datetimepicker.js"></script>
-<script src="~/Scripts/tags/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/tags/tag-it.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
 
     <script lang="ja" type="text/javascript">
         $(document).ready(function () {
 
             $('.date-picker').datetimepicker({
                 format: 'MM/DD/YYYY'
+            });
+
+            $(function () {
+                $('#txtdatetimepicker').datetimepicker();
             });
 
             $('#ddlCriteriaVendor').multiselect(
@@ -78,11 +82,19 @@
             $("#hdnCandidateId").val(data.dataset.customValue);
             $("#hdnStatusId").val(data.dataset.customStatusid);
             $("#txtStsComments").val('');
+
+            $('#txtdatetimepicker').datetimepicker();
+            $('#singleFieldTags').tagit({
+                availableTags: sampleTags,
+                // This will make Tag-it submit a single form value, as a comma-delimited field.
+                singleField: true,
+                singleFieldNode: $('#sendTo')
+            });
         };
 
         //TODO: Search values to be retained and show to user on click of the filter header
-        //$('#SearchCriteriaPartial').click(function () {
-        //});
+            //$('#SearchCriteriaPartial').click(function () {
+            //});
 
         $('#btnClearSearch').click(function () {
             $("#txtCriteriaCanName").val('');
@@ -96,7 +108,8 @@
             });
         });
 
-        $("#btnStatus").click(function () {
+        window.fnBtnStatusClick = function ()
+        {
             if ($("#txtdatetimepicker").val() == "") {
                 $("#errMsgModal").text("Please schedule a date.");
                 $("#txtdatetimepicker").focus();
@@ -117,14 +130,16 @@
                 return false;
             }
             else {
-                $.get("/Candidate/ScheduleCandidate", { id: $("#hdnCandidateId").val(), date: $("#txtdatetimepicker").val(), length: $("#ddlScheduleLength").val(),sendTo:$("#sendTo").val(), comments: $("#txtStsComments").val(), statusId: $("#hdnStatusId").val() },
+                $.get("/Candidate/ScheduleCandidate", { id: $("#hdnCandidateId").val(), date: $("#txtdatetimepicker").val(), length: $("#ddlScheduleLength").val(), sendTo: $("#sendTo").val(), comments: $("#txtStsComments").val(), statusId: $("#hdnStatusId").val() },
                     function (data) {
                         var id = $("#hdnCandidateId").val();
                         $("#stsSecondTxt_" + id).text(data);
                         $("#btnStsPnl_" + id).addClass("hide");
-                });
+                    });
+
+                $("#btnStatus").attr("data-dismiss", "modal");
             }
-        });
+        };
 
     });
     </script>

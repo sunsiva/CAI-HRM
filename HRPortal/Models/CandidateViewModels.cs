@@ -62,29 +62,41 @@ namespace HRPortal.Models
         }
 
         /// <summary>
-        /// Update the candidate status on creating the canidate profile
+        /// An automatic update to Feedback pending status after invterview got over
         /// </summary>
         public void AutoUpdateStatus()
         {
+            string autoMsg = "Automatic Status Update: Feedback Pending From";
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
-            var sHist = dbContext.STATUS_HISTORY.Where(i => i.SCHEDULED_TO != null && i.SCHEDULED_TO <= DateTime.Now && i.ISACTIVE==true).ToList();
+            var sHist = dbContext.STATUS_HISTORY.Where(i => i.ISACTIVE == true).ToList();
+            var updHist = sHist.Where(i => i.SCHEDULED_TO != null && i.SCHEDULED_TO <= DateTime.Now).ToList();
+            var existHist = sHist.Where(i => i.COMMENTS.Contains(autoMsg)).Select(c=>c.CANDIDATE_ID).ToList();
+
             if (sHist.Count > 0)
             { 
                 var uid = CookieStore.GetCookie(CacheKey.Uid.ToString()) == null ? HttpContext.Current.User.Identity.Name : CookieStore.GetCookie(CacheKey.Uid.ToString());
                 var stsLst = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).ToList();
 
-                foreach (var item in sHist)
+                foreach (var item in updHist)
                 {
-                    int stsOrdr = stsLst.Where(i => i.STATUS_ID == item.STATUS_ID).FirstOrDefault().STATUS_ORDER.GetValueOrDefault();
-                    stsHist = new STATUS_HISTORY();
-                    stsHist.STATUS_ID = stsLst.Where(i => i.STATUS_ORDER == stsOrdr+1).FirstOrDefault().STATUS_ID;
-                    stsHist.CANDIDATE_ID = item.CANDIDATE_ID;
-                    stsHist.COMMENTS = "Auto updated the status to Feedback Pending for passed the due date.";
-                    stsHist.ISACTIVE = true;
-                    stsHist.MODIFIED_BY = uid.ToString();
-                    stsHist.MODIFIED_ON = DateTime.Now;
-                    dbContext.STATUS_HISTORY.Add(stsHist);
-                    dbContext.SaveChanges();
+                    if (!existHist.Contains(item.CANDIDATE_ID))
+                    {
+                        int stsOrdr = stsLst.Where(i => i.STATUS_ID == item.STATUS_ID).FirstOrDefault().STATUS_ORDER.GetValueOrDefault();
+                        stsHist = new STATUS_HISTORY();
+                        stsHist.STATUS_ID = stsLst.Where(i => i.STATUS_ORDER == stsOrdr + 1).FirstOrDefault().STATUS_ID;
+                        stsHist.CANDIDATE_ID = item.CANDIDATE_ID;
+                        stsHist.COMMENTS = autoMsg + " " + item.SCHEDULED_FOR;//TODO:attach the profile owner/who has scheduled last.
+                        stsHist.ISACTIVE = true;
+                        stsHist.MODIFIED_BY = item.MODIFIED_BY;
+                        stsHist.MODIFIED_ON = DateTime.Now;
+                        dbContext.STATUS_HISTORY.Add(stsHist);
+                        dbContext.SaveChanges();
+
+                        //CANDIDATE can = dbContext.CANDIDATES.Where(i => i.CANDIDATE_ID == item.CANDIDATE_ID).FirstOrDefault();
+                        //can.STATUS = stsHist.STATUS_ID.ToString();
+                        //dbContext.CANDIDATES.Add(can);
+                        //dbContext.SaveChanges();
+                    }
                 }
             }
         }

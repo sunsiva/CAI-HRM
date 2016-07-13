@@ -3,26 +3,26 @@ VERSION:2.0
 METHOD:REQUEST
 PRODID:Meeting
 BEGIN:VEVENT
-ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;ROLE=REQ-PARTICIPANT;CN=tech suppo
- rt:mailto:techsupport@caihrops.in
+ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;ROLE=REQ-PARTICIPANT;CN=siva sun:m
+ ailto:sivaprakasam_sundaram@compaid.co.in
 CLASS:PUBLIC
-CREATED:20160629T120810
-DESCRIPTION:Hi\, Interview has been scheduled for the possition of IT Admin
- . Please let me know if you have any quries on this. Regards\, tech suppor
- t.
-DTEND:20160629T133700
-DTSTAMP:20160629T063810Z
-DTSTART:20160629T130700
+CREATED:20160712T175207
+DESCRIPTION:Hi\, Interview has been scheduled for the possition of Java Dev
+ eloper. Please let me know if you have any quries on this. Regards\, siva 
+ sun.
+DTEND:20160712T182100
+DTSTAMP:20160712T122207Z
+DTSTART:20160712T175100
 LOCATION:Available
-ORGANIZER:mailto:techsupport@caihrops.in
+ORGANIZER:mailto:sivaprakasam_sundaram@compaid.co.in
 PRIORITY:1
 SEQUENCE:0
-SUMMARY:Interview Scheduled for DEV_TEST
+SUMMARY:Interview Scheduled for javid
 TRANSP:Transparent
-UID:a6231a48-be39-43c8-99b1-021a7059b6a4
+UID:766c9ab4-6dea-4511-ad6e-c605cb4099f0
 X-ALT-DESC;FMTTYPE=text/html:Hi\, <br><br> Interview has been scheduled for
-  the possition of <b>IT Admin</b>. <br> <br>COMMENTS: testing from local<b
- r> <br> Regards\,<br><b>tech support</b>. <br><br><small>--This is system 
+  the possition of <b>Java Developer</b>. <br> <br>USER COMMENTS: sch frm l
+ oc<br> <br> Regards\,<br><b>siva sun</b>. <br><br><small>--This is system 
  generated e-mail(www.caihrops.in).</small>
 END:VEVENT
 END:VCALENDAR

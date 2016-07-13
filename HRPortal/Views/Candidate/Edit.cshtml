@@ -178,11 +178,11 @@
 }
 
 <div>
-    @if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "S")
-    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate")
+    @if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "S")
+    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate", new { page= Request.QueryString["p"] }, null)
     }
-    else { 
-    @Html.ActionLink("Back to List", "Index")
+    else {
+    @Html.ActionLink("Back to List", "Index", new { page = Request.QueryString["p"] })
     }
 </div>
 

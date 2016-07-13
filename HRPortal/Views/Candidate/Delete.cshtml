@@ -163,7 +163,7 @@
 
         <div class="form-actions no-color">
             <input type="submit" value="De-Activate" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index","Home")
+            @Html.ActionLink("Back to List", "Index", "Home", new { page = Request.QueryString["p"] }, null) 
         </div>
     }
 </div>

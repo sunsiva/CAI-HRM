@@ -124,7 +124,7 @@ namespace HRPortal.Models
                 ulog.UserLogName = username;
                 ulog.LoggedInBy = email;// HttpRuntime.Cache.Get("LogInEmail") != null ? HttpRuntime.Cache.Get("LogInEmail").ToString() : string.Empty;
                 ulog.LoggedInOn = DateTime.Now;
-                ulog.UserLogDesc = "Computer Name is-" + System.Net.Dns.GetHostEntry(HttpContext.Current.Request.UserHostAddress).HostName;
+                ulog.UserLogDesc = "Computer Name is-" + Dns.GetHostEntry(HttpContext.Current.Request.UserHostAddress).HostName;
                 ulog.IsOnline = true;
                 ulog.UserIP = GetLocalIPAddress();// System.Net.Dns.GetHostName();
                 db.UserLogs.Add(ulog);

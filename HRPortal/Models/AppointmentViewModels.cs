@@ -134,13 +134,12 @@ namespace HRPortal.Models
                 var job = dbContext.JOBPOSTINGs.Where(x => x.JOB_ID == canLst.JOB_ID).FirstOrDefault();
                 var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 var profOwner = dbContext.AspNetUsers.Where(x => x.Id == canLst.CREATED_BY).FirstOrDefault();
-                string UserName = "Admin";
+                string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
                 string strSubject = "HROps-Interview To Be Scheduled For " + canName;
                 string bodyHtml = "Hi " + profOwner.FirstName + ", <br><br> FYI - Interview to be scheduled for the candidate <b>" + canName + " </b> and for the position of <b>" + job.POSITION_NAME +
                     "</b>.<br><br>USER COMMENTS: " + comments + " <br> <br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
                 //=====================================
-
-                UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
+                               
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, UserName);
                 message.To.Add(new MailAddress(profOwner.Email));
@@ -263,7 +262,7 @@ namespace HRPortal.Models
                 string toEmail = "sivaprakasam_sundaram@compaid.co.in";
                 string bodyPlainText = "Hi, Interview has been scheduled for the possition of "+job.POSITION_NAME+". Please let me know if you have any quries on this. Regards, "+UserName+".";
                 string bodyHtml = "Hi, <br><br> Interview has been scheduled for the possition of <b>" + job.POSITION_NAME +
-                    "</b>. <br> <br>COMMENTS: " + comments+"<br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
+                    "</b>. <br> <br>USER COMMENTS: " + comments+"<br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
                 string location = "Available";
                 string organizerMail = UserEmail;
                 string filename = "Test.txt";//--- Attachments

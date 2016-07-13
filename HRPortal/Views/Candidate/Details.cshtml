@@ -175,12 +175,12 @@
     </dl>
 </div>
 <p>
-    @if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "H")
+    @if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "H")
     {
-        @Html.ActionLink("Back to List", "Index", "Home") 
+        @Html.ActionLink("Back to List", "Index", "Home",new { page= Request.QueryString["p"]},null) 
     }
-    else if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "S")
-    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate")
+    else if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "S")
+    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate", new { page = Request.QueryString["p"] }, null)
     }
-    else { @Html.ActionLink("Back to List", "Index")}
+    else { @Html.ActionLink("Back to List", "Index", new { page = Request.QueryString["p"] })}
 </p>

@@ -16,6 +16,7 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.CANDIDATE_ID)
         @Html.HiddenFor(model=>model.JOB_ID)
+        @Html.HiddenFor(model => model.STATUS)
         @*<div class="form-group">
         @Html.Label("JOB CODE", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
@@ -177,11 +178,11 @@
 }
 
 <div>
-    @if (Request.QueryString.Count > 0 && Request.QueryString.Count == 1 && Request.QueryString["styp"] == "S")
-    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate")
+    @if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "S")
+    { @Html.ActionLink("Back to List", "SquadJobs", "Candidate", new { page= Request.QueryString["p"] }, null)
     }
-    else { 
-    @Html.ActionLink("Back to List", "Index")
+    else {
+    @Html.ActionLink("Back to List", "Index", new { page = Request.QueryString["p"] })
     }
 </div>
 
