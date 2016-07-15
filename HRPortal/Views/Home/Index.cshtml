@@ -27,14 +27,19 @@
 <script src="~/Scripts/moment.js"></script>
 <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
-    <link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
+<link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
+<script src="~/Scripts/jquery.cookie.js"></script>
 
 <script lang="ja" type="text/javascript">
     $(document).ready(function () {
         $('.date-picker').datetimepicker({
-            format: 'MM/DD/YYYY'
+            format: 'DD/MM/YYYY'
         });
 
+        $('.job-date-picker').datetimepicker({
+            format: 'MM/DD/YYYY'
+        });
+        
         $('#ddlCriteriaVendor').multiselect(
             {
                 includeSelectAllOption: true,
@@ -50,14 +55,14 @@
 
         $('#ddlStatusSearchList').multiselect(
             {
-                includeSelectAllOption: true,
+                //includeSelectAllOption: true,
                 enableCaseInsensitiveFiltering: true,
                 nonSelectedText: '-- Select Status --'
             });
 
         $('#ddlCriteriaPosition').multiselect(
             {
-                includeSelectAllOption: true,
+               includeSelectAllOption: true,
                 enableCaseInsensitiveFiltering: true,
                 nonSelectedText: '-- Select Position --'
             });
@@ -82,15 +87,6 @@
                     $("#JobDetailsPartial").html(data);
                 });
         });
-
-        //var PosiIds = "";
-        //$("#ddlCriteriaPosition").each(function () {
-        //    if ($(this).is(":checked")) {
-        //        var userid = $(this).attr("value");
-        //        PosiIds = PosiIds + userid + ',';
-        //    }
-        //});
-        //$("#PositionIds").val(PosiIds);
 
         window.myPanel = function (data) {
             $(".candidate-name").text(data.dataset.customName);
@@ -138,6 +134,40 @@
                 $("#JobDetailsPartial").html(data);
             });
         });
+
+        //BEGIN: Job Search: Set the cookie value to criteria controls back whenever the page gets loaded
+        var srcJob = $.cookie('JobSearchHome');
+        srcJob = srcJob.split('|');
+        var srcPName = srcJob[0], srcPSDt = srcJob[1], srcPEDt = srcJob[2];
+        $("#txtPositionName").val(srcPName);
+        $("#txtPublishedStDate").val(srcPSDt);
+        $("#txtPublishedEndDate").val(srcPEDt);
+        //END:
+
+        //BEGIN: Candidate Search: Set the cookie value to criteria controls back whenever the page gets loaded
+        var src = $.cookie('CANSearchHome');
+        src = src.split('|');
+        var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5];
+        $("#txtCriteriaCanName").val(srcName);
+        $("#txtCriteriaStDate").val(srcStDt);
+        $("#txtCriteriaEndDate").val(srcEnDt);
+
+        //SetPosition
+        var arrPosition = srcPosition.split(",");
+        $("#ddlCriteriaPosition").val(arrPosition);// Set the value
+        $("#ddlCriteriaPosition").multiselect("refresh");
+
+        //SetPartner
+        var arrPartner = srcPartner.split(",");
+        $("#ddlCriteriaVendor").val(arrPartner);// Set the value
+        $("#ddlCriteriaVendor").multiselect("refresh");
+
+        //SetStatus
+        var arrStatus = srcStatus.split(",");
+        $("#ddlStatusSearchList").val(arrStatus);// Set the value
+        $("#ddlStatusSearchList").multiselect("refresh");
+        //END: Set the cookie value to criteria controls back whenever the page gets loaded
+
     });
 </script>
 }

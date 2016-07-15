@@ -21,12 +21,13 @@
     <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
     <script src="~/Scripts/tags/tag-it.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
 
     <script lang="ja" type="text/javascript">
         $(document).ready(function () {
 
             $('.date-picker').datetimepicker({
-                format: 'MM/DD/YYYY'
+                format: 'DD/MM/YYYY'
             });
 
             $(function () {
@@ -49,7 +50,7 @@
 
             $('#ddlStatusSearchList').multiselect(
            {
-               includeSelectAllOption: true,
+               //includeSelectAllOption: true,
                enableCaseInsensitiveFiltering: true,
                nonSelectedText: '-- Select Status --'
            });
@@ -140,6 +141,30 @@
                 $("#btnStatus").attr("data-dismiss", "modal");
             }
         };
+
+            //BEGIN: Set the cookie value to criteria controls back whenever the page gets loaded
+        var src = $.cookie('CANSearch');
+        src = src.split('|');
+        var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5];
+        $("#txtCriteriaCanName").val(srcName);
+        $("#txtCriteriaStDate").val(srcStDt);
+        $("#txtCriteriaEndDate").val(srcEnDt);
+
+            //SetPosition
+        var arrPosition = srcPosition.split(",");
+        $("#ddlCriteriaPosition").val(arrPosition);// Set the value
+        $("#ddlCriteriaPosition").multiselect("refresh");
+
+            //SetPartner
+        var arrPartner = srcPartner.split(",");
+        $("#ddlCriteriaVendor").val(arrPartner);// Set the value
+        $("#ddlCriteriaVendor").multiselect("refresh");
+
+            //SetStatus
+        var arrStatus = srcStatus.split(",");
+        $("#ddlStatusSearchList").val(arrStatus);// Set the value
+        $("#ddlStatusSearchList").multiselect("refresh");
+            //END: Set the cookie value to criteria controls back whenever the page gets loaded
 
     });
     </script>

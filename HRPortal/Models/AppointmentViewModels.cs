@@ -135,6 +135,7 @@ namespace HRPortal.Models
                 var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 var profOwner = dbContext.AspNetUsers.Where(x => x.Id == canLst.CREATED_BY).FirstOrDefault();
                 string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
+                string bccs = System.Configuration.ConfigurationManager.AppSettings["BCCMailIdForMonitor"];
                 string strSubject = "HROps-Interview To Be Scheduled For " + canName;
                 string bodyHtml = "Hi " + profOwner.FirstName + ", <br><br> FYI - Interview to be scheduled for the candidate <b>" + canName + " </b> and for the position of <b>" + job.POSITION_NAME +
                     "</b>.<br><br>USER COMMENTS: " + comments + " <br> <br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
@@ -144,7 +145,9 @@ namespace HRPortal.Models
                 message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, UserName);
                 message.To.Add(new MailAddress(profOwner.Email));
                 message.CC.Add(new MailAddress(HttpContext.Current.User.Identity.Name));
-                message.Bcc.Add(new MailAddress("reachsunsiva2015@gmail.com", UserName));
+                string[] mailBccs = bccs.Split(',');
+                for (int i = 0; i < mailBccs.Length; i++)
+                    message.Bcc.Add(new MailAddress(mailBccs[i]));
                 message.Subject = strSubject;
                 message.Body = bodyHtml;
 
@@ -249,20 +252,20 @@ namespace HRPortal.Models
                 var job = dbContext.JOBPOSTINGs.Where(x => x.JOB_ID == canLst.JOB_ID).FirstOrDefault();
                 var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 var usr = dbContext.AspNetUsers.Where(x => x.Id == uid).FirstOrDefault();
-                string UserName = "Admin";
-                string UserEmail = "Naveen_Sankar@compaid.co.in";
-                if(usr != null)
+                string UserName = "CAI HROps-Admin";
+                string UserEmail = HRPConst.PRIM_EMAIL_FROM;
+                string bccs = System.Configuration.ConfigurationManager.AppSettings["BCCMailIdForMonitor"];
+                if (usr != null)
                 {
                     UserName = usr.FirstName + " " + usr.LastName;
                     UserEmail = usr.Email;
                 }
                 // Properties of the meeting request
                 // keep guid in sending program to modify or cancel the request later
-                string strSubject = "Interview Scheduled for "+ canName;
-                string toEmail = "sivaprakasam_sundaram@compaid.co.in";
-                string bodyPlainText = "Hi, Interview has been scheduled for the possition of "+job.POSITION_NAME+". Please let me know if you have any quries on this. Regards, "+UserName+".";
-                string bodyHtml = "Hi, <br><br> Interview has been scheduled for the possition of <b>" + job.POSITION_NAME +
-                    "</b>. <br> <br>USER COMMENTS: " + comments+"<br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
+                string strSubject = "HROps-Interview Scheduled For -"+ canName;
+                string bodyPlainText = "Hi, Interview has been scheduled for the position of "+job.POSITION_NAME+". Regards, "+UserName+".";
+                string bodyHtml = "Hi, <br><br> Interview has been scheduled for the position of <b>" + job.POSITION_NAME +
+                    "</b>. Attached candidate profile for your reference. <br> <br>USER COMMENTS: " + comments+"<br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
                 string location = "Available";
                 string organizerMail = UserEmail;
                 string filename = "Test.txt";//--- Attachments
@@ -274,7 +277,11 @@ namespace HRPortal.Models
                 string[] mailToadrs = sendTo.Split(',');
                 for (int i = 0; i < mailToadrs.Length; i++)
                     message.To.Add(new MailAddress(mailToadrs[i]));
-                message.Bcc.Add(new MailAddress("reachsunsiva2015@gmail.com", UserName));
+
+                string[] mailBccs = bccs.Split(',');
+                for (int i = 0; i < mailBccs.Length; i++)
+                    message.Bcc.Add(new MailAddress(mailBccs[i]));
+
                 message.Subject = strSubject;
                 message.Body = bodyPlainText; // Plain Text Version
 
@@ -342,10 +349,14 @@ namespace HRPortal.Models
                 {
                     try
                     {
-                        IAttachment attachment = new DDay.iCal.Attachment();
-                        attachment.Data = ReadBinary(filename);
-                        attachment.Parameters.Add("X-FILENAME", filename);
-                        evt.Attachments.Add(attachment);
+                        // Add an attachment to this event
+                        //IAttachment attachment = new DDay.iCal.Attachment();
+                        //attachment.Data = ReadBinary(filename);
+                        //attachment.Parameters.Add("X-FILENAME", filename);
+                        //evt.Attachments.Add(attachment);
+
+                        // Add an attachment to email
+                        message.Attachments.Add(new System.Net.Mail.Attachment(filename));
                     }
                     catch(Exception ex)
                     { }
@@ -373,7 +384,7 @@ namespace HRPortal.Models
                 Byte[] bytes = System.Text.Encoding.ASCII.GetBytes(iCalStr);
                 var ms = new System.IO.MemoryStream(bytes);
                 var a = new System.Net.Mail.Attachment(ms,
-                  "HROpsMeetingRequest.ics", "text/calendar");
+                  "HROpsInvite.ics", "text/calendar");
                 message.Attachments.Add(a);
 
                 // Send Mail

@@ -2,9 +2,9 @@
 @using PagedList;
 @using PagedList.Mvc;
 @{
-    int pSize = ViewBag.PageSize;
-    int pNo = ViewBag.PageNo;
-    var modal = Model.ToPagedList(pNo, pSize);
+    int pSize = ViewBag.PageSize == null ? 1 : ViewBag.PageSize;
+    int pNo = ViewBag.PageNo == null ? 1 : ViewBag.PageNo;
+    var modal = Model != null ? Model.ToPagedList(pNo, pSize) : null;
     int sl = (pNo == 1 ? 0 : (pNo - 1) * 10);
 }
 
@@ -12,6 +12,8 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
+@if (modal != null)
+{
                 <table class="table table-striped table-hover table-condensed table-bordered">
                     <tr>
                         <th>#</th>
@@ -87,6 +89,40 @@
                         </td>
                     </tr>
                 </table>
+}
+else
+{
+    <table class="table table-striped table-hover table-condensed table-bordered">
+        <tr>
+            <th>#</th>
+            <th>
+                JOB CODE
+            </th>
+            <th>
+                JOB DESCRIPTION
+            </th>
+            <th>
+                POSITION NAME
+            </th>
+            <th>
+                NO.OF VACANCIES
+            </th>
+            <th>
+                YEARS OF EXP
+            </th>
+            <th>
+               PUBLISHED DATE
+            </th>
+            <th>
+                STATUS
+            </th>
+            <th colspan="3">ACTION</th>
+        </tr>
+        <tr>
+            <td align="center" colspan="11" class="text-danger"> No Record(s) Found.</td>
+        </tr>
+    </table>
+}
             </div>
         </div>
     </div>

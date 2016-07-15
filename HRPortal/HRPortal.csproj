@@ -249,6 +249,9 @@
     <Compile Include="EXCEPTION_LOGGING.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
+    <Compile Include="getSearchResults_Result.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -349,6 +352,7 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Scripts\bootstrap-multiselect.js" />
+    <Content Include="Scripts\jquery.cookie.js" />
     <Content Include="Views\Candidate\Index.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Web.config">

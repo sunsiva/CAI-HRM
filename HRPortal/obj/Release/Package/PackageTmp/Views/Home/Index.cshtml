@@ -28,7 +28,7 @@
 <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
     <link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
-
+<script src="~/Scripts/jquery.cookie.js"></script>
 <script lang="ja" type="text/javascript">
     $(document).ready(function () {
         $('.date-picker').datetimepicker({
@@ -47,6 +47,17 @@
               //  alert('Changed option ' + $(option).val() + '.');
               //  } },
             });
+
+       // alert($.cookie('CANSearchHome'));
+
+        //Do it simple
+        //var data = "People Alliance,Damco Soft";
+        ////Make an array
+        //var dataarray = data.split(",");
+        //// Set the value
+        //$("#ddlCriteriaVendor").val(dataarray);
+        //// Then refresh
+        //$("#ddlCriteriaVendor").multiselect("refresh");
 
         $('#ddlStatusSearchList').multiselect(
             {

@@ -1,5 +1,6 @@
 ﻿using HRPortal.Helper;
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -92,10 +93,12 @@ namespace HRPortal.Models
                         dbContext.STATUS_HISTORY.Add(stsHist);
                         dbContext.SaveChanges();
 
-                        //CANDIDATE can = dbContext.CANDIDATES.Where(i => i.CANDIDATE_ID == item.CANDIDATE_ID).FirstOrDefault();
-                        //can.STATUS = stsHist.STATUS_ID.ToString();
-                        //dbContext.CANDIDATES.Add(can);
-                        //dbContext.SaveChanges();
+                        CANDIDATE cANDIDATE = dbContext.CANDIDATES.Where(i => i.CANDIDATE_ID == item.CANDIDATE_ID).FirstOrDefault();
+                        cANDIDATE.STATUS = stsHist.STATUS_ID.ToString();
+                        cANDIDATE.MODIFIED_BY = uid;
+                        cANDIDATE.MODIFIED_ON = DateTime.Now;
+                        dbContext.Entry(cANDIDATE).State = EntityState.Modified;
+                        dbContext.SaveChanges();
                     }
                 }
             }
@@ -123,8 +126,8 @@ namespace HRPortal.Models
         /// <returns></returns>
         public SelectList GetPositionList()
         {
-            var sts = dbContext.JOBPOSTINGs.Where(i => i.ISACTIVE == true).Select(s => new { s.JOB_ID, s.POSITION_NAME, s.JOB_DESCRIPTION}).OrderBy(v => v.POSITION_NAME).ToList();
-            return new SelectList(sts.AsEnumerable(), "POSITION_NAME", "POSITION_NAME", 1);
+            var sts = dbContext.JOBPOSTINGs.Where(i => i.ISACTIVE == true).Select(s => new { s.JOB_ID, s.POSITION_NAME, s.JOB_CODE, s.JOB_DESCRIPTION}).OrderBy(v => v.POSITION_NAME).ToList();
+            return new SelectList(sts.AsEnumerable(), "JOB_CODE", "POSITION_NAME", 1);
         }
 
         public string GetStatusNameById(Guid id)

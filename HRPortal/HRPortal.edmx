@@ -337,6 +337,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="getSearchResults" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PositionName" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="CandidateName" Type="nvarchar" Mode="In" />
+          <Parameter Name="StatusIds" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Partner" Type="nvarchar" Mode="In" />
+          <Parameter Name="StartDate" Type="nvarchar" Mode="In" />
+          <Parameter Name="EndDate" Type="nvarchar" Mode="In" />
+          <Parameter Name="flag" Type="varchar" Mode="In" />
+        </Function>
         <EntityContainer Name="HRPortalModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -429,6 +438,15 @@
             <End Role="AspNetRole" EntitySet="AspNetRoles" />
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
           </AssociationSet>
+          <FunctionImport Name="getSearchResults" ReturnType="Collection(HRPortalModel.getSearchResults_Result)">
+            <Parameter Name="PositionName" Mode="In" Type="String" />
+            <Parameter Name="CandidateName" Mode="In" Type="String" />
+            <Parameter Name="StatusIds" Mode="In" Type="String" />
+            <Parameter Name="Partner" Mode="In" Type="String" />
+            <Parameter Name="StartDate" Mode="In" Type="String" />
+            <Parameter Name="EndDate" Mode="In" Type="String" />
+            <Parameter Name="flag" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -747,6 +765,24 @@
           <End Type="HRPortalModel.AspNetRole" Role="AspNetRole" Multiplicity="0..1" />
           <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
         </Association>
+        <ComplexType Name="getSearchResults_Result">
+          <Property Type="Guid" Name="CANDIDATE_ID" Nullable="false" />
+          <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="MOBILE_NO" Nullable="false" MaxLength="25" />
+          <Property Type="String" Name="EMAIL" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="POSITION" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="RESUME_FILE_PATH" Nullable="true" MaxLength="166" />
+          <Property Type="String" Name="NOTICE_PERIOD" Nullable="false" MaxLength="50" />
+          <Property Type="Decimal" Name="YEARS_OF_EXP_TOTAL" Nullable="false" Precision="18" Scale="2" />
+          <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" Precision="23" />
+          <Property Type="String" Name="CURRENT_COMPANY" Nullable="false" MaxLength="150" />
+          <Property Type="String" Name="VENDOR_NAME" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="STATUS_ID" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="CREATED_ON" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="MODIFIED_ON" Nullable="true" Precision="23" />
+          <Property Type="String" Name="MODIFIED_BY" Nullable="true" MaxLength="100" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1012,6 +1048,28 @@
             </EndProperty>
             <Condition ColumnName="RoleId" IsNull="false" />
           </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="getSearchResults" FunctionName="HRPortalModel.Store.getSearchResults">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HRPortalModel.getSearchResults_Result">
+                <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+                <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+                <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
+                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+                <ScalarProperty Name="POSITION" ColumnName="POSITION" />
+                <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
+                <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
+                <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+                <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+                <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
+                <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

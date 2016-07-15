@@ -6,23 +6,23 @@ BEGIN:VEVENT
 ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;ROLE=REQ-PARTICIPANT;CN=siva sun:m
  ailto:sivaprakasam_sundaram@compaid.co.in
 CLASS:PUBLIC
-CREATED:20160712T175207
-DESCRIPTION:Hi\, Interview has been scheduled for the possition of Java Dev
- eloper. Please let me know if you have any quries on this. Regards\, siva 
- sun.
-DTEND:20160712T182100
-DTSTAMP:20160712T122207Z
-DTSTART:20160712T175100
+CREATED:20160713T192148
+DESCRIPTION:Hi\, Interview has been scheduled for the position of Java Deve
+ loper. Regards\, siva sun.
+DTEND:20160713T195100
+DTSTAMP:20160713T135148Z
+DTSTART:20160713T192100
 LOCATION:Available
 ORGANIZER:mailto:sivaprakasam_sundaram@compaid.co.in
 PRIORITY:1
 SEQUENCE:0
-SUMMARY:Interview Scheduled for javid
+SUMMARY:HROps-Interview Scheduled For -javid
 TRANSP:Transparent
 UID:766c9ab4-6dea-4511-ad6e-c605cb4099f0
 X-ALT-DESC;FMTTYPE=text/html:Hi\, <br><br> Interview has been scheduled for
-  the possition of <b>Java Developer</b>. <br> <br>USER COMMENTS: sch frm l
- oc<br> <br> Regards\,<br><b>siva sun</b>. <br><br><small>--This is system 
- generated e-mail(www.caihrops.in).</small>
+  the position of <b>Java Developer</b>. Attached candidate profile for you
+ r reference. <br> <br>USER COMMENTS: sch r1<br> <br> Regards\,<br><b>siva 
+ sun</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in)
+ .</small>
 END:VEVENT
 END:VCALENDAR

@@ -16,8 +16,9 @@ namespace HRPortal
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
+            if (System.Configuration.ConfigurationManager.AppSettings["IsServerEnv"] == "true") { 
             GlobalFilters.Filters.Add(new RequireHttpsAttribute());
+            }
         }
     }
 }

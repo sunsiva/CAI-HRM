@@ -64,7 +64,8 @@
                                     <span style="font-size:x-small">@HRPortal.Helper.HelperFuntions.TimeAgo(item.CREATED_ON)</span>
                                 </td>
                                 <td>
-                                    @(item.MODIFIED_BY != null ? item.MODIFIED_BY: "")
+                                    @(item.MODIFIED_BY != null && item.MODIFIED_ON != null ? item.MODIFIED_BY+" / " +item.MODIFIED_ON.Value.ToString("dd-MMM-yyyy"): "")
+                                    @*@(item.MODIFIED_BY != null ? item.MODIFIED_BY : "")*@
                                 </td>
                                 <td>
                                     <a href="@item.RESUME_FILE_PATH" target="_blank" title="Click To Download Candidate CV">Download</a>

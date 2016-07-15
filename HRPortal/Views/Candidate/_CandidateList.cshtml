@@ -72,7 +72,7 @@
                             </td>
                             <td>@Html.DisplayFor(modelItem => item.POSITION)</td>
                             <td>
-                                @(item.MODIFIED_BY != null ? item.MODIFIED_BY : "")
+                                @(item.MODIFIED_BY != null && item.MODIFIED_ON != null ? item.MODIFIED_BY + " / " + item.MODIFIED_ON.Value.ToString("dd-MMM-yyyy") : "")
                             </td>
                             <td>
                                 @if (item.STATUS.ToUpper().ToString().Contains("TOBESCHEDULED"))

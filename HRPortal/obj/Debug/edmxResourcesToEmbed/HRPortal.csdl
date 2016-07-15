@@ -41,6 +41,15 @@
       <End Role="AspNetRole" EntitySet="AspNetRoles" />
       <End Role="AspNetUser" EntitySet="AspNetUsers" />
     </AssociationSet>
+    <FunctionImport Name="getSearchResults" ReturnType="Collection(HRPortalModel.getSearchResults_Result)">
+      <Parameter Name="PositionName" Mode="In" Type="String" />
+      <Parameter Name="CandidateName" Mode="In" Type="String" />
+      <Parameter Name="StatusIds" Mode="In" Type="String" />
+      <Parameter Name="Partner" Mode="In" Type="String" />
+      <Parameter Name="StartDate" Mode="In" Type="String" />
+      <Parameter Name="EndDate" Mode="In" Type="String" />
+      <Parameter Name="flag" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <EntityType Name="C__MigrationHistory">
     <Key>
@@ -359,4 +368,22 @@
     <End Type="HRPortalModel.AspNetRole" Role="AspNetRole" Multiplicity="0..1" />
     <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
   </Association>
+  <ComplexType Name="getSearchResults_Result">
+    <Property Type="Guid" Name="CANDIDATE_ID" Nullable="false" />
+    <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="MOBILE_NO" Nullable="false" MaxLength="25" />
+    <Property Type="String" Name="EMAIL" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="POSITION" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="RESUME_FILE_PATH" Nullable="true" MaxLength="166" />
+    <Property Type="String" Name="NOTICE_PERIOD" Nullable="false" MaxLength="50" />
+    <Property Type="Decimal" Name="YEARS_OF_EXP_TOTAL" Nullable="false" Precision="18" Scale="2" />
+    <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" Precision="23" />
+    <Property Type="String" Name="CURRENT_COMPANY" Nullable="false" MaxLength="150" />
+    <Property Type="String" Name="VENDOR_NAME" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
+    <Property Type="String" Name="STATUS_ID" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="CREATED_ON" Nullable="false" Precision="23" />
+    <Property Type="DateTime" Name="MODIFIED_ON" Nullable="true" Precision="23" />
+    <Property Type="String" Name="MODIFIED_BY" Nullable="true" MaxLength="100" />
+  </ComplexType>
 </Schema>

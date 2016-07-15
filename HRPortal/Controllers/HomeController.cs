@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Net.Mail;
 using System.Web.Mvc;
-using System.Net;
 using System.Threading.Tasks;
 using System.Data.Entity;
 using HRPortal.Models;
 using System.IO;
 using HRPortal.Helper;
-using PagedList;
 using HRPortal.Common;
 using HRPortal.Common.Enums;
 using System.Security.Claims;
-using Microsoft.AspNet.Identity;
 
 namespace HRPortal.Controllers
 {
@@ -50,7 +45,10 @@ namespace HRPortal.Controllers
                     if (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                     {
                         var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
-                        jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                        if (dbCan != null && dbCan.Count > 0)
+                        {
+                            jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                        }
                         ViewBag.StatusList = vmodelCan.GetStatusList();
                         ViewBag.VendorList = vmodelCan.GetVendorList();
                         ViewBag.PositionList = vmodelCan.GetPositionList();
@@ -86,7 +84,7 @@ namespace HRPortal.Controllers
                     ViewBag.PositionList = vmodelCan.GetPositionList();
 
                     if (jobCanObj.CandidateItems.Count > 0)
-                    { 
+                    {
                         jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
                         return PartialView("_CandidateList", jobCanObj.CandidateItems);
                     }
@@ -95,8 +93,8 @@ namespace HRPortal.Controllers
                 }
                 else {
                     CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
-                    jobCanObj.JobItems=dbJobs.Where(row => row.ISACTIVE == true).ToList();
-                    jobCanObj=GetJobSearchResults(jobCanObj.JobItems);
+                    jobCanObj.JobItems = dbJobs.Where(row => row.ISACTIVE == true).ToList();
+                    jobCanObj = GetJobSearchResults(jobCanObj.JobItems);
                     jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
                     return PartialView("_JobList", jobCanObj.JobItems);
                 }
@@ -164,13 +162,7 @@ namespace HRPortal.Controllers
                 STATUS_HISTORY sHist = new STATUS_HISTORY();
                 Guid stsId = Guid.Parse(status);
                 var stsMst = db.STATUS_MASTER.Where(s => s.STATUS_ID == stsId).FirstOrDefault();
-
-                if (stsMst != null && stsMst.STATUS_DESCRIPTION.Contains("ToBeSchedule") && System.Configuration.ConfigurationManager.AppSettings["IsTBSMail"] == "true")
-                {
-                    await appVM.sendMailTBS(cId, comments);
-                    sHist.SCHEDULED_FOR = uid; //This is to trace only, if email has sent or not.
-                }
-                                
+             
                 sHist.STATUS_ID = Guid.Parse(status);
                 sHist.COMMENTS = comments;
                 sHist.CANDIDATE_ID = Guid.Parse(id);
@@ -187,8 +179,11 @@ namespace HRPortal.Controllers
                 db.Entry(cANDIDATE).State = EntityState.Modified;
                 await db.SaveChangesAsync();
 
+                if (stsMst != null && stsMst.STATUS_DESCRIPTION.Contains("ToBeSchedule") && System.Configuration.ConfigurationManager.AppSettings["IsTBSMail"] == "true")
+                {
+                    await appVM.sendMailTBS(cId, comments);
+                }
                 return new EmptyResult();
-
             }
             catch (Exception ex) { throw ex; }
         }
@@ -281,40 +276,67 @@ namespace HRPortal.Controllers
             try
             {
                 var cookie = CookieStore.GetCookie(CacheKey.CANSearchHome.ToString());
-                string name =string.Empty, vendor = string.Empty, position = string.Empty, status = string.Empty, stdt = string.Empty, edt = string.Empty;
+                string name = string.Empty, vendor = string.Empty, position = string.Empty, status = string.Empty, stdt = string.Empty, edt = string.Empty;
                 if (!string.IsNullOrEmpty(cookie))
                 {
                     string[] val = cookie.Split('|');
                     name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5];
                 }
-                jobCanObj.CandidateItems = (from c in dbCan
-                                            join j in dbJobs on c.JOB_ID equals j.JOB_ID
-                                            join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id 
-                                            join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID
-                                            where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
-                                            && (status != string.Empty ? status.Split(',').Contains(c.STATUS) : true)
-                                            && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
-                                            && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
-                                            && (!string.IsNullOrEmpty(vendor) ? vendor.Split(',').Contains(v.VENDOR_NAME) : true)
-                                            && (!string.IsNullOrEmpty(position) ? position.Split(',').Contains(j.POSITION_NAME) : true)
-                                            select new { Candidate = c, Job = j }).Select(i => new CandidateViewModels
-                                            {
-                                                CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
-                                                CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
-                                                MOBILE_NO=i.Candidate.MOBILE_NO,
-                                                EMAIL=i.Candidate.EMAIL,
-                                                POSITION = i.Job.POSITION_NAME,
-                                                RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH) ? string.Empty : Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
-                                                NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
-                                                YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
-                                                LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
-                                                VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
-                                                STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
-                                                STATUS_ID = i.Candidate.STATUS,
-                                                CREATED_ON = i.Candidate.CREATED_ON,
-                                                MODIFIED_ON = i.Candidate.MODIFIED_ON,
-                                                MODIFIED_BY = GetModifiedById(i.Candidate),
+
+                if(System.Configuration.ConfigurationManager.AppSettings["IsCallSP_Temp"] == "true")
+                { 
+                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, CookieStore.GetCookie(CacheKey.Uid.ToString())).ToList();
+                    jobCanObj.CandidateItems = canlist.Select(i => new CandidateViewModels
+                                                {
+                                                CANDIDATE_ID = i.CANDIDATE_ID,
+                                                CANDIDATE_NAME = i.CANDIDATE_NAME,
+                                                MOBILE_NO = i.MOBILE_NO,
+                                                EMAIL = i.EMAIL,
+                                                POSITION = i.POSITION,
+                                                RESUME_FILE_PATH = (string.IsNullOrEmpty(i.RESUME_FILE_PATH) ? string.Empty :i.RESUME_FILE_PATH),
+                                                NOTICE_PERIOD = i.NOTICE_PERIOD,
+                                                YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
+                                                LAST_WORKING_DATE = i.LAST_WORKING_DATE,
+                                                VENDOR_NAME = i.VENDOR_NAME,
+                                                STATUS = i.STATUS,
+                                                STATUS_ID = i.STATUS_ID,
+                                                CREATED_ON = i.CREATED_ON,
+                                                MODIFIED_ON = i.MODIFIED_ON,
+                                                MODIFIED_BY = i.MODIFIED_BY,
                                             }).ToList();
+            }
+                else
+                { 
+                    jobCanObj.CandidateItems = (from c in dbCan
+                                                join j in dbJobs on c.JOB_ID equals j.JOB_ID
+                                                join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id
+                                                join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID
+                                                where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
+                                                && (status != string.Empty ? status.Split(',').Contains(c.STATUS) : true)
+                                                && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
+                                                && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
+                                                && (!string.IsNullOrEmpty(vendor) ? vendor.Split(',').Contains(v.VENDOR_NAME) : true)
+                                                && (!string.IsNullOrEmpty(position) ? position.Split(',').Contains(j.JOB_CODE) : true)
+                                                select new { Candidate = c, Job = j }).Select(i => new CandidateViewModels
+                                                {
+                                                    CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
+                                                    CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
+                                                    MOBILE_NO = i.Candidate.MOBILE_NO,
+                                                    EMAIL = i.Candidate.EMAIL,
+                                                    POSITION = i.Job.POSITION_NAME,
+                                                    RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH) ? string.Empty : Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
+                                                    NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
+                                                    YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
+                                                    LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
+                                                    VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
+                                                    STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
+                                                    STATUS_ID = i.Candidate.STATUS,
+                                                    CREATED_ON = i.Candidate.CREATED_ON,
+                                                    MODIFIED_ON = i.Candidate.MODIFIED_ON,
+                                                    MODIFIED_BY = GetModifiedById(i.Candidate),
+                                                }).ToList();
+                }
+
                 return jobCanObj;
             }
             catch(Exception ex) {
