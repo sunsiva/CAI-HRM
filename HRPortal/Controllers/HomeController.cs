@@ -72,32 +72,38 @@ namespace HRPortal.Controllers
         public async Task<ActionResult> SearchCriteria(string name, string vendor, string position, string status, string stdt, string edt)
         {
             try
-            { 
-                var dbJobs = await db.JOBPOSTINGs.ToListAsync();
-                if (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
+            {
+                if (User.Identity.IsAuthenticated)
                 {
-                    CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
-                    var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
-                    jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                    ViewBag.StatusList = vmodelCan.GetStatusList();
-                    ViewBag.VendorList = vmodelCan.GetVendorList();
-                    ViewBag.PositionList = vmodelCan.GetPositionList();
-
-                    if (jobCanObj.CandidateItems.Count > 0)
+                    var dbJobs = await db.JOBPOSTINGs.ToListAsync();
+                    if (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                     {
-                        jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
-                        return PartialView("_CandidateList", jobCanObj.CandidateItems);
+                        CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
+                        var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
+                        jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                        ViewBag.StatusList = vmodelCan.GetStatusList();
+                        ViewBag.VendorList = vmodelCan.GetVendorList();
+                        ViewBag.PositionList = vmodelCan.GetPositionList();
+
+                        if (jobCanObj.CandidateItems.Count > 0)
+                        {
+                            jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
+                            return PartialView("_CandidateList", jobCanObj.CandidateItems);
+                        }
+                        else
+                            return PartialView("_CandidateList");
                     }
-                    else
-                        return PartialView("_CandidateList");
+                    else {
+                        CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
+                        jobCanObj.JobItems = dbJobs.Where(row => row.ISACTIVE == true).ToList();
+                        jobCanObj = GetJobSearchResults(jobCanObj.JobItems);
+                        jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
+                        return PartialView("_JobList", jobCanObj.JobItems);
+                    }
                 }
-                else {
-                    CookieStore.SetCookie(CacheKey.JobSearchHome.ToString(), name + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
-                    jobCanObj.JobItems = dbJobs.Where(row => row.ISACTIVE == true).ToList();
-                    jobCanObj = GetJobSearchResults(jobCanObj.JobItems);
-                    jobCanObj = GetPagination(jobCanObj, string.Empty, 1);
-                    return PartialView("_JobList", jobCanObj.JobItems);
-                }
+
+                return RedirectToAction("Login", "Account");
+
             }
             catch (Exception ex) { throw ex; }
         }
@@ -240,7 +246,7 @@ namespace HRPortal.Controllers
             }
             }
             else {
-                ViewBag.JCodeSort = string.IsNullOrEmpty(sOdr) ? "JCode_desc" : "";
+                ViewBag.JCodeSort = sOdr == "JCode_asc" ? "JCode_desc" : "JCode_asc";
                 ViewBag.PositionSort = sOdr == "Position_desc" ? "Position_asc" : "Position_desc";
                 ViewBag.PDateSort = sOdr == "PubDate_desc" ? "PubDate_asc" : "PubDate_desc";
 
@@ -248,6 +254,9 @@ namespace HRPortal.Controllers
                 {
                     case "JCode_desc":
                         jobCanObj.JobItems = jobCanObj.JobItems.OrderByDescending(s => s.JOB_CODE).ToList();
+                        break;
+                    case "JCode_asc":
+                        jobCanObj.JobItems = jobCanObj.JobItems.OrderBy(s => s.JOB_CODE).ToList();
                         break;
                     case "Position_desc":
                         jobCanObj.JobItems = jobCanObj.JobItems.OrderByDescending(s => s.POSITION_NAME).ToList();
@@ -262,7 +271,7 @@ namespace HRPortal.Controllers
                         jobCanObj.JobItems = jobCanObj.JobItems.OrderBy(s => s.CREATED_ON).ToList();
                         break;
                     default:
-                        jobCanObj.JobItems = jobCanObj.JobItems.OrderBy(s => s.JOB_CODE).ToList();
+                        jobCanObj.JobItems = jobCanObj.JobItems.OrderByDescending(s => s.CREATED_ON).ToList();
                         break;
                 }
             }
@@ -285,7 +294,7 @@ namespace HRPortal.Controllers
 
                 if(System.Configuration.ConfigurationManager.AppSettings["IsCallSP_Temp"] == "true")
                 { 
-                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, CookieStore.GetCookie(CacheKey.Uid.ToString())).ToList();
+                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, "").ToList();
                     jobCanObj.CandidateItems = canlist.Select(i => new CandidateViewModels
                                                 {
                                                 CANDIDATE_ID = i.CANDIDATE_ID,

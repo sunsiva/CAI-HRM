@@ -10,6 +10,7 @@ using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using HRPortal.Common;
 using System.Web;
+using System.Net;
 
 namespace HRPortal.Models
 {
@@ -134,6 +135,7 @@ namespace HRPortal.Models
                 var job = dbContext.JOBPOSTINGs.Where(x => x.JOB_ID == canLst.JOB_ID).FirstOrDefault();
                 var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 var profOwner = dbContext.AspNetUsers.Where(x => x.Id == canLst.CREATED_BY).FirstOrDefault();
+
                 string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
                 string bccs = System.Configuration.ConfigurationManager.AppSettings["BCCMailIdForMonitor"];
                 string strSubject = "HROps-Interview To Be Scheduled For " + canName;
@@ -167,6 +169,61 @@ namespace HRPortal.Models
             return "Mail Sent";
         }
 
+        /// <summary>
+        /// To trigger e-mail to all in the system when creating new job.
+        /// </summary>
+        /// <param name="canId"></param>
+        /// <returns></returns>
+        public async Task<string> sendMailForNewJob(JOBPOSTING jobposting)
+        {
+            ///No Email should go in "To Address" - all email should be on BCC.
+            try
+            {
+                var mailBCCs = dbContext.AspNetUsers.Where(u => u.IsActive == true).Select(u => u.Email).ToList();
+                string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
+                string strSubject = "HROps-New Job Posted - " + jobposting.POSITION_NAME;
+                string bodyHtml = "Hi, <br><br> A new position is posted with a job code <b>" + jobposting.JOB_CODE + " </b>. Below is the position detail, <br><br> <b>Position Name:</b> " + jobposting.POSITION_NAME +
+                    "</b><br><br><b>Position Description:</b> " + jobposting.JOB_DESCRIPTION + " <br> <br> <br> Regards,<br><b> Admin </b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
+                //===================================================================================
+
+                MailMessage message = new MailMessage();
+                
+                message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, "CAI Admin");
+                foreach (var item in mailBCCs)
+                    message.Bcc.Add(new MailAddress(item));
+                //message.CC.Add(new MailAddress(HttpContext.Current.User.Identity.Name));
+                message.Subject = strSubject;
+                message.Body = bodyHtml;
+
+                // HTML Version
+                AlternateView HTMLV = AlternateView.CreateAlternateViewFromString(bodyHtml,
+                  new System.Net.Mime.ContentType("text/html"));
+                message.AlternateViews.Add(HTMLV);
+
+                // Add an attachment to email
+                string filename = jobposting.JD_FILE_PATH;
+                if (!string.IsNullOrEmpty(filename))
+                {
+                    try
+                    {
+                        message.Attachments.Add(new System.Net.Mail.Attachment(filename));
+                    }
+                    catch (Exception ex)
+                    { }
+                }
+
+                // Send Mail
+                SmtpClient client = new SmtpClient();
+                await client.SendMailAsync(message);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return "Mail Sent";
+        }
+
         public async Task<string> sendMail()
         {
             var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
@@ -190,7 +247,6 @@ namespace HRPortal.Models
             }
             return "Mail Sent";
         }
-
 
         public JsonResult GetDiarySummary(double start, double end)
         {
@@ -277,6 +333,8 @@ namespace HRPortal.Models
                 string[] mailToadrs = sendTo.Split(',');
                 for (int i = 0; i < mailToadrs.Length; i++)
                     message.To.Add(new MailAddress(mailToadrs[i]));
+
+                message.CC.Add(new MailAddress(organizerMail));
 
                 string[] mailBccs = bccs.Split(',');
                 for (int i = 0; i < mailBccs.Length; i++)

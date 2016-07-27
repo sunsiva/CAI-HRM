@@ -14,7 +14,8 @@ namespace HRPortal.Helper
         VendorId,
         CANSearchHome,
         CANSearch,
-        JobSearchHome
+        JobSearchHome,
+        LoginId
     };
 
 

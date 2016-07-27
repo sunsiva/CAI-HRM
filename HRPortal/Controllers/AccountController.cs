@@ -12,6 +12,7 @@ using HRPortal.Helper;
 using HRPortal.Common;
 using HRPortal.Common.Enums;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Globalization;
 
 namespace HRPortal.Controllers
 {
@@ -92,7 +93,7 @@ namespace HRPortal.Controllers
                     loginVM.SetUserToCache(model.Email);
                     if (System.Configuration.ConfigurationManager.AppSettings["IsUserLogEnable"] == "true")
                     {
-                        loginVM.UserLogs(true, model.Email, CookieStore.GetCookie(CacheKey.UserName.ToString()).ToString()); //TODO:disabed the feature temporarily
+                        loginVM.UserLogs(true, model.Email, CookieStore.GetCookie(CacheKey.UserName.ToString()).ToString());
                     }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
@@ -184,13 +185,13 @@ namespace HRPortal.Controllers
                     {
                         if (result.Succeeded)
                         {
-                            //Update the miscellanous columns
+                           //Update the miscellanous columns
                             AspNetUser objUser = await db.AspNetUsers.FindAsync(user.Id);
                             objUser.FirstName = model.FirstName;
                             objUser.LastName = model.LastName;
                             objUser.CreatedOn = DateTime.Now;
                             objUser.CreatedBy = CookieStore.GetCookie(CacheKey.Uid.ToString())==string.Empty?User.Identity.Name: CookieStore.GetCookie(CacheKey.Uid.ToString());
-                            objUser.IsAdmin = model.IsAdmin;
+                            objUser.IsActive  = true;
                             objUser.Vendor_Id = !string.IsNullOrEmpty(frm["ddlVendorList"]) ? Guid.Parse(frm["ddlVendorList"]) : Guid.Empty;// model.Vendor_Id;
                             db.Entry(objUser).State = EntityState.Modified;
                             await db.SaveChangesAsync();
@@ -244,7 +245,7 @@ namespace HRPortal.Controllers
 
         public ActionResult GetAllUsers()
         {
-            var usrs = db.AspNetUsers.ToList().Select(x => new RegisterViewModel {
+            var usrs = db.AspNetUsers.Where(u=>u.IsActive== true).ToList().Select(x => new RegisterViewModel {
                 Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber, Vendor_Id=x.Vendor_Id, CreatedBy=x.CreatedBy }).ToList();
             if (CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
             {
@@ -265,7 +266,6 @@ namespace HRPortal.Controllers
         {
             try
             {
-                
                     //Update Users
                     AspNetUser objUser = db.AspNetUsers.Find(model.Id);
                     objUser.Email = model.Email;
@@ -507,7 +507,10 @@ namespace HRPortal.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            //loginVM.UserLogs(false, User.Identity.Name, HttpRuntime.Cache.Get(CacheKey.UserName.ToString()).ToString());//TODO:disabed the feature temporarily
+            if (System.Configuration.ConfigurationManager.AppSettings["IsUserLogEnable"] == "true")
+            {
+                loginVM.UserLogs(false, User.Identity.Name, "Log Off");
+            }
             return RedirectToAction("Login");
         }
 
@@ -561,18 +564,6 @@ namespace HRPortal.Controllers
 
             base.Dispose(disposing);
         }
-
-        #region "Roles"
-        /// <summary>
-        /// Get User Role
-        /// </summary>
-        /// <returns></returns>
-        public bool IsAdmin(string email)
-        {
-            var isAdmin = db.AspNetUsers.FirstOrDefault(u => u.Email == email).ToString().Count();
-            return isAdmin>0?true:false;
-        }
-        #endregion
 
         #region Helpers
         // Used for XSRF protection when adding external logins

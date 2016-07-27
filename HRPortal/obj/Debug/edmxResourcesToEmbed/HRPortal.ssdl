@@ -63,7 +63,7 @@
     <Property Name="AccessFailedCount" Type="int" Nullable="false" />
     <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
     <Property Name="Vendor_Id" Type="uniqueidentifier" />
-    <Property Name="IsAdmin" Type="bit" />
+    <Property Name="IsActive" Type="bit" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
     <Property Name="CreatedOn" Type="datetime" />
   </EntityType>
@@ -339,7 +339,7 @@
     <Parameter Name="Partner" Type="nvarchar" Mode="In" />
     <Parameter Name="StartDate" Type="nvarchar" Mode="In" />
     <Parameter Name="EndDate" Type="nvarchar" Mode="In" />
-    <Parameter Name="flag" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="nvarchar" Mode="In" />
   </Function>
   <EntityContainer Name="HRPortalModelStoreContainer">
     <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />

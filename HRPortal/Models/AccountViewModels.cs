@@ -103,6 +103,7 @@ namespace HRPortal.Models
             CookieStore.SetCookie(CacheKey.VendorId.ToString(), user.Vendor_Id.Value.ToString(), TimeSpan.FromDays(cookieTimeout));
             CookieStore.SetCookie(CacheKey.RoleName.ToString(), rolename, TimeSpan.FromDays(cookieTimeout));
             CookieStore.SetCookie(CacheKey.UserName.ToString(), user.FirstName + " " + user.LastName, TimeSpan.FromDays(cookieTimeout));
+            
         }
         
         /// <summary>
@@ -124,21 +125,26 @@ namespace HRPortal.Models
                 ulog.UserLogName = username;
                 ulog.LoggedInBy = email;// HttpRuntime.Cache.Get("LogInEmail") != null ? HttpRuntime.Cache.Get("LogInEmail").ToString() : string.Empty;
                 ulog.LoggedInOn = DateTime.Now;
-                ulog.UserLogDesc = "Computer Name is-" + Dns.GetHostEntry(HttpContext.Current.Request.UserHostAddress).HostName;
+                ulog.UserLogDesc = "Logged In";// "Computer Name is-" + Dns.GetHostEntry(HttpContext.Current.Request.UserHostAddress).HostName;
                 ulog.IsOnline = true;
-                ulog.UserIP = GetLocalIPAddress();// System.Net.Dns.GetHostName();
+                ulog.UserIP =  GetLocalIPAddress();// System.Net.Dns.GetHostName();
                 db.UserLogs.Add(ulog);
+                db.SaveChanges();
+                int cookieTimeout = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["CookieTimeOutInDays"]);
+                CookieStore.SetCookie(CacheKey.LoginId.ToString(), ulog.UserLogId.ToString(), TimeSpan.FromDays(cookieTimeout));
             }
             else {
-                ulog = db.UserLogs.Where(u => u.LoggedInBy == email && u.IsOnline == true).FirstOrDefault();
+                int lid = (string.IsNullOrEmpty(CookieStore.GetCookie(CacheKey.LoginId.ToString()))?0: Convert.ToInt32(CookieStore.GetCookie(CacheKey.LoginId.ToString())));
+                ulog = db.UserLogs.Where(u => u.IsOnline == true && u.UserLogId == lid).FirstOrDefault();
                 if (ulog != null)
                 {
                     ulog.LoggedOutOn = DateTime.Now;
+                    ulog.UserLogDesc = username;
                     ulog.IsOnline = false;
                     db.Entry(ulog).State = EntityState.Modified;
+                    db.SaveChanges();
                 }
             }
-            db.SaveChanges();
         }
 
         public static string GetLocalIPAddress()

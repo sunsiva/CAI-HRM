@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HRPortal.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,6 +20,18 @@ namespace HRPortal
             if (System.Configuration.ConfigurationManager.AppSettings["IsServerEnv"] == "true") { 
             GlobalFilters.Filters.Add(new RequireHttpsAttribute());
             }
+        }
+
+       protected void Session_Start(object sender, EventArgs e)
+        {
+            // Code that runs when a new session is started
+            Session.Timeout = 1440;
+        }
+
+        protected void Session_End(object sender, EventArgs e)
+        {
+            LoginViewModel loginVM = new LoginViewModel();
+            loginVM.UserLogs(false, HttpContext.Current.User.Identity.Name, "Session Timeout");
         }
     }
 }

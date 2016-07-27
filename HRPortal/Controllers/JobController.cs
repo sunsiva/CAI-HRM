@@ -72,20 +72,32 @@ namespace HRPortal.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file)
         {
-            try { 
-            if (ModelState.IsValid)
-            {
-                jOBPOSTING.JOB_ID = Guid.NewGuid();
-                jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
-                jOBPOSTING.ISACTIVE = true;
+            try
+            { 
+                if (ModelState.IsValid)
+                {
+                    jOBPOSTING.JOB_ID = Guid.NewGuid();
+                    jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
+                    jOBPOSTING.ISACTIVE = true;
                     jOBPOSTING.JD_FILE_PATH = FileUpload(file);
                     jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                jOBPOSTING.CREATED_ON = DateTime.Now;
-                dbContext.JOBPOSTINGs.Add(jOBPOSTING);
-                await dbContext.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(jOBPOSTING);
+                    jOBPOSTING.CREATED_ON = DateTime.Now;
+                    dbContext.JOBPOSTINGs.Add(jOBPOSTING);
+                    await dbContext.SaveChangesAsync();
+
+                    if (System.Configuration.ConfigurationManager.AppSettings["IsMailForNewJob"] == "true")
+                    {
+                        AppointmentViewModels avm = new AppointmentViewModels();
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            string filename = Path.GetFileName(file.FileName);
+                            jOBPOSTING.JD_FILE_PATH = Path.Combine(Server.MapPath("~/UploadDocument"), filename);
+                        }
+                        await avm.sendMailForNewJob(jOBPOSTING);
+                    }
+                    return RedirectToAction("Index");
+                }
+                return View(jOBPOSTING);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -265,13 +277,16 @@ namespace HRPortal.Controllers
 
             if (jobCanObj != null && jobCanObj.Count > 0)
             {
-                ViewBag.JCodeSort = string.IsNullOrEmpty(sOdr) ? "JCode_desc" : "";
+                ViewBag.JCodeSort = sOdr == "JCode_asc" ? "JCode_desc" : "JCode_asc";
                 ViewBag.PosSort = sOdr == "Pos_desc" ? "Pos_asc" : "Pos_desc";
                 ViewBag.CustSort = sOdr == "Cust_desc" ? "Cust_asc" : "Cust_desc";
                 switch (sOdr)
                 {
                     case "JCode_desc":
                         jobCanObj = jobCanObj.OrderByDescending(s => s.JOB_CODE).ToList();
+                        break;
+                    case "JCode_asc":
+                        jobCanObj = jobCanObj.OrderBy(s => s.JOB_CODE).ToList();
                         break;
                     case "Pos_desc":
                         jobCanObj = jobCanObj.OrderByDescending(s => s.POSITION_NAME).ToList();
@@ -286,7 +301,7 @@ namespace HRPortal.Controllers
                         jobCanObj = jobCanObj.OrderBy(s => s.CUSTOMER_NAME).ToList();
                         break;
                     default:
-                        jobCanObj = jobCanObj.OrderBy(s => s.JOB_CODE).ToList();
+                        jobCanObj = jobCanObj.OrderByDescending(s => s.CREATED_ON).ToList();
                         break;
                 }
             }
@@ -295,8 +310,7 @@ namespace HRPortal.Controllers
             ViewBag.PageNo = (page ?? 1);
             return jobCanObj;
         }
-
-
+        
         private string FileUpload(HttpPostedFileBase file)
         {
             string filename = string.Empty;
@@ -319,8 +333,7 @@ namespace HRPortal.Controllers
             }
             return filename;
         }
-
-
+        
         protected override void OnException(ExceptionContext filterContext)
         {
             Exception e = filterContext.Exception;

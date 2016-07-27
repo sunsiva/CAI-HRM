@@ -5,7 +5,6 @@
     <EntitySet Name="AspNetRoles" EntityType="HRPortalModel.AspNetRole" />
     <EntitySet Name="AspNetUserClaims" EntityType="HRPortalModel.AspNetUserClaim" />
     <EntitySet Name="AspNetUserLogins" EntityType="HRPortalModel.AspNetUserLogin" />
-    <EntitySet Name="AspNetUsers" EntityType="HRPortalModel.AspNetUser" />
     <EntitySet Name="CANDIDATES" EntityType="HRPortalModel.CANDIDATE" />
     <EntitySet Name="ERROR_LOG" EntityType="HRPortalModel.ERROR_LOG" />
     <EntitySet Name="EVENTSCHEDULEs" EntityType="HRPortalModel.EVENTSCHEDULE" />
@@ -17,14 +16,6 @@
     <EntitySet Name="UserLogs" EntityType="HRPortalModel.UserLog" />
     <EntitySet Name="UserXRoles" EntityType="HRPortalModel.UserXRole" />
     <EntitySet Name="VENDOR_MASTER" EntityType="HRPortalModel.VENDOR_MASTER" />
-    <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-      <End Role="AspNetUser" EntitySet="AspNetUsers" />
-      <End Role="AspNetUserClaim" EntitySet="AspNetUserClaims" />
-    </AssociationSet>
-    <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-      <End Role="AspNetUser" EntitySet="AspNetUsers" />
-      <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
-    </AssociationSet>
     <AssociationSet Name="FK_CANDIDATES_JOBPOSTING" Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING">
       <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
       <End Role="CANDIDATE" EntitySet="CANDIDATES" />
@@ -37,14 +28,6 @@
       <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
       <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
     </AssociationSet>
-    <AssociationSet Name="AspNetUserRoles" Association="HRPortalModel.AspNetUserRoles">
-      <End Role="AspNetRole" EntitySet="AspNetRoles" />
-      <End Role="AspNetUser" EntitySet="AspNetUsers" />
-    </AssociationSet>
-    <FunctionImport Name="funcSplitValue" IsComposable="true" ReturnType="Collection(String)">
-      <Parameter Name="SplitOn" Mode="In" Type="String" />
-      <Parameter Name="List" Mode="In" Type="String" />
-    </FunctionImport>
     <FunctionImport Name="getSearchResults" ReturnType="Collection(HRPortalModel.getSearchResults_Result)">
       <Parameter Name="PositionName" Mode="In" Type="String" />
       <Parameter Name="CandidateName" Mode="In" Type="String" />
@@ -54,6 +37,19 @@
       <Parameter Name="EndDate" Mode="In" Type="String" />
       <Parameter Name="flag" Mode="In" Type="String" />
     </FunctionImport>
+    <EntitySet Name="AspNetUsers" EntityType="HRPortalModel.AspNetUser" />
+    <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserClaim" EntitySet="AspNetUserClaims" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
+    </AssociationSet>
+    <AssociationSet Name="AspNetUserRoles" Association="HRPortalModel.AspNetUserRoles">
+      <End Role="AspNetRole" EntitySet="AspNetRoles" />
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="C__MigrationHistory">
     <Key>
@@ -94,32 +90,6 @@
     <Property Name="ProviderKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="AspNetUser" Relationship="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogin" ToRole="AspNetUser" />
-  </EntityType>
-  <EntityType Name="AspNetUser">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
-    <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
-    <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
-    <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
-    <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
-    <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
-    <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
-    <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
-    <Property Name="Vendor_Id" Type="Guid" />
-    <Property Name="IsAdmin" Type="Boolean" />
-    <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="CreatedOn" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="AspNetUserClaims" Relationship="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserClaim" />
-    <NavigationProperty Name="AspNetUserLogins" Relationship="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
-    <NavigationProperty Name="AspNetRole" Relationship="HRPortalModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
   </EntityType>
   <EntityType Name="CANDIDATE">
     <Key>
@@ -304,34 +274,6 @@
     <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
   </EntityType>
-  <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="HRPortalModel.AspNetUserClaim" Role="AspNetUserClaim" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetUser">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AspNetUserClaim">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="HRPortalModel.AspNetUserLogin" Role="AspNetUserLogin" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetUser">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AspNetUserLogin">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_CANDIDATES_JOBPOSTING">
     <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
     <End Type="HRPortalModel.CANDIDATE" Role="CANDIDATE" Multiplicity="*" />
@@ -368,10 +310,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="AspNetUserRoles">
-    <End Type="HRPortalModel.AspNetRole" Role="AspNetRole" Multiplicity="0..1" />
-    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
-  </Association>
   <ComplexType Name="getSearchResults_Result">
     <Property Type="Guid" Name="CANDIDATE_ID" Nullable="false" />
     <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
@@ -382,6 +320,7 @@
     <Property Type="String" Name="NOTICE_PERIOD" Nullable="false" MaxLength="50" />
     <Property Type="Decimal" Name="YEARS_OF_EXP_TOTAL" Nullable="false" Precision="18" Scale="2" />
     <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" Precision="23" />
+    <Property Type="String" Name="CURRENT_COMPANY" Nullable="false" MaxLength="150" />
     <Property Type="String" Name="VENDOR_NAME" Nullable="true" MaxLength="50" />
     <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
     <Property Type="String" Name="STATUS_ID" Nullable="true" MaxLength="50" />
@@ -389,4 +328,62 @@
     <Property Type="DateTime" Name="MODIFIED_ON" Nullable="true" Precision="23" />
     <Property Type="String" Name="MODIFIED_BY" Nullable="true" MaxLength="100" />
   </ComplexType>
+  <EntityType Name="AspNetUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+    <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Vendor_Id" Type="Guid" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="AspNetUserClaims" Relationship="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserClaim" />
+    <NavigationProperty Name="AspNetUserLogins" Relationship="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
+    <NavigationProperty Name="AspNetRole" Relationship="HRPortalModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
+  </EntityType>
+  <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="HRPortalModel.AspNetUserClaim" Role="AspNetUserClaim" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserClaim">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="HRPortalModel.AspNetUserLogin" Role="AspNetUserLogin" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserLogin">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AspNetUserRoles">
+    <End Type="HRPortalModel.AspNetRole" Role="AspNetRole" Multiplicity="0..1" />
+    <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+  </Association>
 </Schema>

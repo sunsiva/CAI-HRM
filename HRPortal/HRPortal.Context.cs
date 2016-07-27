@@ -31,7 +31,6 @@ namespace HRPortal
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
-        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<CANDIDATE> CANDIDATES { get; set; }
         public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
         public virtual DbSet<EVENTSCHEDULE> EVENTSCHEDULEs { get; set; }
@@ -43,6 +42,7 @@ namespace HRPortal
         public virtual DbSet<UserLog> UserLogs { get; set; }
         public virtual DbSet<UserXRole> UserXRoles { get; set; }
         public virtual DbSet<VENDOR_MASTER> VENDOR_MASTER { get; set; }
+        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
     
         public virtual ObjectResult<getSearchResults_Result> getSearchResults(string positionName, string candidateName, string statusIds, string partner, string startDate, string endDate, string flag)
         {

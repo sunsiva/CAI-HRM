@@ -1,6 +1,5 @@
 ﻿@model HRPortal.Models.JobAndCandidateViewModels
 @using HRPortal.Helper;
-
 @{
     ViewBag.Title = "Home Page";
     bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
@@ -9,15 +8,19 @@
 <div class="row">
     <div class="col-md-4">
         <br />
-        @if (isSuperAdmin)
-        {
-            @Html.Partial("_SearchCriteria")
-            @*@Html.DropDownListFor(m => m.ddlStatusId, new SelectList(Model.StatusList, "Value", "Text"), "-- Select a Status --", new { @class = "form-control", style = "width: 250px;", onchange = "this.form.submit();" })*@
-            @Html.Partial("_CandidateList", Model.CandidateItems)
-        }
-        else {
-            @Html.Partial("_SearchCriteria")
-            @Html.Partial("_JobList", Model.JobItems)
+        
+        @if(User.Identity.IsAuthenticated)
+        { 
+            if (isSuperAdmin)
+            {
+                @Html.Partial("_SearchCriteria")
+                @*@Html.DropDownListFor(m => m.ddlStatusId, new SelectList(Model.StatusList, "Value", "Text"), "-- Select a Status --", new { @class = "form-control", style = "width: 250px;", onchange = "this.form.submit();" })*@
+                @Html.Partial("_CandidateList", Model.CandidateItems)
+            }
+            else {
+                @Html.Partial("_SearchCriteria")
+                @Html.Partial("_JobList", Model.JobItems)
+            }
         }
     </div>
 </div>
@@ -33,13 +36,13 @@
 <script lang="ja" type="text/javascript">
     $(document).ready(function () {
         $('.date-picker').datetimepicker({
-            format: 'DD/MM/YYYY'
+            format: 'DD/MM/YYYY' // This format is for SP
         });
 
         $('.job-date-picker').datetimepicker({
             format: 'MM/DD/YYYY'
         });
-        
+
         $('#ddlCriteriaVendor').multiselect(
             {
                 includeSelectAllOption: true,
@@ -73,6 +76,7 @@
             $("#ddlCriteriaPosition").multiselect("clearSelection");
             $("#ddlStatusSearchList").multiselect("clearSelection");
             $("#txtCriteriaStDate").val(''); $("#txtCriteriaEndDate").val('');
+            $("#spnFilter").removeClass('show').addClass('hide');
             $.get("/Home/ClearSearch", { id: "CAN" },
                 function (data) {
                     $("#CandidatesPartial").html(data);
@@ -82,6 +86,7 @@
         $('#btnClearSearchJ').click(function () {
             $("#txtPositionName").val('');
             $("#txtPublishedStDate").val(''); $("#txtPublishedEndDate").val('');
+            $("#spnFilter").removeClass('show').addClass('hide');
             $.get("/Home/ClearSearch", { id: "JOB" },
                 function (data) {
                     $("#JobDetailsPartial").html(data);
@@ -126,18 +131,25 @@
             , status = $("#ddlStatusSearchList").val() == null ? "" : $("#ddlStatusSearchList").val().join(',');
             $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
                 $("#CandidatesPartial").html(data);
+                $("#spnFilter").removeClass('hide').addClass('show');
             });
         });
 
-        $("#btnSearchCriteriaJob").click(function () {  
+        $("#btnSearchCriteriaJob").click(function () {
             $.get("/Home/SearchCriteria", { name: $("#txtPositionName").val(), vendor: "", status: "", stdt: $("#txtPublishedStDate").val(), edt: $("#txtPublishedEndDate").val() }, function (data) {
                 $("#JobDetailsPartial").html(data);
+                $("#spnFilter").removeClass('hide').addClass('show');
             });
         });
 
         //BEGIN: Job Search: Set the cookie value to criteria controls back whenever the page gets loaded
         var srcJob = $.cookie('JobSearchHome');
-        srcJob = srcJob.split('|');
+        if (srcJob && srcJob.replace('|||||', ''))
+            $("#spnFilter").removeClass('hide').addClass('show');
+        else
+            $("#spnFilter").removeClass('show').addClass('hide');
+
+        srcJob = srcJob ? srcJob.split('|') : "";
         var srcPName = srcJob[0], srcPSDt = srcJob[1], srcPEDt = srcJob[2];
         $("#txtPositionName").val(srcPName);
         $("#txtPublishedStDate").val(srcPSDt);
@@ -146,24 +158,29 @@
 
         //BEGIN: Candidate Search: Set the cookie value to criteria controls back whenever the page gets loaded
         var src = $.cookie('CANSearchHome');
-        src = src.split('|');
+        if (src && src.replace('|||||', ''))
+            $("#spnFilter").removeClass('hide').addClass('show');
+        else
+            $("#spnFilter").removeClass('show').addClass('hide');
+
+        src = src && src.replace('|||||', '') ? src.split('|') : '';
         var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5];
         $("#txtCriteriaCanName").val(srcName);
         $("#txtCriteriaStDate").val(srcStDt);
         $("#txtCriteriaEndDate").val(srcEnDt);
 
         //SetPosition
-        var arrPosition = srcPosition.split(",");
+        var arrPosition = srcPosition ? srcPosition.split(",") : "";
         $("#ddlCriteriaPosition").val(arrPosition);// Set the value
         $("#ddlCriteriaPosition").multiselect("refresh");
 
         //SetPartner
-        var arrPartner = srcPartner.split(",");
+        var arrPartner = srcPartner ? srcPartner.split(",") : "";
         $("#ddlCriteriaVendor").val(arrPartner);// Set the value
         $("#ddlCriteriaVendor").multiselect("refresh");
 
         //SetStatus
-        var arrStatus = srcStatus.split(",");
+        var arrStatus = srcStatus ? srcStatus.split(",") : "";
         $("#ddlStatusSearchList").val(arrStatus);// Set the value
         $("#ddlStatusSearchList").multiselect("refresh");
         //END: Set the cookie value to criteria controls back whenever the page gets loaded

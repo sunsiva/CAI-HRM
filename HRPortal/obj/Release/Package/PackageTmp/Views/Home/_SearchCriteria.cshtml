@@ -8,7 +8,9 @@
             <div class="panel-heading">
                 <h4 class="panel-title">
                     Search Criteria : <span data-toggle="collapse" href="#collapse1" id="CollapseMe" class="glyphicon glyphicon-triangle-bottom"></span>
+                    <span align="center" class="text-success" id="spnFilter">Filters applied</span>
                 </h4>
+                
             </div>
             <div id="collapse1" class="panel-collapse collapse form-horizontal table">
                 <div class="form-group">
@@ -25,7 +27,7 @@
                                 @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, new { multiple = "multiple" })<br /><br />
                                 <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
                                 <input type="text" id="txtCriteriaEndDate" class="date-picker" placeholder="Uploaded End Date" />
-                                <a class="btn btn-danger btn-xs" id="btnSearchCriteria">
+                                <a class="btn btn-danger btn-xs" id="btnSearchCriteria">Search 
                                     <span class="glyphicon glyphicon-search"></span>
                                 </a>
                                 <a class="btn btn-danger btn-xs" id="btnClearSearchC">Clear Filters</a>
@@ -34,9 +36,9 @@
                             else {
                             <div id="srchJobs">
                                 <input type="text" id="txtPositionName" placeholder="Position Name" />
-                                <input type="text" id="txtPublishedStDate" class="date-picker" placeholder="Published Start Date" />
-                                <input type="text" id="txtPublishedEndDate" class="date-picker" placeholder="Published End Date" />
-                                <a class="btn btn-danger btn-xs" id="btnSearchCriteriaJob">
+                                <input type="text" id="txtPublishedStDate" class="job-date-picker" placeholder="Published Start Date" />
+                                <input type="text" id="txtPublishedEndDate" class="job-date-picker" placeholder="Published End Date" />
+                                <a class="btn btn-danger btn-xs" id="btnSearchCriteriaJob"> Search
                                     <span class="glyphicon glyphicon-search"></span>
                                 </a>
                                 <a class="btn btn-danger btn-xs" id="btnClearSearchJ">Clear Filters</a>

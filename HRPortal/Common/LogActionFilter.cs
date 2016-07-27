@@ -1,4 +1,5 @@
 ﻿using HRPortal.Helper;
+using HRPortal.Models;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Diagnostics;
@@ -9,12 +10,17 @@ using System.Web.Routing;
 namespace HRPortal.Common
 {
     public class LogActionFilter : ActionFilterAttribute
-
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (!HttpContext.Current.User.Identity.IsAuthenticated || string.IsNullOrEmpty(CookieStore.GetCookie(CacheKey.Uid.ToString())))
             {
+                if (System.Configuration.ConfigurationManager.AppSettings["IsUserLogEnable"] == "true")
+                {
+                    LoginViewModel loginVM = new LoginViewModel();
+                    loginVM.UserLogs(false, HttpContext.Current.User.Identity.Name, "Session Timeout");
+                }
+
                 filterContext.Result = new RedirectToRouteResult(
                 new RouteValueDictionary
                     {{"controller", "Account"}, {"action", "Login"}});

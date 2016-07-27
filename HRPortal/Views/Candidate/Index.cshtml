@@ -75,6 +75,7 @@
                 , status = $("#ddlStatusSearchList").val() == null ? "" : $("#ddlStatusSearchList").val().join(',');
                 $.get("/Candidate/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
                     $("#CandidatesPartial").html(data);
+                    $("#spnFilter").removeClass('hide').addClass('show');
                 });
             });
 
@@ -105,7 +106,8 @@
             $("#txtCriteriaStDate").val('');$("#txtCriteriaEndDate").val('');
             $.get("/Candidate/ClearSearch",
                 function (data) {
-                $("#CandidatesPartial").html(data);
+                    $("#CandidatesPartial").html(data);
+                    $("#spnFilter").removeClass('show').addClass('hide');
             });
         });
 
@@ -144,27 +146,35 @@
 
             //BEGIN: Set the cookie value to criteria controls back whenever the page gets loaded
         var src = $.cookie('CANSearch');
-        src = src.split('|');
-        var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5];
-        $("#txtCriteriaCanName").val(srcName);
-        $("#txtCriteriaStDate").val(srcStDt);
-        $("#txtCriteriaEndDate").val(srcEnDt);
+        src = src ? src.replace('|||||', '') : '';
+        if (src) {
+            src = src.split('|');
+            $("#spnFilter").removeClass('hide').addClass('show');
+
+            var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5];
+            $("#txtCriteriaCanName").val(srcName);
+            $("#txtCriteriaStDate").val(srcStDt);
+            $("#txtCriteriaEndDate").val(srcEnDt);
 
             //SetPosition
-        var arrPosition = srcPosition.split(",");
-        $("#ddlCriteriaPosition").val(arrPosition);// Set the value
-        $("#ddlCriteriaPosition").multiselect("refresh");
+            var arrPosition = srcPosition && srcPosition.split(",");
+            $("#ddlCriteriaPosition").val(arrPosition);// Set the value
+            $("#ddlCriteriaPosition").multiselect("refresh");
 
             //SetPartner
-        var arrPartner = srcPartner.split(",");
-        $("#ddlCriteriaVendor").val(arrPartner);// Set the value
-        $("#ddlCriteriaVendor").multiselect("refresh");
+            var arrPartner = srcPartner && srcPartner.split(",");
+            $("#ddlCriteriaVendor").val(arrPartner);// Set the value
+            $("#ddlCriteriaVendor").multiselect("refresh");
 
             //SetStatus
-        var arrStatus = srcStatus.split(",");
-        $("#ddlStatusSearchList").val(arrStatus);// Set the value
-        $("#ddlStatusSearchList").multiselect("refresh");
+            var arrStatus = srcStatus && srcStatus.split(",");
+            $("#ddlStatusSearchList").val(arrStatus);// Set the value
+            $("#ddlStatusSearchList").multiselect("refresh");
             //END: Set the cookie value to criteria controls back whenever the page gets loaded
+        }
+        else {
+            $("#spnFilter").removeClass('show').addClass('hide');
+        }
 
     });
     </script>

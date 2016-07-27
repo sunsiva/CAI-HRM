@@ -63,7 +63,7 @@
     <Property Name="AccessFailedCount" Type="int" Nullable="false" />
     <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
     <Property Name="Vendor_Id" Type="uniqueidentifier" />
-    <Property Name="IsAdmin" Type="bit" />
+    <Property Name="IsActive" Type="bit" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
     <Property Name="CreatedOn" Type="datetime" />
   </EntityType>
@@ -332,25 +332,14 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Function Name="funcSplitValue" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-    <Parameter Name="SplitOn" Type="char" Mode="In" />
-    <Parameter Name="List" Type="varchar" Mode="In" />
-    <ReturnType>
-      <CollectionType>
-        <RowType>
-          <Property Name="ListValue" Type="varchar" MaxLength="500" />
-        </RowType>
-      </CollectionType>
-    </ReturnType>
-  </Function>
   <Function Name="getSearchResults" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-    <Parameter Name="PositionName" Type="nvarchar" Mode="In" />
+    <Parameter Name="PositionName" Type="nvarchar(max)" Mode="In" />
     <Parameter Name="CandidateName" Type="nvarchar" Mode="In" />
     <Parameter Name="StatusIds" Type="nvarchar(max)" Mode="In" />
     <Parameter Name="Partner" Type="nvarchar" Mode="In" />
     <Parameter Name="StartDate" Type="nvarchar" Mode="In" />
     <Parameter Name="EndDate" Type="nvarchar" Mode="In" />
-    <Parameter Name="flag" Type="varchar" Mode="In" />
+    <Parameter Name="flag" Type="nvarchar" Mode="In" />
   </Function>
   <EntityContainer Name="HRPortalModelStoreContainer">
     <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />

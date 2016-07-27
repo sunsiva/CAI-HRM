@@ -327,7 +327,7 @@ namespace HRPortal.Controllers
 
         public ActionResult UserList()
         {
-            return View(dbContext.AspNetUsers.ToList());
+            return View(dbContext.AspNetUsers.Where(u => u.IsActive == true).ToList());
         }
 
         // POST: USer/Edit/5
