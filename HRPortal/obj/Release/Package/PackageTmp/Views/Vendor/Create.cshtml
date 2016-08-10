@@ -48,48 +48,16 @@
                 @Html.ValidationMessageFor(model => model.VENDOR_CONTACT_NO, "", new { @class = "text-danger" })
             </div>
         </div>
-
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.ISACTIVE, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.ISACTIVE)
-                    @Html.ValidationMessageFor(model => model.ISACTIVE, "", new { @class = "text-danger" })
+        <div class="form-group form-group-required hide">
+            @Html.Label("PARTNER TYPE", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        <span><input type="radio" id="rdoTypeB" name="PartnerType" checked="checked" value="B" />Both</span>
+                        <span><input type="radio" id="rdoTypeP" name="PartnerType" value="P" />Permanent</span>
+                        <span><input type="radio" id="rdoTypeC" name="PartnerType" value="C" />Contract</span>
+                    </div>
                 </div>
-            </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.MODIFIED_BY, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.MODIFIED_BY, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.MODIFIED_BY, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.MODIFIED_ON, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.MODIFIED_ON, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.MODIFIED_ON, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CREATED_BY, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CREATED_BY, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CREATED_BY, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CREATED_ON, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CREATED_ON, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CREATED_ON, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

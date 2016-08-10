@@ -121,6 +121,16 @@ namespace HRPortal.Models
         }
 
         /// <summary>
+        /// Get the list of active vendors with IDs
+        /// </summary>
+        /// <returns></returns>
+        public SelectList GetVendorListWithIDs()
+        {
+            var sts = dbContext.VENDOR_MASTER.Where(i => i.ISACTIVE == true).Select(s => new { s.VENDOR_ID, s.VENDOR_NAME }).OrderBy(v => v.VENDOR_NAME).ToList();
+            return new SelectList(sts.AsEnumerable(), "VENDOR_ID", "VENDOR_NAME", 1);
+        }
+
+        /// <summary>
         /// Get the list of all the active positions
         /// </summary>
         /// <returns></returns>

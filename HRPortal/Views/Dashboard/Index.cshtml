@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
+ }
 <link href="~/Content/font-awesome.css" rel="stylesheet" />
 <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
 <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
@@ -139,9 +139,9 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a href="#">
-                            <span data-toggle="collapse" href="#collapse1" id="CollapseMe" class="glyphicon glyphicon-plus"></span> Filters
-                            </a>
-</h4>
+                            <span data-toggle="collapse" href="#collapse1" id="CollapseMe" class="glyphicon glyphicon-plus"></span> 
+                            </a>Filters
+                    </h4>
                 </div>
                 <div id="collapse1" class="panel-collapse collapse form-horizontal table">
                     <div class="form-group panel-body">
@@ -162,17 +162,49 @@
             </div>
         </div>
     </div>
+
+    <div id="reports">
+        <div class="panel-group" id="ReportPartial">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="#">
+                            <span data-toggle="collapse" href="#collapse2" id="CollapseRep" class="glyphicon glyphicon-plus"></span>
+                        </a>Report
+                    </h4>
+                </div>
+                <div id="collapse2" class="panel-collapse collapse form-horizontal table">
+                    <div class="form-group panel-body">
+                        <div class="col-md-11" align="center">
+                            <br />
+                            <div id="srchReportCriteria">
+                                @Html.DropDownList("ddlCriteriaVendor", (SelectList)ViewBag.VendorList, new { multiple = "multiple" }) <br />
+                                <input type="checkbox" id="chkScreenSub" checked value="Screening Submitted" /> Screening
+                                <input type="checkbox" id="chkR1" name="chkR1" checked value="Round1"> Round1
+                                <input type="checkbox" id="chkR2" checked value="Round2" /> Round2
+                                <input type="checkbox" id="chkR3" checked value="Round3" /> Round3 <br />
+                                Export To <a href="#" title="Export To Excel" id="btnExport" onclick="ExportToExcel()"> <img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     }
    
    <div class="">
-            <marquee class="text-danger" width=400 height=20> *View Details - is not functioning right now. Under progress.</marquee>
-        </div>
+        <marquee class="text-danger" width=400 height=20> *View Details - is not functioning right now. Under progress.</marquee>
+    </div>
     
 </div>
 
 @section Scripts {
     <script src="~/Scripts/moment.js"></script>
     <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
+
     <script lang="ja" type="text/javascript">
         $(document).ready(function () {
             $('.date-picker').datetimepicker({
@@ -180,7 +212,17 @@
             });
         });
         
+        $('#ddlCriteriaVendor').multiselect({
+            enableCaseInsensitiveFiltering: true,
+            nonSelectedText: '-- Select Partner --'
+        });
+
     $('#CollapseMe').click(function () {
+        $(this).hasClass('glyphicon-plus') ? $(this).removeClass('glyphicon-plus') && $(this).addClass('glyphicon-minus') : $(this).removeClass('glyphicon-minus')
+        && $(this).addClass('glyphicon-plus');
+    });
+
+    $('#CollapseRep').click(function () {
         $(this).hasClass('glyphicon-plus') ? $(this).removeClass('glyphicon-plus') && $(this).addClass('glyphicon-minus') : $(this).removeClass('glyphicon-minus')
         && $(this).addClass('glyphicon-plus');
     });
@@ -207,6 +249,10 @@
                     $("#dtJoined").text(data.ToT_Candidates_JOIN);
                     $("#dtRejected").text(data.ToT_Candidates_RJTD);
             });
+    };
+      
+    window.ExportToExcel = function () {
+        window.location = '/Dashboard/ExportToExcel?status=' + $("#chkScreenSub").is(':checked') + '&r1=' + $("#chkR1").is(':checked') + '&r2=' + $("#chkR2").is(':checked') + '&r3=' + $("#chkR3").is(':checked') + '&partner=' + $("#ddlCriteriaVendor").val();
     };
 
     </script>

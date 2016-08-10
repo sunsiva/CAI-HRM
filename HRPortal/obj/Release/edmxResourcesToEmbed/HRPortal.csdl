@@ -50,6 +50,29 @@
       <End Role="AspNetRole" EntitySet="AspNetRoles" />
       <End Role="AspNetUser" EntitySet="AspNetUsers" />
     </AssociationSet>
+    <EntitySet Name="JOBXVENDORs" EntityType="HRPortalModel.JOBXVENDOR" />
+    <AssociationSet Name="FK_JOBXVENDOR_VENDOR_MASTER" Association="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER">
+      <End Role="VENDOR_MASTER" EntitySet="VENDOR_MASTER" />
+      <End Role="JOBXVENDOR" EntitySet="JOBXVENDORs" />
+    </AssociationSet>
+    <FunctionImport Name="fnSplitString" IsComposable="true" ReturnType="Collection(String)">
+      <Parameter Name="string" Mode="In" Type="String" />
+      <Parameter Name="delimiter" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="rptGetCandidatesStaging" ReturnType="Collection(HRPortalModel.rptGetCandidatesStaging_Result)">
+      <Parameter Name="Status" Mode="In" Type="String" />
+      <Parameter Name="Round1" Mode="In" Type="Boolean" />
+      <Parameter Name="Round2" Mode="In" Type="Boolean" />
+      <Parameter Name="Round3" Mode="In" Type="Boolean" />
+      <Parameter Name="Partner" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="rptGetCandidatesStagingByPartner" ReturnType="Collection(HRPortalModel.rptGetCandidatesStagingByPartner_Result)">
+      <Parameter Name="Status" Mode="In" Type="String" />
+      <Parameter Name="Round1" Mode="In" Type="Boolean" />
+      <Parameter Name="Round2" Mode="In" Type="Boolean" />
+      <Parameter Name="Round3" Mode="In" Type="Boolean" />
+      <Parameter Name="Partner" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <EntityType Name="C__MigrationHistory">
     <Key>
@@ -206,6 +229,7 @@
     <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
     <NavigationProperty Name="CANDIDATES" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="JOBPOSTING" ToRole="CANDIDATE" />
     <NavigationProperty Name="JOB_HISTORY" Relationship="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOBPOSTING" ToRole="JOB_HISTORY" />
+    <Property Name="POSITION_TYPE" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
   </EntityType>
   <EntityType Name="STATUS_HISTORY">
     <Key>
@@ -273,6 +297,8 @@
     <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
     <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="VENDOR_TYPE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="JOBXVENDOR" Relationship="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER" FromRole="VENDOR_MASTER" ToRole="JOBXVENDOR" />
   </EntityType>
   <Association Name="FK_CANDIDATES_JOBPOSTING">
     <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
@@ -386,4 +412,39 @@
     <End Type="HRPortalModel.AspNetRole" Role="AspNetRole" Multiplicity="0..1" />
     <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
   </Association>
+  <EntityType Name="JOBXVENDOR">
+    <Key>
+      <PropertyRef Name="Vendor_Id" />
+    </Key>
+    <Property Name="Vendor_Id" Type="Guid" Nullable="false" />
+    <Property Name="Job_Id" Type="Guid" />
+    <NavigationProperty Name="VENDOR_MASTER" Relationship="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER" FromRole="JOBXVENDOR" ToRole="VENDOR_MASTER" />
+  </EntityType>
+  <Association Name="FK_JOBXVENDOR_VENDOR_MASTER">
+    <End Type="HRPortalModel.VENDOR_MASTER" Role="VENDOR_MASTER" Multiplicity="1" />
+    <End Type="HRPortalModel.JOBXVENDOR" Role="JOBXVENDOR" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="VENDOR_MASTER">
+        <PropertyRef Name="VENDOR_ID" />
+      </Principal>
+      <Dependent Role="JOBXVENDOR">
+        <PropertyRef Name="Vendor_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <ComplexType Name="rptGetCandidatesStaging_Result">
+    <Property Type="String" Name="POSITION_NAME" Nullable="false" MaxLength="50" />
+    <Property Type="Int32" Name="Round1" Nullable="true" />
+    <Property Type="Int32" Name="Round2" Nullable="true" />
+    <Property Type="Int32" Name="Round3" Nullable="true" />
+    <Property Type="Int32" Name="ScreeningSubmitted" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="rptGetCandidatesStagingByPartner_Result">
+    <Property Type="String" Name="POSITION_NAME" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="PARTNER" Nullable="false" MaxLength="50" />
+    <Property Type="Int32" Name="SCREENING" Nullable="true" />
+    <Property Type="Int32" Name="ROUND1" Nullable="true" />
+    <Property Type="Int32" Name="ROUND2" Nullable="true" />
+    <Property Type="Int32" Name="ROUND3" Nullable="true" />
+  </ComplexType>
 </Schema>

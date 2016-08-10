@@ -121,6 +121,7 @@ D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\antlr.runtime.d
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\Antlr3.Runtime.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\DDay.Collections.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\DDay.iCal.dll
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\DocumentFormat.OpenXml.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\EntityFramework.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\EntityFramework.SqlServer.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\GridMvc.dll

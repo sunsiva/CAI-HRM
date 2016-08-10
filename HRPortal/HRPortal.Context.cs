@@ -43,6 +43,7 @@ namespace HRPortal
         public virtual DbSet<UserXRole> UserXRoles { get; set; }
         public virtual DbSet<VENDOR_MASTER> VENDOR_MASTER { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public virtual DbSet<JOBXVENDOR> JOBXVENDORs { get; set; }
     
         public virtual ObjectResult<getSearchResults_Result> getSearchResults(string positionName, string candidateName, string statusIds, string partner, string startDate, string endDate, string flag)
         {
@@ -75,6 +76,70 @@ namespace HRPortal
                 new ObjectParameter("flag", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getSearchResults_Result>("getSearchResults", positionNameParameter, candidateNameParameter, statusIdsParameter, partnerParameter, startDateParameter, endDateParameter, flagParameter);
+        }
+    
+        [DbFunction("HRPortalEntities", "fnSplitString")]
+        public virtual IQueryable<string> fnSplitString(string @string, string delimiter)
+        {
+            var stringParameter = @string != null ?
+                new ObjectParameter("string", @string) :
+                new ObjectParameter("string", typeof(string));
+    
+            var delimiterParameter = delimiter != null ?
+                new ObjectParameter("delimiter", delimiter) :
+                new ObjectParameter("delimiter", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<string>("[HRPortalEntities].[fnSplitString](@string, @delimiter)", stringParameter, delimiterParameter);
+        }
+    
+        public virtual ObjectResult<rptGetCandidatesStaging_Result> rptGetCandidatesStaging(string status, Nullable<bool> round1, Nullable<bool> round2, Nullable<bool> round3, string partner)
+        {
+            var statusParameter = status != null ?
+                new ObjectParameter("Status", status) :
+                new ObjectParameter("Status", typeof(string));
+    
+            var round1Parameter = round1.HasValue ?
+                new ObjectParameter("Round1", round1) :
+                new ObjectParameter("Round1", typeof(bool));
+    
+            var round2Parameter = round2.HasValue ?
+                new ObjectParameter("Round2", round2) :
+                new ObjectParameter("Round2", typeof(bool));
+    
+            var round3Parameter = round3.HasValue ?
+                new ObjectParameter("Round3", round3) :
+                new ObjectParameter("Round3", typeof(bool));
+    
+            var partnerParameter = partner != null ?
+                new ObjectParameter("Partner", partner) :
+                new ObjectParameter("Partner", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<rptGetCandidatesStaging_Result>("rptGetCandidatesStaging", statusParameter, round1Parameter, round2Parameter, round3Parameter, partnerParameter);
+        }
+    
+        public virtual ObjectResult<rptGetCandidatesStagingByPartner_Result> rptGetCandidatesStagingByPartner(string status, Nullable<bool> round1, Nullable<bool> round2, Nullable<bool> round3, string partner)
+        {
+            var statusParameter = status != null ?
+                new ObjectParameter("Status", status) :
+                new ObjectParameter("Status", typeof(string));
+    
+            var round1Parameter = round1.HasValue ?
+                new ObjectParameter("Round1", round1) :
+                new ObjectParameter("Round1", typeof(bool));
+    
+            var round2Parameter = round2.HasValue ?
+                new ObjectParameter("Round2", round2) :
+                new ObjectParameter("Round2", typeof(bool));
+    
+            var round3Parameter = round3.HasValue ?
+                new ObjectParameter("Round3", round3) :
+                new ObjectParameter("Round3", typeof(bool));
+    
+            var partnerParameter = partner != null ?
+                new ObjectParameter("Partner", partner) :
+                new ObjectParameter("Partner", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<rptGetCandidatesStagingByPartner_Result>("rptGetCandidatesStagingByPartner", statusParameter, round1Parameter, round2Parameter, round3Parameter, partnerParameter);
         }
     }
 }

@@ -27,6 +27,8 @@
         <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="HRPortalModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="HRPortalModel.JOBXVENDOR" Width="1.5" PointX="5" PointY="15.625" />
+        <AssociationConnector Association="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

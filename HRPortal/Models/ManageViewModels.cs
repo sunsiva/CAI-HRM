@@ -110,6 +110,8 @@ namespace HRPortal.Models
         [StringLength(13, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
         public string VENDOR_CONTACT_NO { get; set; }
 
+        public string VENDOR_TYPE { get; set; }
+
         public bool ISACTIVE { get; set; }
         public string MODIFIED_BY { get; set; }
         public System.DateTime? MODIFIED_ON { get; set; }

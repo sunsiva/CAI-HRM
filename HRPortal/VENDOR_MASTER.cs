@@ -24,5 +24,8 @@ namespace HRPortal
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_ON { get; set; }
+        public string VENDOR_TYPE { get; set; }
+    
+        public virtual JOBXVENDOR JOBXVENDOR { get; set; }
     }
 }

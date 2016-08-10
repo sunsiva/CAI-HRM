@@ -136,6 +136,7 @@
     <EntitySetMapping Name="JOBPOSTINGs">
       <EntityTypeMapping TypeName="HRPortalModel.JOBPOSTING">
         <MappingFragment StoreEntitySet="JOBPOSTING">
+          <ScalarProperty Name="POSITION_TYPE" ColumnName="POSITION_TYPE" />
           <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
           <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
           <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
@@ -214,6 +215,7 @@
     <EntitySetMapping Name="VENDOR_MASTER">
       <EntityTypeMapping TypeName="HRPortalModel.VENDOR_MASTER">
         <MappingFragment StoreEntitySet="VENDOR_MASTER">
+          <ScalarProperty Name="VENDOR_TYPE" ColumnName="VENDOR_TYPE" />
           <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
           <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
           <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
@@ -282,5 +284,37 @@
       </EndProperty>
       <Condition ColumnName="RoleId" IsNull="false" />
     </AssociationSetMapping>
+    <EntitySetMapping Name="JOBXVENDORs">
+      <EntityTypeMapping TypeName="HRPortalModel.JOBXVENDOR">
+        <MappingFragment StoreEntitySet="JOBXVENDOR">
+          <ScalarProperty Name="Job_Id" ColumnName="Job_Id" />
+          <ScalarProperty Name="Vendor_Id" ColumnName="Vendor_Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="fnSplitString" FunctionName="HRPortalModel.Store.fnSplitString" />
+    <FunctionImportMapping FunctionImportName="rptGetCandidatesStaging" FunctionName="HRPortalModel.Store.rptGetCandidatesStaging">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesStaging_Result">
+          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+          <ScalarProperty Name="Round1" ColumnName="Round1" />
+          <ScalarProperty Name="Round2" ColumnName="Round2" />
+          <ScalarProperty Name="Round3" ColumnName="Round3" />
+          <ScalarProperty Name="ScreeningSubmitted" ColumnName="ScreeningSubmitted" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="rptGetCandidatesStagingByPartner" FunctionName="HRPortalModel.Store.rptGetCandidatesStagingByPartner">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesStagingByPartner_Result">
+          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+          <ScalarProperty Name="PARTNER" ColumnName="PARTNER" />
+          <ScalarProperty Name="SCREENING" ColumnName="SCREENING" />
+          <ScalarProperty Name="ROUND1" ColumnName="ROUND1" />
+          <ScalarProperty Name="ROUND2" ColumnName="ROUND2" />
+          <ScalarProperty Name="ROUND3" ColumnName="ROUND3" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
   </EntityContainerMapping>
 </Mapping>

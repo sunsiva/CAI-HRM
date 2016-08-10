@@ -42,6 +42,24 @@
                 <span align="right" id="errMsgNoOfVacan" class="text-danger"></span>
             </div>
         </div>
+        <div class="form-group form-group-required">
+            @Html.Label("PARTNER", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ddlVendorList", (SelectList)ViewBag.VendorList, new { multiple = "multiple" })
+                <span align="right" id="errMsgPartner" class="text-danger"></span>
+            </div>
+        </div>
+        
+        <div class="form-group form-group-required hide">
+            @Html.Label("POSITION TYPE", new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    <span><input type="radio" id="rdoTypeP" name="PositionType" checked="checked" value="P" />Permanent</span>
+                    <span><input type="radio" id="rdoTypeC" name="PositionType" value="C" />Contract</span>
+                    <span><input type="radio" id="rdoTypeB" name="PositionType" value="B" />Both</span>
+                </div>
+            </div>
+        </div>
 
         <div class="form-group form-group-required">
             @Html.LabelFor(model => model.CUSTOMER_NAME, "CUSTOMER NAME", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -108,13 +126,25 @@
 @Scripts.Render("~/bundles/jqueryval")
 <script src="~/Scripts/moment.js"></script>
 <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
 <script lang="ja" type="text/javascript">
     $(document).ready(function () {
         $("#btnJobCreate").click(function () {
             if ($("#NO_OF_VACANCIES").val() == "")
                 $("#errMsgNoOfVacan").text("This field is required.");
+            else if ($("#ddlVendorList").val() == null || $("#ddlVendorList").val() == "")
+                $("#errMsgPartner").text("This field is required.");
         });
 
+        $('#ddlVendorList').multiselect(
+            {
+                includeSelectAllOption: true,
+                enableCaseInsensitiveFiltering: true,
+                nonSelectedText: '--Select Partner--'
+            });
+        $("#ddlVendorList").multiselect('selectAll', false);
+        $("#ddlVendorList").multiselect('updateButtonText');
     });
 </script>
 }

@@ -134,7 +134,15 @@ namespace HRPortal.Models
                 string canName = (canLst == null ? string.Empty : canLst.CANDIDATE_NAME);
                 var job = dbContext.JOBPOSTINGs.Where(x => x.JOB_ID == canLst.JOB_ID).FirstOrDefault();
                 var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                var profOwner = dbContext.AspNetUsers.Where(x => x.Id == canLst.CREATED_BY).FirstOrDefault();
+                List<AspNetUser> lstUsrs = dbContext.AspNetUsers.ToList();
+                var profOwner = lstUsrs.Where(x => x.Id == canLst.CREATED_BY).FirstOrDefault();
+                var vid = lstUsrs.Where(u=>u.Id==profOwner.Id).Select(v=>v.Vendor_Id).FirstOrDefault().ToString();
+                var lstSuperuser = (from u in lstUsrs
+                                    join ur in dbContext.UserXRoles on Guid.Parse(u.Id) equals ur.UserId
+                                    join r in dbContext.AspNetRoles on ur.RoleId equals Guid.Parse(r.Id)
+                                    where (r.Name.ToUpper().Contains("SUPERUSER") && u.IsActive==true && u.Vendor_Id == Guid.Parse(vid)
+                                     && u.Email != profOwner.Email)
+                                    select u.Email).ToList();
 
                 string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
                 string bccs = System.Configuration.ConfigurationManager.AppSettings["BCCMailIdForMonitor"];
@@ -146,7 +154,10 @@ namespace HRPortal.Models
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, UserName);
                 message.To.Add(new MailAddress(profOwner.Email));
-                message.CC.Add(new MailAddress(HttpContext.Current.User.Identity.Name));
+
+                foreach (var item in lstSuperuser)
+                    message.CC.Add(new MailAddress(item));
+
                 string[] mailBccs = bccs.Split(',');
                 for (int i = 0; i < mailBccs.Length; i++)
                     message.Bcc.Add(new MailAddress(mailBccs[i]));
@@ -174,24 +185,27 @@ namespace HRPortal.Models
         /// </summary>
         /// <param name="canId"></param>
         /// <returns></returns>
-        public async Task<string> sendMailForNewJob(JOBPOSTING jobposting)
+        public async Task<string> sendMailForNewJob(JOBPOSTING jobposting, bool isNew, string[] lstPartner)
         {
-            ///No Email should go in "To Address" - all email should be on BCC.
+            //NOTE:- No Email should go in "To Address" - all email should be in BCC.
             try
             {
-                var mailBCCs = dbContext.AspNetUsers.Where(u => u.IsActive == true).Select(u => u.Email).ToList();
+                //var mailBCCs = dbContext.AspNetUsers.Where(u => u.IsActive == true).Select(u => u.Email).ToList();
+                var mailBCCs = (from u in dbContext.AspNetUsers
+                                where (lstPartner.Contains(u.Vendor_Id.ToString()))
+                                select (u.Email)).ToList();
+
                 string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
-                string strSubject = "HROps-New Job Posted - " + jobposting.POSITION_NAME;
-                string bodyHtml = "Hi, <br><br> A new position is posted with a job code <b>" + jobposting.JOB_CODE + " </b>. Below is the position detail, <br><br> <b>Position Name:</b> " + jobposting.POSITION_NAME +
+                string strSubject = isNew? "HROps-New Job Posted - ": "HROps-Job Modified - " + jobposting.POSITION_NAME;
+                string bodyHtml = "Hi, <br><br> A " + (isNew ? "new" : "modified")+" position is posted with a job code <b>" + jobposting.JOB_CODE + " </b>. Below is the position detail, <br><br> <b>Position Name:</b> " + jobposting.POSITION_NAME +
                     "</b><br><br><b>Position Description:</b> " + jobposting.JOB_DESCRIPTION + " <br> <br> <br> Regards,<br><b> Admin </b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
                 //===================================================================================
 
                 MailMessage message = new MailMessage();
-                
                 message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, "CAI Admin");
                 foreach (var item in mailBCCs)
                     message.Bcc.Add(new MailAddress(item));
-                //message.CC.Add(new MailAddress(HttpContext.Current.User.Identity.Name));
+
                 message.Subject = strSubject;
                 message.Body = bodyHtml;
 

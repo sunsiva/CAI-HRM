@@ -22,6 +22,7 @@ namespace HRPortal.Controllers
     public class JobController : Controller
     {
         private HRPortalEntities dbContext = new HRPortalEntities();
+        private CandidateViewModels vmodelCan = new CandidateViewModels();
         const int pageSize = 10;
 
         // GET: Job
@@ -61,6 +62,7 @@ namespace HRPortal.Controllers
         // GET: Job/Create
         public ActionResult Create()
         {
+            ViewBag.VendorList = vmodelCan.GetVendorListWithIDs();
             return View();
         }
 
@@ -70,51 +72,76 @@ namespace HRPortal.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file)
+        public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file,FormCollection frm)
         {
-            try
-            { 
-                if (ModelState.IsValid)
+            using (var dbContextTransaction = dbContext.Database.BeginTransaction())
+            {
+                try
                 {
-                    jOBPOSTING.JOB_ID = Guid.NewGuid();
-                    jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
-                    jOBPOSTING.ISACTIVE = true;
-                    jOBPOSTING.JD_FILE_PATH = FileUpload(file);
-                    jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                    jOBPOSTING.CREATED_ON = DateTime.Now;
-                    dbContext.JOBPOSTINGs.Add(jOBPOSTING);
-                    await dbContext.SaveChangesAsync();
-
-                    if (System.Configuration.ConfigurationManager.AppSettings["IsMailForNewJob"] == "true")
+                    if (ModelState.IsValid)
                     {
-                        AppointmentViewModels avm = new AppointmentViewModels();
-                        if (file != null && file.ContentLength > 0)
+
+                        jOBPOSTING.JOB_ID = Guid.NewGuid();
+                        jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
+                        jOBPOSTING.ISACTIVE = true;
+                        jOBPOSTING.JD_FILE_PATH = FileUpload(file);
+                        //jOBPOSTING.POSITION_TYPE = frm["PositionType"];
+                        jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
+                        jOBPOSTING.CREATED_ON = DateTime.Now;
+                        dbContext.JOBPOSTINGs.Add(jOBPOSTING);
+                        await dbContext.SaveChangesAsync();
+
+                        var lstOfVendor = frm["ddlVendorList"].Split(',');
+                        JOBXVENDOR jobxven;
+                        foreach (var item in lstOfVendor)
                         {
-                            string filename = Path.GetFileName(file.FileName);
-                            jOBPOSTING.JD_FILE_PATH = Path.Combine(Server.MapPath("~/UploadDocument"), filename);
+                            jobxven = new JOBXVENDOR();
+                            jobxven.Job_Id = jOBPOSTING.JOB_ID;
+                            jobxven.Vendor_Id = string.IsNullOrEmpty(item) ? Guid.Empty : new Guid(item);
+                            dbContext.JOBXVENDORs.Add(jobxven);
                         }
-                        await avm.sendMailForNewJob(jOBPOSTING);
+                        await dbContext.SaveChangesAsync();
+
+                        dbContextTransaction.Commit();
+
+                        if (System.Configuration.ConfigurationManager.AppSettings["IsMailForNewJob"] == "true")
+                        {
+                            AppointmentViewModels avm = new AppointmentViewModels();
+                            if (file != null && file.ContentLength > 0)
+                            {
+                                string filename = Path.GetFileName(file.FileName);
+                                jOBPOSTING.JD_FILE_PATH = Path.Combine(Server.MapPath("~/UploadDocument"), filename);
+                            }
+                            await avm.sendMailForNewJob(jOBPOSTING, true, lstOfVendor);
+                        }
+
+                        return RedirectToAction("Index");
                     }
-                    return RedirectToAction("Index");
+                    return View(jOBPOSTING);
                 }
-                return View(jOBPOSTING);
+                catch (Exception ex) {
+                    dbContextTransaction.Rollback();
+                    throw ex; }
             }
-            catch (Exception ex) { throw ex; }
         }
 
         // GET: Job/Edit/5
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Edit(Guid? id)
         {
+            ViewBag.VendorList = vmodelCan.GetVendorListWithIDs();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             JOBPOSTING jOBPOSTING = await dbContext.JOBPOSTINGs.FindAsync(id);
+            var lstVendor = string.Join(",", dbContext.JOBXVENDORs.Where(j => j.Job_Id == id).Select(v=>v.Vendor_Id));
+            jOBPOSTING.JD_SOURCE = lstVendor;
             if (jOBPOSTING == null)
             {
                 return HttpNotFound();
             }
+
             return View(jOBPOSTING);
         }
 
@@ -125,20 +152,63 @@ namespace HRPortal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_ON,CREATED_BY")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file, FormCollection frm)
         {
-            try { 
-            if (ModelState.IsValid)
+            using (var dbContextTransaction = dbContext.Database.BeginTransaction())
             {
-                    jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                    jOBPOSTING.MODIFIED_ON = DateTime.Now;
-                    jOBPOSTING.JD_FILE_PATH = (file == null ? frm["JD_FILE_PATH"] : FileUpload(file));
-                    dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
-                await dbContext.SaveChangesAsync();
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
+                        jOBPOSTING.MODIFIED_ON = DateTime.Now;
+                        jOBPOSTING.JD_FILE_PATH = (file == null ? frm["JD_FILE_PATH"] : FileUpload(file));
+                        //jOBPOSTING.POSITION_TYPE = frm["PositionType"];
+                        dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
+                        await dbContext.SaveChangesAsync();
 
-                return RedirectToAction("Index");
+                        var lstOfVendor = frm["ddlVendorList"].Split(',');
+                        JOBXVENDOR jobxven;
+
+                        //Delete old data for the same JOB to insert new Vendors mapping on the Job.
+                        var jobs = dbContext.JOBXVENDORs.Where(j => j.Job_Id == jOBPOSTING.JOB_ID).ToList();
+                        foreach(var v in jobs)
+                        { 
+                            dbContext.JOBXVENDORs.Remove(v);
+                        }
+                        await dbContext.SaveChangesAsync();
+
+                        foreach (var item in lstOfVendor)
+                        {
+                            jobxven = new JOBXVENDOR();
+                            jobxven.Job_Id = jOBPOSTING.JOB_ID;
+                            jobxven.Vendor_Id = string.IsNullOrEmpty(item) ? Guid.Empty : new Guid(item);
+                            dbContext.JOBXVENDORs.Add(jobxven);
+                        }
+                        await dbContext.SaveChangesAsync();
+
+                        dbContextTransaction.Commit();
+
+                        //if (System.Configuration.ConfigurationManager.AppSettings["IsMailForNewJob"] == "true")
+                        //{
+                        //    AppointmentViewModels avm = new AppointmentViewModels();
+                        //    if (file != null && file.ContentLength > 0)
+                        //    {
+                        //        string filename = Path.GetFileName(file.FileName);
+                        //        jOBPOSTING.JD_FILE_PATH = Path.Combine(Server.MapPath("~/UploadDocument"), filename);
+                        //    }
+                        //    await avm.sendMailForNewJob(jOBPOSTING, false);
+                        //}
+
+
+                        return RedirectToAction("Index");
+                    }
+                    return View(jOBPOSTING);
+                }
+                catch (Exception ex)
+                {
+                    dbContextTransaction.Rollback();
+                    throw ex;
+                }
             }
-            return View(jOBPOSTING);
-            }
-            catch (Exception ex) { throw ex; }
         }
 
         // GET: Job/Delete/5
@@ -253,7 +323,8 @@ namespace HRPortal.Controllers
             string obj = string.Empty;
             Random rnd = new Random();
             posName = posName.ToUpper();
-            if (posName.Contains("JAVA")) //TODO:has to be changed with switch case.
+
+            if (posName.Contains("JAVA"))
                 obj = "JVA";
             else if(posName.Contains("ASP"))
                 obj = "ASP";
@@ -265,6 +336,8 @@ namespace HRPortal.Controllers
                 obj = "CTN";
             else if (posName.Contains("MOBILE"))
                 obj = "MBL";
+            else if (posName.Contains("ORACLE"))
+                obj = "ORA";
             else
                 obj = "GNL";
             obj = obj + rnd.Next().ToString();

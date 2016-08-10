@@ -247,7 +247,7 @@ namespace HRPortal.Controllers
         {
             var usrs = db.AspNetUsers.Where(u=>u.IsActive== true).ToList().Select(x => new RegisterViewModel {
                 Id = x.Id, FirstName = x.FirstName, LastName = x.LastName, Email = x.Email, PhoneNumber = x.PhoneNumber, Vendor_Id=x.Vendor_Id, CreatedBy=x.CreatedBy }).ToList();
-            if (CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
+            if (CookieStore.GetCookie(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
             {
                 var vendorId = Guid.Parse(HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.VendorId.ToString())));
                 usrs = usrs.Where(i => i.Vendor_Id == vendorId).ToList();

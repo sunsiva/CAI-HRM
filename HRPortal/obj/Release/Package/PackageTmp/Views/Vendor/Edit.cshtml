@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    //bool C = (Model.VENDOR_TYPE == "C" ? true : false), B = (Model.VENDOR_TYPE == "B" ? true : false), P = (Model.VENDOR_TYPE == "P" ? true : false);
 }
 <h2>Edit Staffing Partner</h2>
 @using (Html.BeginForm())
@@ -38,10 +39,20 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.VENDOR_CONTACT_NO, "PARTNER CONTACT NO", htmlAttributes: new { @class = "control -label col-md-2" })
+            @Html.LabelFor(model => model.VENDOR_CONTACT_NO, "PARTNER CONTACT NO", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.VENDOR_CONTACT_NO, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.VENDOR_CONTACT_NO, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group hide">
+            @Html.LabelFor(model => model.VENDOR_TYPE, "PARTNER TYPE", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    <span><input type="radio" id="rdoTypeB" name="PartnerType" checked="@B" value="B" />Both</span>
+                    <span><input type="radio" id="rdoTypeP" name="PartnerType" checked="@P" value="P" />Permanent</span>
+                    <span><input type="radio" id="rdoTypeC" name="PartnerType" checked="@C" value="C" />Contract</span>
+                </div>
             </div>
         </div>
 

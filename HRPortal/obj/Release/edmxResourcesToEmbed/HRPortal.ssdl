@@ -164,6 +164,7 @@
     <Property Name="JOB_CODE" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="JOB_DESCRIPTION" Type="nvarchar(max)" Nullable="false" />
     <Property Name="POSITION_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="POSITION_TYPE" Type="nchar" MaxLength="1" />
     <Property Name="NO_OF_VACANCIES" Type="int" Nullable="false" />
     <Property Name="YEARS_OF_EXP_TOTAL" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="YEARS_OF_EXP_RELEVANT" Type="nvarchar" MaxLength="50" />
@@ -178,6 +179,13 @@
     <Property Name="MODIFIED_ON" Type="datetime" />
     <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="JOBXVENDOR">
+    <Key>
+      <PropertyRef Name="Vendor_Id" />
+    </Key>
+    <Property Name="Vendor_Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Job_Id" Type="uniqueidentifier" />
   </EntityType>
   <EntityType Name="STATUS_HISTORY">
     <Key>
@@ -238,6 +246,7 @@
     <Property Name="VENDOR_SPOC" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="EMAIL" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="VENDOR_CONTACT_NO" Type="nvarchar" MaxLength="25" Nullable="false" />
+    <Property Name="VENDOR_TYPE" Type="nvarchar" MaxLength="25" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
@@ -320,6 +329,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_JOBXVENDOR_VENDOR_MASTER">
+    <End Role="VENDOR_MASTER" Type="Self.VENDOR_MASTER" Multiplicity="1" />
+    <End Role="JOBXVENDOR" Type="Self.JOBXVENDOR" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="VENDOR_MASTER">
+        <PropertyRef Name="VENDOR_ID" />
+      </Principal>
+      <Dependent Role="JOBXVENDOR">
+        <PropertyRef Name="Vendor_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
     <End Role="STATUS_MASTER" Type="Self.STATUS_MASTER" Multiplicity="1" />
     <End Role="STATUS_HISTORY" Type="Self.STATUS_HISTORY" Multiplicity="*" />
@@ -332,6 +353,17 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Function Name="fnSplitString" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="string" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="delimiter" Type="char" Mode="In" />
+    <ReturnType>
+      <CollectionType>
+        <RowType>
+          <Property Name="splitdata" Type="nvarchar(max)" />
+        </RowType>
+      </CollectionType>
+    </ReturnType>
+  </Function>
   <Function Name="getSearchResults" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PositionName" Type="nvarchar(max)" Mode="In" />
     <Parameter Name="CandidateName" Type="nvarchar" Mode="In" />
@@ -340,6 +372,20 @@
     <Parameter Name="StartDate" Type="nvarchar" Mode="In" />
     <Parameter Name="EndDate" Type="nvarchar" Mode="In" />
     <Parameter Name="flag" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="rptGetCandidatesStaging" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Status" Type="nvarchar" Mode="In" />
+    <Parameter Name="Round1" Type="bit" Mode="In" />
+    <Parameter Name="Round2" Type="bit" Mode="In" />
+    <Parameter Name="Round3" Type="bit" Mode="In" />
+    <Parameter Name="Partner" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="rptGetCandidatesStagingByPartner" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Status" Type="nvarchar" Mode="In" />
+    <Parameter Name="Round1" Type="bit" Mode="In" />
+    <Parameter Name="Round2" Type="bit" Mode="In" />
+    <Parameter Name="Round3" Type="bit" Mode="In" />
+    <Parameter Name="Partner" Type="nvarchar" Mode="In" />
   </Function>
   <EntityContainer Name="HRPortalModelStoreContainer">
     <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
@@ -354,6 +400,7 @@
     <EntitySet Name="EXCEPTION_LOGGING" EntityType="Self.EXCEPTION_LOGGING" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="JOB_HISTORY" EntityType="Self.JOB_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="JOBPOSTING" EntityType="Self.JOBPOSTING" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="JOBXVENDOR" EntityType="Self.JOBXVENDOR" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserLog" EntityType="Self.UserLog" Schema="dbo" store:Type="Tables" />
@@ -382,6 +429,10 @@
     <AssociationSet Name="FK_JOB_HISTORY_JOBPOSTING" Association="Self.FK_JOB_HISTORY_JOBPOSTING">
       <End Role="JOBPOSTING" EntitySet="JOBPOSTING" />
       <End Role="JOB_HISTORY" EntitySet="JOB_HISTORY" />
+    </AssociationSet>
+    <AssociationSet Name="FK_JOBXVENDOR_VENDOR_MASTER" Association="Self.FK_JOBXVENDOR_VENDOR_MASTER">
+      <End Role="VENDOR_MASTER" EntitySet="VENDOR_MASTER" />
+      <End Role="JOBXVENDOR" EntitySet="JOBXVENDOR" />
     </AssociationSet>
     <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="Self.FK_STATUS_HISTORY_STATUS_MASTER">
       <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
