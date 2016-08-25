@@ -241,6 +241,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JobController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="C__MigrationHistory.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
@@ -297,8 +298,18 @@
     <Compile Include="Models\JobAndCandidateViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PaginationViewModels.cs" />
+    <Compile Include="Models\ReportsViewModels.cs" />
     <Compile Include="Models\SearchViewModel.cs" />
+    <Compile Include="Number.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="rptGetCandidatesIdleTimeByWeek_Result.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="rptGetCandidatesIdleTimeDetailsByWeek_Result.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
     <Compile Include="rptGetCandidatesStagingByPartner_Result.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
@@ -374,6 +385,9 @@
     <Content Include="Views\Home\_Unauthorized.cshtml" />
     <Content Include="Views\Candidate\_SearchCriteria.cshtml" />
     <Content Include="Views\Candidate\_CandidateList.cshtml" />
+    <Content Include="Views\Report\index.cshtml" />
+    <Content Include="Views\Report\_StagingReport.cshtml" />
+    <Content Include="Views\Report\_LWDReport.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -491,6 +505,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\img\" />
+    <Folder Include="Views\Reports\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

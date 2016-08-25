@@ -69,57 +69,57 @@ namespace HRPortal.Controllers
             return model;
         }
 
-        public ActionResult ExportToExcel(bool status, bool r1, bool r2, bool r3, string partner)
+        public ActionResult ExportToExcel(bool status, bool r1, bool r2, bool r3,bool offerd, string partner)
         {
-            try
-            {
-                System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
-                string isSS = (status? "true":"false");
-                partner = (partner == "null" ? string.Empty : partner);
-                if (partner==string.Empty)
-                {
-                    var canDb = db.rptGetCandidatesStaging(isSS, r1, r2, r3, partner);
-                    var canLst = canDb.Select(i => new
-                    {
-                        POSITION_NAME = i.POSITION_NAME,
-                        SCREENING = i.ScreeningSubmitted,
-                        ROUND1 = i.Round1,
-                        ROUND2 = i.Round2,
-                        ROUND3 = i.Round3
-                    }).ToList();
-                    gv.DataSource = canLst;
-                }
-                else {
-                    var canDb = db.rptGetCandidatesStagingByPartner(isSS, r1, r2, r3, partner);
-                    var canLst = canDb.Select(i => new
-                    {
-                        POSITION_NAME = i.POSITION_NAME,
-                        PARTNER = i.PARTNER,
-                        SCREENING = i.SCREENING,
-                        ROUND1 = i.ROUND1,
-                        ROUND2 = i.ROUND2,
-                        ROUND3 = i.ROUND3
-                    }).ToList();
-                    gv.DataSource = canLst;
-                }
+          //  try
+           // {
+            //    System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
+            //    string isSS = (status? "true":"false");
+            //    partner = (partner == "null" ? string.Empty : partner);
+            //    if (partner==string.Empty)
+            //    {
+            //        var canDb = db.rptGetCandidatesStaging(isSS, r1, r2, r3, offerd, partner);
+            //        var canLst = canDb.Select(i => new
+            //        {
+            //            POSITION_NAME = i.POSITION_NAME,
+            //            SCREENING = i.ScreeningSubmitted,
+            //            ROUND1 = i.Round1,
+            //            ROUND2 = i.Round2,
+            //            ROUND3 = i.Round3
+            //        }).ToList();
+            //        gv.DataSource = canLst;
+            //    }
+            //    else {
+            //        var canDb = db.rptGetCandidatesStagingByPartner(isSS, r1, r2, r3,offerd, partner);
+            //        var canLst = canDb.Select(i => new
+            //        {
+            //            POSITION_NAME = i.POSITION_NAME,
+            //            PARTNER = i.PARTNER,
+            //            SCREENING = i.SCREENING,
+            //            ROUND1 = i.ROUND1,
+            //            ROUND2 = i.ROUND2,
+            //            ROUND3 = i.ROUND3
+            //        }).ToList();
+            //        gv.DataSource = canLst;
+            //    }
 
-                gv.DataBind();
-                Response.ClearContent();
-                Response.Buffer = true;
-                string fileName = "Report_" + DateTime.Now.Day + DateTime.Now.ToString("MMM") + ".xls";
-                Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-                Response.ContentType = "application/ms-excel";  //application/vnd.ms-excel
+            //    gv.DataBind();
+            //    Response.ClearContent();
+            //    Response.Buffer = true;
+            //    string fileName = "Report_" + DateTime.Now.Day + DateTime.Now.ToString("MMM") + ".xls";
+            //    Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            //    Response.ContentType = "application/ms-excel";  //application/vnd.ms-excel
                 
-                Response.Charset = "";
-                StringWriter sw = new StringWriter();
-                System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
-                gv.RenderControl(htw);
-                Response.Output.Write(sw.ToString());
-                Response.Flush();
-                Response.End();
+            //    Response.Charset = "";
+            //    StringWriter sw = new StringWriter();
+            //    System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
+            //    gv.RenderControl(htw);
+            //    Response.Output.Write(sw.ToString());
+            //    Response.Flush();
+            //    Response.End();
                 return new EmptyResult();// RedirectToAction("Index", "Dashboard");
-            }
-            catch (Exception ex) { throw ex; }
+            //}
+            //catch (Exception ex) { throw ex; }
         }
     }
 }

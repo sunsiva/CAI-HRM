@@ -293,14 +293,49 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <FunctionImportMapping FunctionImportName="fnSplitString" FunctionName="HRPortalModel.Store.fnSplitString" />
-    <FunctionImportMapping FunctionImportName="rptGetCandidatesStaging" FunctionName="HRPortalModel.Store.rptGetCandidatesStaging">
+    <FunctionImportMapping FunctionImportName="SplitString" FunctionName="HRPortalModel.Store.SplitString" />
+    <FunctionImportMapping FunctionImportName="funcSplitValue" FunctionName="HRPortalModel.Store.funcSplitValue" />
+    <FunctionImportMapping FunctionImportName="rptGetCandidatesIdleTimeByWeek" FunctionName="HRPortalModel.Store.rptGetCandidatesIdleTimeByWeek">
       <ResultMapping>
-        <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesStaging_Result">
-          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+        <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesIdleTimeByWeek_Result">
+          <ScalarProperty Name="position_name" ColumnName="position_name" />
+          <ScalarProperty Name="ScreeningSubmitted" ColumnName="ScreeningSubmitted" />
           <ScalarProperty Name="Round1" ColumnName="Round1" />
           <ScalarProperty Name="Round2" ColumnName="Round2" />
           <ScalarProperty Name="Round3" ColumnName="Round3" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="rptGetCandidatesIdleTimeDetailsByWeek" FunctionName="HRPortalModel.Store.rptGetCandidatesIdleTimeDetailsByWeek">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesIdleTimeDetailsByWeek_Result">
+          <ScalarProperty Name="position_name" ColumnName="position_name" />
+          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+          <ScalarProperty Name="PARTNER" ColumnName="PARTNER" />
+          <ScalarProperty Name="SUBMITTED_ON" ColumnName="SUBMITTED_ON" />
+          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="rptGetStagingData" FunctionName="HRPortalModel.Store.rptGetStagingData" />
+    <EntitySetMapping Name="Numbers">
+      <EntityTypeMapping TypeName="HRPortalModel.Number">
+        <MappingFragment StoreEntitySet="Numbers">
+          <ScalarProperty Name="Number1" ColumnName="Number" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="rptGetCandidatesStaging" FunctionName="HRPortalModel.Store.rptGetCandidatesStaging">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesStaging_Result">
+          <ScalarProperty Name="position_name" ColumnName="position_name" />
           <ScalarProperty Name="ScreeningSubmitted" ColumnName="ScreeningSubmitted" />
+          <ScalarProperty Name="Round1" ColumnName="Round1" />
+          <ScalarProperty Name="Round2" ColumnName="Round2" />
+          <ScalarProperty Name="Round3" ColumnName="Round3" />
+          <ScalarProperty Name="OFFERED" ColumnName="OFFERED" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
@@ -313,6 +348,8 @@
           <ScalarProperty Name="ROUND1" ColumnName="ROUND1" />
           <ScalarProperty Name="ROUND2" ColumnName="ROUND2" />
           <ScalarProperty Name="ROUND3" ColumnName="ROUND3" />
+          <ScalarProperty Name="OFFERED" ColumnName="OFFERED" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>

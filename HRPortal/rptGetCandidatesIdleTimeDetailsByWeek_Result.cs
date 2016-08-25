@@ -14,24 +14,20 @@ namespace HRPortal
 
 using System;
     
-public partial class rptGetCandidatesStagingByPartner_Result
+public partial class rptGetCandidatesIdleTimeDetailsByWeek_Result
 {
 
-    public string POSITION_NAME { get; set; }
+    public string position_name { get; set; }
+
+    public string CANDIDATE_NAME { get; set; }
 
     public string PARTNER { get; set; }
 
-    public Nullable<int> SCREENING { get; set; }
+    public Nullable<System.DateTime> SUBMITTED_ON { get; set; }
 
-    public Nullable<int> ROUND1 { get; set; }
+    public Nullable<System.DateTime> LAST_WORKING_DATE { get; set; }
 
-    public Nullable<int> ROUND2 { get; set; }
-
-    public Nullable<int> ROUND3 { get; set; }
-
-    public Nullable<int> OFFERED { get; set; }
-
-    public Nullable<int> Total { get; set; }
+    public string STATUS { get; set; }
 
 }
 

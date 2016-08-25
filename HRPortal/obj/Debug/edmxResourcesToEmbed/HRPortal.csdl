@@ -59,18 +59,31 @@
       <Parameter Name="string" Mode="In" Type="String" />
       <Parameter Name="delimiter" Mode="In" Type="String" />
     </FunctionImport>
-    <FunctionImport Name="rptGetCandidatesStaging" ReturnType="Collection(HRPortalModel.rptGetCandidatesStaging_Result)">
+    <FunctionImport Name="SplitString" IsComposable="true" ReturnType="Collection(String)">
+      <Parameter Name="Input" Mode="In" Type="String" />
+      <Parameter Name="Character" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="funcSplitValue" IsComposable="true" ReturnType="Collection(String)">
+      <Parameter Name="SplitOn" Mode="In" Type="String" />
+      <Parameter Name="List" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="rptGetCandidatesIdleTimeByWeek" ReturnType="Collection(HRPortalModel.rptGetCandidatesIdleTimeByWeek_Result)">
+      <Parameter Name="Week" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="rptGetCandidatesIdleTimeDetailsByWeek" ReturnType="Collection(HRPortalModel.rptGetCandidatesIdleTimeDetailsByWeek_Result)">
+      <Parameter Name="Week" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="rptGetStagingData">
       <Parameter Name="Status" Mode="In" Type="String" />
       <Parameter Name="Round1" Mode="In" Type="Boolean" />
       <Parameter Name="Round2" Mode="In" Type="Boolean" />
       <Parameter Name="Round3" Mode="In" Type="Boolean" />
+    </FunctionImport>
+    <EntitySet Name="Numbers" EntityType="HRPortalModel.Number" />
+    <FunctionImport Name="rptGetCandidatesStaging" ReturnType="Collection(HRPortalModel.rptGetCandidatesStaging_Result)">
       <Parameter Name="Partner" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="rptGetCandidatesStagingByPartner" ReturnType="Collection(HRPortalModel.rptGetCandidatesStagingByPartner_Result)">
-      <Parameter Name="Status" Mode="In" Type="String" />
-      <Parameter Name="Round1" Mode="In" Type="Boolean" />
-      <Parameter Name="Round2" Mode="In" Type="Boolean" />
-      <Parameter Name="Round3" Mode="In" Type="Boolean" />
       <Parameter Name="Partner" Mode="In" Type="String" />
     </FunctionImport>
   </EntityContainer>
@@ -229,7 +242,7 @@
     <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
     <NavigationProperty Name="CANDIDATES" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="JOBPOSTING" ToRole="CANDIDATE" />
     <NavigationProperty Name="JOB_HISTORY" Relationship="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOBPOSTING" ToRole="JOB_HISTORY" />
-    <Property Name="POSITION_TYPE" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="POSITION_TYPE" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
   </EntityType>
   <EntityType Name="STATUS_HISTORY">
     <Key>
@@ -297,7 +310,7 @@
     <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
     <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="VENDOR_TYPE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="VENDOR_TYPE" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
     <NavigationProperty Name="JOBXVENDOR" Relationship="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER" FromRole="VENDOR_MASTER" ToRole="JOBXVENDOR" />
   </EntityType>
   <Association Name="FK_CANDIDATES_JOBPOSTING">
@@ -432,12 +445,35 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <ComplexType Name="rptGetCandidatesStaging_Result">
-    <Property Type="String" Name="POSITION_NAME" Nullable="false" MaxLength="50" />
+  <ComplexType Name="rptGetCandidatesIdleTimeByWeek_Result">
+    <Property Type="String" Name="position_name" Nullable="false" MaxLength="50" />
+    <Property Type="Int32" Name="ScreeningSubmitted" Nullable="true" />
     <Property Type="Int32" Name="Round1" Nullable="true" />
     <Property Type="Int32" Name="Round2" Nullable="true" />
     <Property Type="Int32" Name="Round3" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="rptGetCandidatesIdleTimeDetailsByWeek_Result">
+    <Property Type="String" Name="position_name" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="PARTNER" Nullable="false" MaxLength="50" />
+    <Property Type="DateTime" Name="SUBMITTED_ON" Nullable="true" />
+    <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" />
+    <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
+  </ComplexType>
+  <EntityType Name="Number">
+    <Key>
+      <PropertyRef Name="Number1" />
+    </Key>
+    <Property Name="Number1" Type="Int32" Nullable="false" />
+  </EntityType>
+  <ComplexType Name="rptGetCandidatesStaging_Result">
+    <Property Type="String" Name="position_name" Nullable="false" MaxLength="50" />
     <Property Type="Int32" Name="ScreeningSubmitted" Nullable="true" />
+    <Property Type="Int32" Name="Round1" Nullable="true" />
+    <Property Type="Int32" Name="Round2" Nullable="true" />
+    <Property Type="Int32" Name="Round3" Nullable="true" />
+    <Property Type="Int32" Name="OFFERED" Nullable="true" />
+    <Property Type="Int32" Name="Total" Nullable="true" />
   </ComplexType>
   <ComplexType Name="rptGetCandidatesStagingByPartner_Result">
     <Property Type="String" Name="POSITION_NAME" Nullable="false" MaxLength="50" />
@@ -446,5 +482,7 @@
     <Property Type="Int32" Name="ROUND1" Nullable="true" />
     <Property Type="Int32" Name="ROUND2" Nullable="true" />
     <Property Type="Int32" Name="ROUND3" Nullable="true" />
+    <Property Type="Int32" Name="OFFERED" Nullable="true" />
+    <Property Type="Int32" Name="Total" Nullable="true" />
   </ComplexType>
 </Schema>

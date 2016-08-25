@@ -1,0 +1,86 @@
+﻿
+
+@model IEnumerable<HRPortal.Models.StagingReportViewModel>
+@using HRPortal.Models
+
+<div class="container" id="StagingPartial">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+
+                @if (Model != null)
+                {
+
+                    <table class="table table-striped table-hover table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    POSITION_NAME
+                                </th>
+                                @if(ViewBag.partner)
+                                {
+                                <th>
+                                    PARTNER NAME
+                                </th>
+                                }
+                                <th>
+                                    SCREENING
+                                </th>
+                                <th>
+                                    ROUND 1
+                                </th>
+                                <th>
+                                    ROUND 2
+                                </th>
+                                <th>
+                                    ROUND 3
+                                </th>
+                                <th>
+                                    OFFERED
+                                </th>
+                                <th>
+                                    Total
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                             {
+                                <tr>
+                                    <td align="left">
+                                        @item.Position_Name
+                                    </td>
+                                    @if (ViewBag.partner)
+                                    {
+                                    <td align="left">
+                                        @item.Partner_Name
+                                    </td>
+                                     }
+                                    <td align="right">
+                                        @item.Screening
+                                    </td>
+                                    <td align="right">
+                                        @item.Round1
+                                    </td>
+                                    <td align="right">
+                                        @item.Round2
+                                    </td>
+                                    <td align="right">
+                                        @item.Round3
+                                    </td>
+                                    <td align="right">
+                                        @item.Offered
+                                    </td>
+                                    <td align="right">
+                                        @item.Total
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>

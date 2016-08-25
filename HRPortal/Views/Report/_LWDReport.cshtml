@@ -1,0 +1,62 @@
+﻿
+@model IEnumerable<HRPortal.Models.LWDCandidateReportViewModel>
+@using HRPortal.Models
+
+
+@if (Model != null)
+{
+    <div class="grid">
+        <table cellspacing="0" width="80%">
+            <thead>
+                <tr>
+                    <th>
+                        POSITION_NAME
+                    </th>
+                    <th>
+                        CANDIDATE_NAME
+                    </th>
+                    <th>
+                        PARTNER
+                    </th>
+                    <th>
+                        SUBMITTED_ON
+                    </th>
+                    <th>
+                        LAST_WORKING_DATE
+                    </th>
+                    <th>
+                        STATUS
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td align="left">
+                            @item.Position_Name
+                        </td>
+                        <td align="left">
+                            @item.Candidate_name
+                        </td>
+                        <td align="left">
+                            @item.Partner_Name
+                        </td>
+                        <td align="left">
+                            @item.Submitted_On
+                        </td>
+                        <td align="left">
+                            @item.Last_Working_Date
+                        </td>
+                        <td align="left">
+                            @item.Status
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+}

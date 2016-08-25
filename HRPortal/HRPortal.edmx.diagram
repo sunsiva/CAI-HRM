@@ -29,6 +29,7 @@
         <AssociationConnector Association="HRPortalModel.AspNetUserRoles" />
         <EntityTypeShape EntityType="HRPortalModel.JOBXVENDOR" Width="1.5" PointX="5" PointY="15.625" />
         <AssociationConnector Association="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER" />
+        <EntityTypeShape EntityType="HRPortalModel.Number" Width="1.5" PointX="12.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
