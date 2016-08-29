@@ -14,7 +14,7 @@ using System.Web.Mvc;
 namespace HRPortal
 {
     [LogActionFilter]
-    [Authorize(Roles = "Admin,SuperUser")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class VendorController : Controller
     {
         private HRPortalEntities db = new HRPortalEntities();
@@ -65,7 +65,7 @@ namespace HRPortal
                     vENDOR_MASTER.VENDOR_ID = Guid.NewGuid();
                    // vENDOR_MASTER.VENDOR_TYPE = frm["PartnerType"]; //P-Permanent;C-Contract;B-Both
                     vENDOR_MASTER.CREATED_BY= HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                    vENDOR_MASTER.CREATED_ON = DateTime.Now;
+                    vENDOR_MASTER.CREATED_ON = HelperFuntions.GetDateTime();
                     vENDOR_MASTER.ISACTIVE = true;
                     db.VENDOR_MASTER.Add(vENDOR_MASTER);
                     db.SaveChanges();
@@ -127,7 +127,7 @@ namespace HRPortal
                     vENDOR_MASTER.VENDOR_CONTACT_NO = vendor.VENDOR_CONTACT_NO;
                    // vENDOR_MASTER.VENDOR_TYPE = frm["PartnerType"]; //P-Permanent;C-Contract;B-Both
                     vENDOR_MASTER.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                    vENDOR_MASTER.MODIFIED_ON = DateTime.Now;
+                    vENDOR_MASTER.MODIFIED_ON = HelperFuntions.GetDateTime();
                     db.Entry(vENDOR_MASTER).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -163,7 +163,7 @@ namespace HRPortal
             VENDOR_MASTER vENDOR_MASTER = db.VENDOR_MASTER.Find(id);
            // db.VENDOR_MASTER.Remove(vENDOR_MASTER);
             vENDOR_MASTER.MODIFIED_BY = CookieStore.GetCookie(CacheKey.Uid.ToString()) == null ? User.Identity.Name : CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString();
-            vENDOR_MASTER.MODIFIED_ON = DateTime.Now;
+            vENDOR_MASTER.MODIFIED_ON = HelperFuntions.GetDateTime();
             vENDOR_MASTER.ISACTIVE = false;
             db.Entry(vENDOR_MASTER).State = EntityState.Modified;
             db.SaveChanges();

@@ -20,12 +20,12 @@ namespace HRPortal
         public System.DateTime DATETIMESCHEDULED { get; set; }
         public int APPOINTMENTLENGTH { get; set; }
         public int STATUSENUM { get; set; }
+        public string SCHEDULED_FOR { get; set; }
         public string COMMENTS { get; set; }
         public Nullable<bool> ISACTIVE { get; set; }
         public Nullable<System.Guid> MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
         public Nullable<System.Guid> CREATED_BY { get; set; }
         public Nullable<System.DateTime> CREATED_ON { get; set; }
-        public string SCHEDULED_FOR { get; set; }
     }
 }

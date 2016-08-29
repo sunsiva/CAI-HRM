@@ -56,7 +56,7 @@ namespace HRPortal.Models
             stsHist.COMMENTS = string.IsNullOrEmpty(cmnts) ? "Initial Status - SCR-SBM" : cmnts;
             stsHist.ISACTIVE = true;
             stsHist.MODIFIED_BY = uid.ToString();
-            stsHist.MODIFIED_ON = DateTime.Now;
+            stsHist.MODIFIED_ON = HelperFuntions.GetDateTime();
             dbContext.STATUS_HISTORY.Add(stsHist);
             dbContext.SaveChanges();
             return "OK";
@@ -73,7 +73,7 @@ namespace HRPortal.Models
             var updHist = sHist.Where(i => i.SCHEDULED_TO != null && i.SCHEDULED_TO <= DateTime.Now).ToList();
             var existHist = sHist.Where(i => i.COMMENTS.Contains(autoMsg)).Select(c=>c.CANDIDATE_ID).ToList();
 
-            if (sHist.Count > 0)
+            if (sHist.Count() > 0)
             { 
                 var uid = CookieStore.GetCookie(CacheKey.Uid.ToString()) == null ? HttpContext.Current.User.Identity.Name : CookieStore.GetCookie(CacheKey.Uid.ToString());
                 var stsLst = dbContext.STATUS_MASTER.Where(i => i.ISACTIVE == true).ToList();
@@ -89,14 +89,14 @@ namespace HRPortal.Models
                         stsHist.COMMENTS = autoMsg + " " + item.SCHEDULED_FOR;//TODO:attach the profile owner/who has scheduled last.
                         stsHist.ISACTIVE = true;
                         stsHist.MODIFIED_BY = item.MODIFIED_BY;
-                        stsHist.MODIFIED_ON = DateTime.Now;
+                        stsHist.MODIFIED_ON = HelperFuntions.GetDateTime();
                         dbContext.STATUS_HISTORY.Add(stsHist);
                         dbContext.SaveChanges();
 
                         CANDIDATE cANDIDATE = dbContext.CANDIDATES.Where(i => i.CANDIDATE_ID == item.CANDIDATE_ID).FirstOrDefault();
                         cANDIDATE.STATUS = stsHist.STATUS_ID.ToString();
                         cANDIDATE.MODIFIED_BY = uid;
-                        cANDIDATE.MODIFIED_ON = DateTime.Now;
+                        cANDIDATE.MODIFIED_ON = HelperFuntions.GetDateTime();
                         dbContext.Entry(cANDIDATE).State = EntityState.Modified;
                         dbContext.SaveChanges();
                     }
@@ -131,20 +131,46 @@ namespace HRPortal.Models
         }
 
         /// <summary>
+        /// Get the list of all the active positions with JobCodes(Used for filters)
+        /// </summary>
+        /// <returns></returns>
+        public SelectList GetPositionForPartner()
+        {
+            var vid = CookieStore.GetCookie(CacheKey.VendorId.ToString());
+            
+            //var lstJobs = (from j in dbContext.JOBPOSTINGs
+            //               join jv in dbContext.JOBXVENDORs on j.JOB_ID equals jv.Job_Id
+            //               where j.ISACTIVE == true && jv.Vendor_Id == Guid.Parse(vid)
+            //               select new { j.JOB_ID, j.JOB_CODE, j.POSITION_NAME }).OrderBy(v => v.POSITION_NAME).ToList();
+            var lstJobs = dbContext.JOBPOSTINGs.Where(i => i.ISACTIVE == true).Select(s => new { s.JOB_ID, s.POSITION_NAME, s.JOB_CODE, s.JOB_DESCRIPTION }).OrderBy(v => v.POSITION_NAME).ToList();
+            return new SelectList(lstJobs.AsEnumerable(), "JOB_CODE", "POSITION_NAME", 1);
+        }
+
+        /// <summary>
+        /// Get the list of all the active/inactive positions
+        /// </summary>
+        /// <returns></returns>
+        public SelectList GetAllPositions()
+        {
+            var sts = dbContext.JOBPOSTINGs.Select(s => new { s.JOB_ID, s.POSITION_NAME, s.JOB_CODE, s.JOB_DESCRIPTION }).OrderBy(v => v.POSITION_NAME).ToList();
+            return new SelectList(sts.AsEnumerable(), "JOB_ID", "POSITION_NAME", 1);
+        }
+
+        /// <summary>
         /// Get the list of all the active positions
         /// </summary>
         /// <returns></returns>
-        public SelectList GetPositionList()
+        public SelectList GetAllActivePositions()
         {
-            var sts = dbContext.JOBPOSTINGs.Where(i => i.ISACTIVE == true).Select(s => new { s.JOB_ID, s.POSITION_NAME, s.JOB_CODE, s.JOB_DESCRIPTION}).OrderBy(v => v.POSITION_NAME).ToList();
-            return new SelectList(sts.AsEnumerable(), "JOB_CODE", "POSITION_NAME", 1);
+            var sts = dbContext.JOBPOSTINGs.Where(i => i.ISACTIVE == true).Select(s => new { s.JOB_ID, s.POSITION_NAME, s.JOB_CODE, s.JOB_DESCRIPTION }).OrderBy(v => v.POSITION_NAME).ToList();
+            return new SelectList(sts.AsEnumerable(), "JOB_ID", "POSITION_NAME", 1);
         }
 
         public string GetStatusNameById(Guid id)
         {
             string stsName = "Screening Submitted";// "SCR -SBM";
             var stsSrc = dbContext.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).ToList();
-            if (stsSrc.Count > 0)
+            if (stsSrc.Count() > 0)
             {
                 var stsH = stsSrc.OrderByDescending(j => j.MODIFIED_ON).FirstOrDefault().STATUS_ID;
                 stsName = dbContext.STATUS_MASTER.Where(i => i.STATUS_ID == stsH).FirstOrDefault().STATUS_DESCRIPTION;

@@ -185,15 +185,17 @@ namespace HRPortal.Models
         /// </summary>
         /// <param name="canId"></param>
         /// <returns></returns>
-        public async Task<string> sendMailForNewJob(JOBPOSTING jobposting, bool isNew, string[] lstPartner)
+        //public async Task<string> sendMailForNewJob(JOBPOSTING jobposting, bool isNew, string[] lstPartner)
+        public async Task<string> sendMailForNewJob(JOBPOSTING jobposting, bool isNew)
         {
             //NOTE:- No Email should go in "To Address" - all email should be in BCC.
             try
             {
-                //var mailBCCs = dbContext.AspNetUsers.Where(u => u.IsActive == true).Select(u => u.Email).ToList();
-                var mailBCCs = (from u in dbContext.AspNetUsers
-                                where (lstPartner.Contains(u.Vendor_Id.ToString()))
-                                select (u.Email)).ToList();
+                var mailBCCs = dbContext.AspNetUsers.Where(u => u.IsActive == true).Select(u => u.Email).ToList();
+                //For specific vendor to send out email
+                //var mailBCCs = (from u in dbContext.AspNetUsers
+                //                where (lstPartner.Contains(u.Vendor_Id.ToString()))
+                //                select (u.Email)).ToList();
 
                 string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
                 string strSubject = isNew? "HROps-New Job Posted - ": "HROps-Job Modified - " + jobposting.POSITION_NAME;

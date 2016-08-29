@@ -11,9 +11,9 @@ namespace HRPortal
 {
     using System;
     
-    public partial class rptGetCandidatesIdleTimeDetailsByWeek_Result
+    public partial class GetCandidateDetailsByLastworkingdate_Result
     {
-        public string position_name { get; set; }
+        public string POSITION_NAME { get; set; }
         public string CANDIDATE_NAME { get; set; }
         public string PARTNER { get; set; }
         public Nullable<System.DateTime> SUBMITTED_ON { get; set; }

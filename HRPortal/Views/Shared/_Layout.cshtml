@@ -45,6 +45,8 @@
                             <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Dashboard") ? "active" : "")">@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
                             <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Home") ? "active" : "")">@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
                             <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Job") ? "active" : "")">@Html.ActionLink("Job", "Index", "Job")</li>
+                            <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Schedules" && ViewContext.RouteData.Values["Controller"].ToString() == "Appointment") ? "active" : "")">@Html.ActionLink("Schedules", "Schedules", "Appointment")</li>
+                            <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Report") ? "active" : "")">@Html.ActionLink("Report", "Index", "Report")</li>
                         }
                         else if (isSuperUser)
                         {

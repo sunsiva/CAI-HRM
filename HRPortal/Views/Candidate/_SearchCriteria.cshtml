@@ -18,7 +18,6 @@
                         
                         <div id="srchCandidates">
                             <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
-                                @Html.DropDownList("ddlCriteriaVendor", (SelectList)ViewBag.VendorList, new { multiple = "multiple" })
                                 @Html.DropDownList("ddlCriteriaPosition", (SelectList)ViewBag.PositionList, new { multiple = "multiple" })
                                 @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, new { multiple = "multiple" })<br /><br />
                                 <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />

@@ -32,6 +32,19 @@ namespace HRPortal.Helper
             return string.Format("{0} years ago", Math.Round(timeSince.TotalDays / 365));
         }
 
+
+        /// <summary>
+        /// Get IST datetimezone
+        /// </summary>
+        /// <returns></returns>
+        public static DateTime GetDateTime()
+        {
+            DateTime timeUtc = System.DateTime.UtcNow;
+            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
+            return cstTime;
+        }
+
         /// <summary>
         /// Check the object whether has value or not...
         /// </summary>

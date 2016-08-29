@@ -9,7 +9,7 @@ using System.Web.Mvc;
 namespace HRPortal.Controllers
 {
     [LogActionFilter]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class ReportController : Controller
     {
         private CandidateViewModels vmodelCan = new CandidateViewModels();

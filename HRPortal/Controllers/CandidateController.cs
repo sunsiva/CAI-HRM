@@ -47,7 +47,7 @@ namespace HRPortal.Controllers
                 }
                 ViewBag.StatusList = vmodel.GetStatusList();
                 ViewBag.VendorList = vmodel.GetVendorList();
-                ViewBag.PositionList = vmodel.GetPositionList();
+                ViewBag.PositionList = vmodel.GetPositionForPartner();
                 var jobCanObjl = jobCanObj.CandidateItems != null? GetPagination(jobCanObj.CandidateItems, sOdr, page): jobCanObj.CandidateItems;
                 return View(jobCanObjl);
             }
@@ -153,7 +153,7 @@ namespace HRPortal.Controllers
                     cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
                     cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
                     cANDIDATE.CREATED_BY = (_uid == string.Empty ? User.Identity.Name : _uid);
-                    cANDIDATE.CREATED_ON = DateTime.Now;
+                    cANDIDATE.CREATED_ON = HelperFuntions.GetDateTime();
                     cANDIDATE.STATUS = db.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID.ToString();
                     cANDIDATE.RESUME_FILE_PATH = FileUpload(file);
                     db.CANDIDATES.Add(cANDIDATE);
@@ -189,14 +189,14 @@ namespace HRPortal.Controllers
                 sHist.SCHEDULE_LENGTH_MINS = int.Parse(length);
                 sHist.COMMENTS = comments;
                 sHist.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                sHist.MODIFIED_ON = DateTime.Now;
+                sHist.MODIFIED_ON = HelperFuntions.GetDateTime();
                 db.STATUS_HISTORY.Add(sHist);
                 await db.SaveChangesAsync();
 
                 CANDIDATE cANDIDATE = db.CANDIDATES.Where(i => i.CANDIDATE_ID == sHist.CANDIDATE_ID).FirstOrDefault();
                 cANDIDATE.STATUS = sHist.STATUS_ID.ToString();
                 cANDIDATE.MODIFIED_BY = uid;
-                cANDIDATE.MODIFIED_ON = DateTime.Now;
+                cANDIDATE.MODIFIED_ON = HelperFuntions.GetDateTime();
                 db.Entry(cANDIDATE).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 if (System.Configuration.ConfigurationManager.AppSettings["IsAppointmentMail"] == "true")
@@ -240,6 +240,7 @@ namespace HRPortal.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
+            ViewBag.PositionList = vmodel.GetAllActivePositions();
             if (cANDIDATE == null)
             {
                 return HttpNotFound();
@@ -274,16 +275,23 @@ namespace HRPortal.Controllers
                     {
                         cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
                         cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
+                        if(!string.IsNullOrEmpty(frm["ddlCriteriaPosition"]))
+                        { 
+                            cANDIDATE.JOB_ID = Guid.Parse(frm["ddlCriteriaPosition"].ToString());
+                        }
                         cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                        cANDIDATE.MODIFIED_ON = DateTime.Now;
+                        cANDIDATE.MODIFIED_ON = HelperFuntions.GetDateTime();
                         cANDIDATE.LAST_WORKING_DATE = string.IsNullOrEmpty(frm["LAST_WORKING_DATE"]) ? cANDIDATE.LAST_WORKING_DATE : DateTime.Parse(frm["LAST_WORKING_DATE"]);
                         cANDIDATE.RESUME_FILE_PATH = (file == null ? frm["RESUME_FILE_PATH"] : FileUpload(file));
                         db.Entry(cANDIDATE).State = EntityState.Modified;
                         await db.SaveChangesAsync();
-                        if (Request.UrlReferrer.Query.ToString() == "?styp=S")
-                            return RedirectToAction("SquadJobs");
-                        else
-                            return RedirectToAction("Index");
+
+                    if (Request.UrlReferrer.Query.ToString().Contains("?styp=S"))
+                        return RedirectToAction("SquadJobs");
+                    else if (Request.UrlReferrer.Query.ToString().Contains("?styp=H"))
+                        return RedirectToAction("Index","Home");
+                    else
+                        return RedirectToAction("Index");
                     }
                 
                 ModelState.AddModelError("FAILED", "Failed to update");
@@ -326,7 +334,7 @@ namespace HRPortal.Controllers
                 cANDIDATE.COMMENTS = cANDIDATE.COMMENTS+ " || "+ model.COMMENTS;
                 cANDIDATE.ISACTIVE = false;
                 cANDIDATE.MODIFIED_BY = (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString())) == string.Empty ? User.Identity.Name : CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString());
-                cANDIDATE.MODIFIED_ON = DateTime.Now;
+                cANDIDATE.MODIFIED_ON = HelperFuntions.GetDateTime();
                 db.Entry(cANDIDATE).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index","Home");
@@ -372,7 +380,7 @@ namespace HRPortal.Controllers
 
                 ViewBag.StatusList = vmodel.GetStatusList();
                 ViewBag.VendorList = vmodel.GetVendorList();
-                ViewBag.PositionList = vmodel.GetPositionList();
+                ViewBag.PositionList = vmodel.GetPositionForPartner();
 
                 if (jobCanObj != null && jobCanObj.CandidateItems != null && jobCanObj.CandidateItems.Count > 0)
                 {

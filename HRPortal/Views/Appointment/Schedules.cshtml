@@ -1,0 +1,252 @@
+﻿@model  IEnumerable<HRPortal.Models.CandidateViewModels>
+@using PagedList;
+@using PagedList.Mvc;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int pSize = ViewBag.PageSize == null ? 1 : ViewBag.PageSize;
+    int pNo = ViewBag.PageNo == null ? 1 : ViewBag.PageNo;
+    var modal = Model != null ? Model.ToPagedList(pNo, pSize) : null;
+    int sl = (pNo == 1 ? 0 : (pNo - 1) * 10);
+}
+
+<h2>Schedules</h2>
+<link href="~/Content/tags/jquery.tagit.css" rel="stylesheet" />
+<link href="~/Content/tags/tagit.ui-zendesk.css" rel="stylesheet" />
+<div class="container text-center" id="dvSchedule">
+    <a href="javascript:void(0);" class="glyphicon glyphicon-chevron-left" id="navLeft"  title="Previous day"><i></i></a>
+    <span  style="background-color:gold" id="scheduleDate">@DateTime.Now.ToString("dd-MMM-yyyy")</span>
+    <a href="javascript:void(0);" class="glyphicon glyphicon-chevron-right" id="navRight" title="Next day"><i></i></a>
+</div>
+<br />
+<div class="container" id="CandidatesPartial">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                @if (modal != null)
+                {
+                    <table class="table table-striped table-hover table-condensed table-bordered">
+                        <tr>
+                            <th>#</th>
+                            <th>
+                                @Html.ActionLink("CANDIDATE NAME", "Schedules", new { sOdr = ViewBag.CNameSort })
+                            </th>
+                            <th>
+                                PARTNER
+                            </th>
+                            <th>
+                                @Html.ActionLink("POSITION/SKILL", "Schedules", new { sOdr = ViewBag.SkillSort })
+                            </th>
+                            <th>
+                                NOTICE PERIOD
+                                /LWD
+                            </th>
+                            <th>
+                                YEARS OF EXP
+                            </th>
+                            
+                            <th>
+                                SUBMISSION DATE
+                            </th>
+                            <th>
+                                PROFILE
+                            </th>
+                            <th>
+                                SCHEDULED DATE/TIME
+                            </th>
+                            <th>
+                                @Html.ActionLink("STATUS", "Schedules", new { sOdr = ViewBag.StatusSort })
+                            </th>
+                        </tr>
+
+                        @foreach (var item in modal)
+                        {
+                            <tr>
+                                <td>@(sl = sl + 1) </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CANDIDATE_NAME)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.VENDOR_NAME)
+                                </td>
+                                <td>@Html.DisplayFor(modelItem => item.POSITION)</td>
+                                <td>
+                                    @(item.LAST_WORKING_DATE != null ? (item.LAST_WORKING_DATE.Value.ToString("dd-MMM-yyyy")) : item.NOTICE_PERIOD)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.YEARS_OF_EXP_TOTAL)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CREATED_ON)
+                                </td>
+                                <td>
+                                    <a href="@item.RESUME_FILE_PATH" target="_blank" title="Click To Download Candidate CV">Download</a>
+                                </td>
+                                <td>
+                                    @(item.MODIFIED_ON != null ? item.MODIFIED_ON.Value.ToString() : "")
+                                </td>
+                                <td>
+                                    @if (item.STATUS.ToUpper().ToString().Contains("SCHEDULED"))
+                                    {
+                                        <a href="#StatusModal" id="btnStsPnl_@item.CANDIDATE_ID" data-toggle="modal" onclick='myPanel(this); return false;' data-custom-name="@item.CANDIDATE_NAME" data-custom-value="@item.CANDIDATE_ID" data-custom-statusid="@item.STATUS_ID" title="Click To Change The Status">@item.STATUS</a>
+                                    <span id="stsSecondTxt_@item.CANDIDATE_ID"></span>
+                                    }
+                                    else { @Html.DisplayFor(modelItem => item.STATUS) }
+                                </td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td><input type="hidden" id="hdnCandidateId" /><input type="hidden" id="hdnStatusId" /></td>
+                            <td align="right" class="" colspan="12">@Model.Count() Record(s) Found.</td>
+                        </tr>
+
+                    </table>
+                    <div class="clearfix"></div>
+                    <table align="right">
+                        <tr>
+                            <td>Page @(modal.PageCount < modal.PageNumber ? 0 : modal.PageNumber) of @modal.PageCount  </td>
+                            <td width="10px"></td>
+                            <td>
+                                @Html.PagedListPager(modal, page => Url.Action("Index", "Candidate", new { page, sOdr = ViewBag.CurrentSort }))
+                            </td>
+                        </tr>
+                    </table>
+                }
+                else
+                {
+                    <table class="table table-striped table-hover table-condensed table-bordered">
+                        <tr>
+                            <th>#</th>
+                            <th>
+                                CANDIDATE NAME
+                            </th>
+                            <th>
+                                PARTNER
+                            </th>
+                            <th>
+                                POSITION/SKILL
+                            </th>
+                            <th>
+                                NOTICE PERIOD
+                                /LWD
+                            </th>
+                            <th>
+                                YEARS OF.EXP
+                            </th>
+                            <th>
+                                SUBMISSION DATE
+                            </th>
+                            <th>
+                                SCHEDULED DATE/TIME
+                            </th>
+                            <th width="100px">STATUS</th>
+                        </tr>
+                        <tr>
+                            <td align="center" colspan="10" class="text-danger"> No Record(s) Found.</td>
+                        </tr>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="StatusModal" tabindex="-1" role="dialog" aria-labelledby="StatusModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Schedule Interview for - <b><span class="candidate-name"></span></b> </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group form-group-required">
+                    <input name="tags" type="hidden" id="sendTo" value="">
+                    @Html.Label("Date", new { @class = "col-md-2 control-label" })
+                    <div class='col-sm-4'>
+                        <input type='text' class="form-control" id='txtdatetimepicker' />
+                    </div>
+                    @Html.Label("Length", new { @class = "col-md-2 control-label", @title = "Please choose the length of the schedule." })
+                    <div class='col-sm-4'>
+                        <select id="ddlScheduleLength" name="ddlScheduleLength" class="form-control">
+                            <option value="">Schedule</option>
+                            <option value="30">30 Mins</option>
+                            <option value="60">60 Mins</option>
+                        </select>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div class="form-group form-group-required">
+                    @Html.Label("Email To", new { @class = "col-md-2 control-label" })
+                    <div class='col-sm-9'>
+                        <ul id="singleFieldTags"></ul>
+                    </div>
+                </div>
+                <br />
+                <br /><br />
+                <br />
+                <div class="form-group form-group-required">
+                    @Html.Label("Comments", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextArea("Comments", new { @id = "txtStsComments", @class = "textarea-input-custom", @required = "mandatory" })
+                    </div>
+                </div>
+                <br />
+                <br />
+
+            </div>
+            <div class="modal-footer">
+                <div class="pull-left"><span class="text-danger" id="errMsgModal"><small>If you don't save, your changes will be lost.</small></span></div>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Close</button>
+                    <button id="btnStatus" onclick="fnBtnStatusClick()" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/tags/tag-it.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+
+<script lang="ja" type="text/javascript">
+    $(document).ready(function () {
+
+        $(function () {
+            $('#txtdatetimepicker').datetimepicker();
+        });
+
+        //-------------------------------
+        // Single field
+        //-------------------------------
+        var sampleTags = ['c++', 'java'];
+        $('#singleFieldTags').tagit({
+            availableTags: sampleTags,
+            // This will make Tag-it submit a single form value, as a comma-delimited field.
+            singleField: true,
+            singleFieldNode: $('#sendTo')
+        });
+
+        window.myPanel = function (data) {
+            $(".candidate-name").text(data.dataset.customName);
+            $("#hdnCandidateId").val(data.dataset.customValue);
+            $("#hdnStatusId").val(data.dataset.customStatusid);
+            $("#txtStsComments").val('');
+
+            $('#txtdatetimepicker').datetimepicker();
+            $('#singleFieldTags').tagit({
+                availableTags: sampleTags,
+                // This will make Tag-it submit a single form value, as a comma-delimited field.
+                singleField: true,
+                singleFieldNode: $('#sendTo')
+            });
+        };
+    });
+</script>
+}

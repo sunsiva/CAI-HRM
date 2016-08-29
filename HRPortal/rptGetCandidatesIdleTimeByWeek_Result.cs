@@ -11,13 +11,12 @@ namespace HRPortal
 {
     using System;
     
-    public partial class rptGetCandidatesIdleTimeDetailsByWeek_Result
+    public partial class rptGetCandidatesIdleTimeByWeek_Result
     {
         public string position_name { get; set; }
-        public string CANDIDATE_NAME { get; set; }
-        public string PARTNER { get; set; }
-        public Nullable<System.DateTime> SUBMITTED_ON { get; set; }
-        public Nullable<System.DateTime> LAST_WORKING_DATE { get; set; }
-        public string STATUS { get; set; }
+        public Nullable<int> ScreeningSubmitted { get; set; }
+        public Nullable<int> Round1 { get; set; }
+        public Nullable<int> Round2 { get; set; }
+        public Nullable<int> Round3 { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace HRPortal
     
     public partial class JOBXVENDOR
     {
+        public int Id { get; set; }
         public System.Guid Vendor_Id { get; set; }
         public Nullable<System.Guid> Job_Id { get; set; }
     

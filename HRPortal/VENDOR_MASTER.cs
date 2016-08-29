@@ -14,18 +14,25 @@ namespace HRPortal
     
     public partial class VENDOR_MASTER
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public VENDOR_MASTER()
+        {
+            this.JOBXVENDORs = new HashSet<JOBXVENDOR>();
+        }
+    
         public System.Guid VENDOR_ID { get; set; }
         public string VENDOR_NAME { get; set; }
         public string VENDOR_SPOC { get; set; }
         public string EMAIL { get; set; }
         public string VENDOR_CONTACT_NO { get; set; }
+        public string VENDOR_TYPE { get; set; }
         public bool ISACTIVE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_ON { get; set; }
-        public string VENDOR_TYPE { get; set; }
     
-        public virtual JOBXVENDOR JOBXVENDOR { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<JOBXVENDOR> JOBXVENDORs { get; set; }
     }
 }

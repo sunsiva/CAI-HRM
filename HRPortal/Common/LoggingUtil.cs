@@ -17,6 +17,7 @@ namespace HRPortal.Common
 
         public static void LogException(Exception exception, ErrorLevel errorLevel, string urlRef = null)
         {
+           
             StringBuilder sbMessage = new StringBuilder();
 
             sbMessage.AppendFormat("HR Ops Message Logging\n Message Level: {0}\n", errorLevel.ToString());
@@ -65,11 +66,14 @@ namespace HRPortal.Common
                 sbMessage.AppendFormat(" URL: {0}\n", urlRef);
             }
 
-            WriteLogEntry(
+            if (!sbMessage.ToString().Contains("HTTP") && !sbMessage.ToString().Contains("anti-forgery"))
+            {
+                WriteLogEntry(
                 sbMessage.ToString(),
                 errorLevel,
                 "ApplicationEventLogName"
                 );
+            }
         }
 
         /// <summary>
@@ -117,7 +121,7 @@ namespace HRPortal.Common
                     obj.ERR_DESC = message;
                     obj.ERR_EVENT = string.Empty;
                     obj.CREATED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()))==string.Empty?HttpContext.Current.User.Identity.Name: CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString();
-                    obj.CREATED_ON = DateTime.Now;
+                    obj.CREATED_ON = HelperFuntions.GetDateTime();
                     dbContext.ERROR_LOG.Add(obj);
                     dbContext.SaveChanges();
                 } catch(Exception ex) { throw ex; }

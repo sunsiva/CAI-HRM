@@ -81,6 +81,13 @@
                                     </p>
                                 </td>
                                 <td>
+                                    <p data-placement="top" data-toggle="tooltip" title="Edit">
+                                        <a href="@Url.Action("Edit", "Candidate", new { id = item.CANDIDATE_ID, styp = "H", p = modal.PageNumber })" id="btnJobEdit" value="@item.CANDIDATE_ID" class="btn btn-primary btn-xs">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </a>
+                                    </p>
+                                </td>
+                                <td>
                                     <p data-placement="top" data-toggle="tooltip" title="Active/Inactive">
                                         <a href="@Url.Action("Delete", "Candidate", new { id = item.CANDIDATE_ID,p= modal.PageNumber })" class="btn btn-danger btn-xs" id="btnJobDelete" value="@item.CANDIDATE_ID">
                                             <span class="glyphicon glyphicon-remove"></span>
@@ -93,14 +100,7 @@
                             <td align="left">
                                 <input type="hidden" id="hdnCandidateId" />
                             <a href="@Url.Action("ExportToExcel", "Home")" title="Export To Excel" id="btnExport"><img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a></td>
-                            @*<td colspan="2">Show <select class="pagesize" id="ddlPageSizes">
-                                <option selected="selected" value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="30">30</option>
-                                <option value="40">40</option>
-                            </select> per page</td>*@
-                            <td align="right" colspan="11" class="">@Model.Count() Record(s) Found.</td>
+                            <td align="right" colspan="12" class="">@Model.Count() Record(s) Found.</td>
                         </tr>
                     </table>
                     <table align="right">

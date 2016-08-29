@@ -254,6 +254,15 @@
     <Compile Include="EXCEPTION_LOGGING.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
+    <Compile Include="fnSplitString_Result.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="funcSplitValue_Result.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetCandidateDetailsByLastworkingdate_Result.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
     <Compile Include="getSearchResults_Result.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
@@ -316,6 +325,9 @@
     <Compile Include="rptGetCandidatesStaging_Result.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
+    <Compile Include="SplitString_Result.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Controllers\VendorController.cs" />
     <Compile Include="STATUS_HISTORY.cs">
@@ -375,37 +387,6 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
-    <Content Include="Scripts\bootstrap-multiselect.js" />
-    <Content Include="Scripts\jquery.cookie.js" />
-    <Content Include="Views\Candidate\Index.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Views\Home\_Unauthorized.cshtml" />
-    <Content Include="Views\Candidate\_SearchCriteria.cshtml" />
-    <Content Include="Views\Candidate\_CandidateList.cshtml" />
-    <Content Include="Views\Report\index.cshtml" />
-    <Content Include="Views\Report\_StagingReport.cshtml" />
-    <Content Include="Views\Report\_LWDReport.cshtml" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <EntityDeploy Include="HRPortal.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>HRPortal.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="HRPortal.edmx.diagram">
-      <DependentUpon>HRPortal.edmx</DependentUpon>
-    </Content>
-    <Content Include="fonts\fontawesome-webfont.eot" />
-    <Content Include="fonts\fontawesome-webfont.ttf" />
-    <Content Include="fonts\fontawesome-webfont.woff" />
-    <Content Include="fonts\FontAwesome.otf" />
-    <None Include="Properties\PublishProfiles\HRWebsite.pubxml" />
     <Content Include="HRPortal.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>HRPortal.edmx</DependentUpon>
@@ -416,6 +397,37 @@
       <DependentUpon>HRPortal.edmx</DependentUpon>
       <LastGenOutput>HRPortal.cs</LastGenOutput>
     </Content>
+    <Content Include="Scripts\bootstrap-multiselect.js" />
+    <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Views\Candidate\Index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Home\_Unauthorized.cshtml" />
+    <Content Include="Views\Candidate\_SearchCriteria.cshtml" />
+    <Content Include="Views\Candidate\_CandidateList.cshtml" />
+    <Content Include="Views\Report\_StagingReport.cshtml" />
+    <Content Include="Views\Report\_LWDReport.cshtml" />
+    <Content Include="Views\Appointment\Schedules.cshtml" />
+    <EntityDeploy Include="HRPortal.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>HRPortal.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="HRPortal.edmx.diagram">
+      <DependentUpon>HRPortal.edmx</DependentUpon>
+    </Content>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <None Include="Properties\PublishProfiles\HRWebsite.pubxml" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -505,7 +517,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\img\" />
-    <Folder Include="Views\Reports\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

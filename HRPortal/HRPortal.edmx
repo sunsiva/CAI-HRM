@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="HRPortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Caihrops_portalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -185,10 +185,14 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="JOBXVENDOR">
           <Key>
+            <PropertyRef Name="Id" />
             <PropertyRef Name="Vendor_Id" />
           </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Vendor_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Job_Id" Type="uniqueidentifier" />
         </EntityType>
@@ -342,7 +346,7 @@
         </Association>
         <Association Name="FK_JOBXVENDOR_VENDOR_MASTER">
           <End Role="VENDOR_MASTER" Type="Self.VENDOR_MASTER" Multiplicity="1" />
-          <End Role="JOBXVENDOR" Type="Self.JOBXVENDOR" Multiplicity="0..1" />
+          <End Role="JOBXVENDOR" Type="Self.JOBXVENDOR" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="VENDOR_MASTER">
               <PropertyRef Name="VENDOR_ID" />
@@ -419,13 +423,7 @@
         <Function Name="rptGetCandidatesStagingByPartner" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Partner" Type="nvarchar(max)" Mode="In" />
         </Function>
-        <Function Name="rptGetStagingData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="Status" Type="nvarchar" Mode="In" />
-          <Parameter Name="Round1" Type="bit" Mode="In" />
-          <Parameter Name="Round2" Type="bit" Mode="In" />
-          <Parameter Name="Round3" Type="bit" Mode="In" />
-        </Function>
-        <EntityContainer Name="HRPortalModelStoreContainer">
+        <EntityContainer Name="Caihrops_portalModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
@@ -438,13 +436,19 @@
           <EntitySet Name="EXCEPTION_LOGGING" EntityType="Self.EXCEPTION_LOGGING" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JOB_HISTORY" EntityType="Self.JOB_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JOBPOSTING" EntityType="Self.JOBPOSTING" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="JOBXVENDOR" EntityType="Self.JOBXVENDOR" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Numbers" EntityType="Self.Numbers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserLog" EntityType="Self.UserLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserXRole" EntityType="Self.UserXRole" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VENDOR_MASTER" EntityType="Self.VENDOR_MASTER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JOBXVENDOR" EntityType="Self.JOBXVENDOR" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [JOBXVENDOR].[Id] AS [Id], 
+    [JOBXVENDOR].[Vendor_Id] AS [Vendor_Id], 
+    [JOBXVENDOR].[Job_Id] AS [Job_Id]
+    FROM [dbo].[JOBXVENDOR] AS [JOBXVENDOR]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_AspNetUserRoles_AspNetRoles" Association="Self.FK_AspNetUserRoles_AspNetRoles">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
@@ -478,128 +482,48 @@
             <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="HRPortalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="HRPortalEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="C__MigrationHistory" EntityType="HRPortalModel.C__MigrationHistory" />
-          <EntitySet Name="AspNetRoles" EntityType="HRPortalModel.AspNetRole" />
-          <EntitySet Name="AspNetUserClaims" EntityType="HRPortalModel.AspNetUserClaim" />
-          <EntitySet Name="AspNetUserLogins" EntityType="HRPortalModel.AspNetUserLogin" />
-          <EntitySet Name="CANDIDATES" EntityType="HRPortalModel.CANDIDATE" />
-          <EntitySet Name="ERROR_LOG" EntityType="HRPortalModel.ERROR_LOG" />
-          <EntitySet Name="EVENTSCHEDULEs" EntityType="HRPortalModel.EVENTSCHEDULE" />
-          <EntitySet Name="EXCEPTION_LOGGING" EntityType="HRPortalModel.EXCEPTION_LOGGING" />
-          <EntitySet Name="JOB_HISTORY" EntityType="HRPortalModel.JOB_HISTORY" />
-          <EntitySet Name="JOBPOSTINGs" EntityType="HRPortalModel.JOBPOSTING" />
-          <EntitySet Name="STATUS_HISTORY" EntityType="HRPortalModel.STATUS_HISTORY" />
-          <EntitySet Name="STATUS_MASTER" EntityType="HRPortalModel.STATUS_MASTER" />
-          <EntitySet Name="UserLogs" EntityType="HRPortalModel.UserLog" />
-          <EntitySet Name="UserXRoles" EntityType="HRPortalModel.UserXRole" />
-          <EntitySet Name="VENDOR_MASTER" EntityType="HRPortalModel.VENDOR_MASTER" />
-          <AssociationSet Name="FK_CANDIDATES_JOBPOSTING" Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING">
-            <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
-            <End Role="CANDIDATE" EntitySet="CANDIDATES" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JOB_HISTORY_JOBPOSTING" Association="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING">
-            <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
-            <End Role="JOB_HISTORY" EntitySet="JOB_HISTORY" />
-          </AssociationSet>
-          <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER">
-            <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
-            <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
-          </AssociationSet>
-          <FunctionImport Name="getSearchResults" ReturnType="Collection(HRPortalModel.getSearchResults_Result)">
-            <Parameter Name="PositionName" Mode="In" Type="String" />
-            <Parameter Name="CandidateName" Mode="In" Type="String" />
-            <Parameter Name="StatusIds" Mode="In" Type="String" />
-            <Parameter Name="Partner" Mode="In" Type="String" />
-            <Parameter Name="StartDate" Mode="In" Type="String" />
-            <Parameter Name="EndDate" Mode="In" Type="String" />
-            <Parameter Name="flag" Mode="In" Type="String" />
-          </FunctionImport>
-          <EntitySet Name="AspNetUsers" EntityType="HRPortalModel.AspNetUser" />
-          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="AspNetUserClaim" EntitySet="AspNetUserClaims" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
-          </AssociationSet>
-          <AssociationSet Name="AspNetUserRoles" Association="HRPortalModel.AspNetUserRoles">
-            <End Role="AspNetRole" EntitySet="AspNetRoles" />
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-          </AssociationSet>
-          <EntitySet Name="JOBXVENDORs" EntityType="HRPortalModel.JOBXVENDOR" />
-          <AssociationSet Name="FK_JOBXVENDOR_VENDOR_MASTER" Association="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER">
-            <End Role="VENDOR_MASTER" EntitySet="VENDOR_MASTER" />
-            <End Role="JOBXVENDOR" EntitySet="JOBXVENDORs" />
-          </AssociationSet>
-          <FunctionImport Name="fnSplitString" IsComposable="true" ReturnType="Collection(String)">
-            <Parameter Name="string" Mode="In" Type="String" />
-            <Parameter Name="delimiter" Mode="In" Type="String" />
-          </FunctionImport>
-        
-         
-          <FunctionImport Name="SplitString" IsComposable="true" ReturnType="Collection(String)">
-            <Parameter Name="Input" Mode="In" Type="String" />
-            <Parameter Name="Character" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="funcSplitValue" IsComposable="true" ReturnType="Collection(String)">
-            <Parameter Name="SplitOn" Mode="In" Type="String" />
-            <Parameter Name="List" Mode="In" Type="String" />
-          </FunctionImport>
-          
-          <FunctionImport Name="rptGetCandidatesIdleTimeByWeek" ReturnType="Collection(HRPortalModel.rptGetCandidatesIdleTimeByWeek_Result)">
-            <Parameter Name="Week" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="rptGetCandidatesIdleTimeDetailsByWeek" ReturnType="Collection(HRPortalModel.rptGetCandidatesIdleTimeDetailsByWeek_Result)">
-            <Parameter Name="Week" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="rptGetStagingData">
-            <Parameter Name="Status" Mode="In" Type="String" />
-            <Parameter Name="Round1" Mode="In" Type="Boolean" />
-            <Parameter Name="Round2" Mode="In" Type="Boolean" />
-            <Parameter Name="Round3" Mode="In" Type="Boolean" />
-          </FunctionImport>
-          <EntitySet Name="Numbers" EntityType="HRPortalModel.Number" />
-          <FunctionImport Name="rptGetCandidatesStaging" ReturnType="Collection(HRPortalModel.rptGetCandidatesStaging_Result)">
-            <Parameter Name="Partner" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="rptGetCandidatesStagingByPartner" ReturnType="Collection(HRPortalModel.rptGetCandidatesStagingByPartner_Result)">
-            <Parameter Name="Partner" Mode="In" Type="String" />
-          </FunctionImport>
-        </EntityContainer>
+      <Schema Namespace="Caihrops_portalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <ComplexType Name="SplitString_Result">
+          <Property Name="Item" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+        </ComplexType>
+        <ComplexType Name="fnSplitString_Result">
+          <Property Name="splitdata" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </ComplexType>
+        <ComplexType Name="funcSplitValue_Result">
+          <Property Name="ListValue" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </ComplexType>
         <EntityType Name="C__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
             <PropertyRef Name="ContextKey" />
           </Key>
-          <Property Name="MigrationId" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="ContextKey" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="Model" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
-          <Property Name="ProductVersion" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
+          <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="AspNetRole">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IsSysAdmin" Type="Boolean" />
-          <NavigationProperty Name="AspNetUsers" Relationship="HRPortalModel.AspNetUserRoles" FromRole="AspNetRole" ToRole="AspNetUser" />
+          <NavigationProperty Name="AspNetUsers" Relationship="Self.AspNetUserRoles" FromRole="AspNetRoles" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="AspNetUserClaim">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ClaimType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AspNetUser" Relationship="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaim" ToRole="AspNetUser" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaims" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="AspNetUserLogin">
           <Key>
@@ -607,28 +531,54 @@
             <PropertyRef Name="ProviderKey" />
             <PropertyRef Name="UserId" />
           </Key>
-          <Property Name="LoginProvider" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="ProviderKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AspNetUser" Relationship="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogin" ToRole="AspNetUser" />
+          <Property Name="LoginProvider" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProviderKey" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogins" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Vendor_Id" Type="Guid" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
+          <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
+          <NavigationProperty Name="AspNetRole" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
         </EntityType>
         <EntityType Name="CANDIDATE">
           <Key>
             <PropertyRef Name="CANDIDATE_ID" />
           </Key>
           <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
-          <Property Name="CANDIDATE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CANDIDATE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="JOB_ID" Type="Guid" Nullable="false" />
-          <Property Name="YEARS_OF_EXP_TOTAL" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="YEARS_OF_EXP_TOTAL" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="YEARS_OF_EXP_RELEVANT" Type="Int32" />
-          <Property Name="MOBILE_NO" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="MOBILE_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ALTERNATE_MOBILE_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EMAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ALTERNATE_EMAIL_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DOB" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CURRENT_COMPANY" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CURRENT_COMPANY" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CURRENT_LOCATION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="NOTICE_PERIOD" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NOTICE_PERIOD" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ANY_OTHER_OFFER" Type="Boolean" />
           <Property Name="LAST_WORKING_DATE" Type="DateTime" Precision="3" />
           <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -639,9 +589,9 @@
           <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="JOBPOSTING" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="CANDIDATE" ToRole="JOBPOSTING" />
+          <NavigationProperty Name="JOBPOSTING" Relationship="Self.FK_CANDIDATES_JOBPOSTING" FromRole="CANDIDATES" ToRole="JOBPOSTING" />
         </EntityType>
         <EntityType Name="ERROR_LOG">
           <Key>
@@ -656,25 +606,25 @@
           <Property Name="ERR_PAGE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ERR_EVENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="EVENTSCHEDULE">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TITLE" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TITLE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="KEY" Type="Int32" Nullable="false" />
           <Property Name="DATETIMESCHEDULED" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="APPOINTMENTLENGTH" Type="Int32" Nullable="false" />
           <Property Name="STATUSENUM" Type="Int32" Nullable="false" />
+          <Property Name="SCHEDULED_FOR" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ISACTIVE" Type="Boolean" />
           <Property Name="MODIFIED_BY" Type="Guid" />
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="Guid" />
           <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
-          <Property Name="SCHEDULED_FOR" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EXCEPTION_LOGGING">
           <Key>
@@ -697,24 +647,25 @@
           </Key>
           <Property Name="JOB_HIST_ID" Type="Guid" Nullable="false" />
           <Property Name="JOB_ID" Type="Guid" Nullable="false" />
-          <Property Name="JOB_COMMENTS" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="JOB_COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IS_ACTIVE" Type="Boolean" />
           <Property Name="CREATED_BY" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_ON" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="JOBPOSTING" Relationship="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOB_HISTORY" ToRole="JOBPOSTING" />
+          <NavigationProperty Name="JOBPOSTING" Relationship="Self.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOB_HISTORY" ToRole="JOBPOSTING" />
         </EntityType>
         <EntityType Name="JOBPOSTING">
           <Key>
             <PropertyRef Name="JOB_ID" />
           </Key>
           <Property Name="JOB_ID" Type="Guid" Nullable="false" />
-          <Property Name="JOB_CODE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="JOB_DESCRIPTION" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="POSITION_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="JOB_CODE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="JOB_DESCRIPTION" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="POSITION_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="POSITION_TYPE" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="NO_OF_VACANCIES" Type="Int32" Nullable="false" />
-          <Property Name="YEARS_OF_EXP_TOTAL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="YEARS_OF_EXP_TOTAL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="YEARS_OF_EXP_RELEVANT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="WORK_LOCATION" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="WORK_LOCATION" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="JD_FILE_PATH" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="JD_SOURCE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -723,11 +674,16 @@
           <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="CANDIDATES" Relationship="HRPortalModel.FK_CANDIDATES_JOBPOSTING" FromRole="JOBPOSTING" ToRole="CANDIDATE" />
-          <NavigationProperty Name="JOB_HISTORY" Relationship="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOBPOSTING" ToRole="JOB_HISTORY" />
-          <Property Name="POSITION_TYPE" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="CANDIDATES" Relationship="Self.FK_CANDIDATES_JOBPOSTING" FromRole="JOBPOSTING" ToRole="CANDIDATES" />
+          <NavigationProperty Name="JOB_HISTORY" Relationship="Self.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOBPOSTING" ToRole="JOB_HISTORY" />
+        </EntityType>
+        <EntityType Name="Number">
+          <Key>
+            <PropertyRef Name="Number1" />
+          </Key>
+          <Property Name="Number1" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="STATUS_HISTORY">
           <Key>
@@ -739,26 +695,26 @@
           <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
           <Property Name="SCHEDULED_TO" Type="DateTime" Precision="3" />
+          <Property Name="SCHEDULED_FOR" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="SCHEDULE_LENGTH_MINS" Type="Int32" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="STATUS_MASTER" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
-          <Property Name="SCHEDULED_FOR" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="STATUS_MASTER" Relationship="Self.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
         </EntityType>
         <EntityType Name="STATUS_MASTER">
           <Key>
             <PropertyRef Name="STATUS_ID" />
           </Key>
           <Property Name="STATUS_ID" Type="Guid" Nullable="false" />
-          <Property Name="STATUS_NAME" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="STATUS_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="STATUS_DESCRIPTION" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="STATUS_ORDER" Type="Int32" />
           <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="STATUS_HISTORY" Relationship="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_MASTER" ToRole="STATUS_HISTORY" />
+          <NavigationProperty Name="STATUS_HISTORY" Relationship="Self.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_MASTER" ToRole="STATUS_HISTORY" />
         </EntityType>
         <EntityType Name="UserLog">
           <Key>
@@ -786,33 +742,71 @@
             <PropertyRef Name="VENDOR_ID" />
           </Key>
           <Property Name="VENDOR_ID" Type="Guid" Nullable="false" />
-          <Property Name="VENDOR_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="VENDOR_SPOC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="VENDOR_CONTACT_NO" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="VENDOR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="VENDOR_SPOC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EMAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="VENDOR_CONTACT_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="VENDOR_TYPE" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="VENDOR_TYPE" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <NavigationProperty Name="JOBXVENDOR" Relationship="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER" FromRole="VENDOR_MASTER" ToRole="JOBXVENDOR" />
+          <NavigationProperty Name="JOBXVENDORs" Relationship="Self.FK_JOBXVENDOR_VENDOR_MASTER" FromRole="VENDOR_MASTER" ToRole="JOBXVENDOR" />
         </EntityType>
+        <EntityType Name="JOBXVENDOR">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Vendor_Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Vendor_Id" Type="Guid" Nullable="false" />
+          <Property Name="Job_Id" Type="Guid" />
+          <NavigationProperty Name="VENDOR_MASTER" Relationship="Self.FK_JOBXVENDOR_VENDOR_MASTER" FromRole="JOBXVENDOR" ToRole="VENDOR_MASTER" />
+        </EntityType>
+        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserClaims" Type="Self.AspNetUserClaim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserClaims">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserLogins" Type="Self.AspNetUserLogin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogins">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CANDIDATES_JOBPOSTING">
-          <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
-          <End Type="HRPortalModel.CANDIDATE" Role="CANDIDATE" Multiplicity="*" />
+          <End Role="JOBPOSTING" Type="Self.JOBPOSTING" Multiplicity="1" />
+          <End Role="CANDIDATES" Type="Self.CANDIDATE" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="JOBPOSTING">
               <PropertyRef Name="JOB_ID" />
             </Principal>
-            <Dependent Role="CANDIDATE">
+            <Dependent Role="CANDIDATES">
               <PropertyRef Name="JOB_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_JOB_HISTORY_JOBPOSTING">
-          <End Type="HRPortalModel.JOBPOSTING" Role="JOBPOSTING" Multiplicity="1" />
-          <End Type="HRPortalModel.JOB_HISTORY" Role="JOB_HISTORY" Multiplicity="*" />
+          <End Role="JOBPOSTING" Type="Self.JOBPOSTING" Multiplicity="1" />
+          <End Role="JOB_HISTORY" Type="Self.JOB_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="JOBPOSTING">
               <PropertyRef Name="JOB_ID" />
@@ -823,8 +817,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_STATUS_HISTORY_STATUS_MASTER">
-          <End Type="HRPortalModel.STATUS_MASTER" Role="STATUS_MASTER" Multiplicity="1" />
-          <End Type="HRPortalModel.STATUS_HISTORY" Role="STATUS_HISTORY" Multiplicity="*" />
+          <End Role="STATUS_MASTER" Type="Self.STATUS_MASTER" Multiplicity="1" />
+          <End Role="STATUS_HISTORY" Type="Self.STATUS_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="STATUS_MASTER">
               <PropertyRef Name="STATUS_ID" />
@@ -834,6 +828,112 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_JOBXVENDOR_VENDOR_MASTER">
+          <End Role="VENDOR_MASTER" Type="Self.VENDOR_MASTER" Multiplicity="1" />
+          <End Role="JOBXVENDOR" Type="Self.JOBXVENDOR" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VENDOR_MASTER">
+              <PropertyRef Name="VENDOR_ID" />
+            </Principal>
+            <Dependent Role="JOBXVENDOR">
+              <PropertyRef Name="Vendor_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AspNetUserRoles">
+          <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="0..1" />
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="HRPortalEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
+          <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
+          <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+          <EntitySet Name="CANDIDATES" EntityType="Self.CANDIDATE" />
+          <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" />
+          <EntitySet Name="EVENTSCHEDULEs" EntityType="Self.EVENTSCHEDULE" />
+          <EntitySet Name="EXCEPTION_LOGGING" EntityType="Self.EXCEPTION_LOGGING" />
+          <EntitySet Name="JOB_HISTORY" EntityType="Self.JOB_HISTORY" />
+          <EntitySet Name="JOBPOSTINGs" EntityType="Self.JOBPOSTING" />
+          <EntitySet Name="Numbers" EntityType="Self.Number" />
+          <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" />
+          <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" />
+          <EntitySet Name="UserLogs" EntityType="Self.UserLog" />
+          <EntitySet Name="UserXRoles" EntityType="Self.UserXRole" />
+          <EntitySet Name="VENDOR_MASTER" EntityType="Self.VENDOR_MASTER" />
+          <EntitySet Name="JOBXVENDORs" EntityType="Self.JOBXVENDOR" />
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CANDIDATES_JOBPOSTING" Association="Self.FK_CANDIDATES_JOBPOSTING">
+            <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
+            <End Role="CANDIDATES" EntitySet="CANDIDATES" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JOB_HISTORY_JOBPOSTING" Association="Self.FK_JOB_HISTORY_JOBPOSTING">
+            <End Role="JOBPOSTING" EntitySet="JOBPOSTINGs" />
+            <End Role="JOB_HISTORY" EntitySet="JOB_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STATUS_HISTORY_STATUS_MASTER" Association="Self.FK_STATUS_HISTORY_STATUS_MASTER">
+            <End Role="STATUS_MASTER" EntitySet="STATUS_MASTER" />
+            <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JOBXVENDOR_VENDOR_MASTER" Association="Self.FK_JOBXVENDOR_VENDOR_MASTER">
+            <End Role="VENDOR_MASTER" EntitySet="VENDOR_MASTER" />
+            <End Role="JOBXVENDOR" EntitySet="JOBXVENDORs" />
+          </AssociationSet>
+          <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <FunctionImport Name="SplitString" IsComposable="true" ReturnType="Collection(Caihrops_portalModel.SplitString_Result)">
+            <Parameter Name="Input" Mode="In" Type="String" />
+            <Parameter Name="Character" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="fnSplitString" IsComposable="true" ReturnType="Collection(Caihrops_portalModel.fnSplitString_Result)">
+            <Parameter Name="string" Mode="In" Type="String" />
+            <Parameter Name="delimiter" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="funcSplitValue" IsComposable="true" ReturnType="Collection(Caihrops_portalModel.funcSplitValue_Result)">
+            <Parameter Name="SplitOn" Mode="In" Type="String" />
+            <Parameter Name="List" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetCandidateDetailsByLastworkingdate" ReturnType="Collection(Caihrops_portalModel.GetCandidateDetailsByLastworkingdate_Result)" />
+          <FunctionImport Name="getSearchResults" ReturnType="Collection(Caihrops_portalModel.getSearchResults_Result)">
+            <Parameter Name="PositionName" Mode="In" Type="String" />
+            <Parameter Name="CandidateName" Mode="In" Type="String" />
+            <Parameter Name="StatusIds" Mode="In" Type="String" />
+            <Parameter Name="Partner" Mode="In" Type="String" />
+            <Parameter Name="StartDate" Mode="In" Type="String" />
+            <Parameter Name="EndDate" Mode="In" Type="String" />
+            <Parameter Name="flag" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="rptGetCandidatesIdleTimeByWeek" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesIdleTimeByWeek_Result)">
+            <Parameter Name="Week" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="rptGetCandidatesIdleTimeDetailsByWeek" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesIdleTimeDetailsByWeek_Result)">
+            <Parameter Name="Week" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="rptGetCandidatesStaging" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesStaging_Result)">
+            <Parameter Name="Partner" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="rptGetCandidatesStagingByPartner" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesStagingByPartner_Result)">
+            <Parameter Name="Partner" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="GetCandidateDetailsByLastworkingdate_Result">
+          <Property Type="String" Name="POSITION_NAME" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PARTNER" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="SUBMITTED_ON" Nullable="true" />
+          <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" />
+          <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
+        </ComplexType>
         <ComplexType Name="getSearchResults_Result">
           <Property Type="Guid" Name="CANDIDATE_ID" Nullable="false" />
           <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
@@ -852,85 +952,6 @@
           <Property Type="DateTime" Name="MODIFIED_ON" Nullable="true" Precision="23" />
           <Property Type="String" Name="MODIFIED_BY" Nullable="true" MaxLength="100" />
         </ComplexType>
-        <EntityType Name="AspNetUser">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
-          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
-          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
-          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
-          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
-          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
-          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
-          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
-          <Property Name="Vendor_Id" Type="Guid" />
-          <Property Name="IsActive" Type="Boolean" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="AspNetUserClaims" Relationship="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserClaim" />
-          <NavigationProperty Name="AspNetUserLogins" Relationship="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
-          <NavigationProperty Name="AspNetRole" Relationship="HRPortalModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
-        </EntityType>
-        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-          <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="HRPortalModel.AspNetUserClaim" Role="AspNetUserClaim" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUser">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserClaim">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-          <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="HRPortalModel.AspNetUserLogin" Role="AspNetUserLogin" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUser">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserLogin">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="AspNetUserRoles">
-          <End Type="HRPortalModel.AspNetRole" Role="AspNetRole" Multiplicity="0..1" />
-          <End Type="HRPortalModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
-        </Association>
-        <EntityType Name="JOBXVENDOR">
-          <Key>
-            <PropertyRef Name="Vendor_Id" />
-          </Key>
-          <Property Name="Vendor_Id" Type="Guid" Nullable="false" />
-          <Property Name="Job_Id" Type="Guid" />
-          <NavigationProperty Name="VENDOR_MASTER" Relationship="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER" FromRole="JOBXVENDOR" ToRole="VENDOR_MASTER" />
-        </EntityType>
-        <Association Name="FK_JOBXVENDOR_VENDOR_MASTER">
-          <End Type="HRPortalModel.VENDOR_MASTER" Role="VENDOR_MASTER" Multiplicity="1" />
-          <End Type="HRPortalModel.JOBXVENDOR" Role="JOBXVENDOR" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="VENDOR_MASTER">
-              <PropertyRef Name="VENDOR_ID" />
-            </Principal>
-            <Dependent Role="JOBXVENDOR">
-              <PropertyRef Name="Vendor_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        
         <ComplexType Name="rptGetCandidatesIdleTimeByWeek_Result">
           <Property Type="String" Name="position_name" Nullable="false" MaxLength="50" />
           <Property Type="Int32" Name="ScreeningSubmitted" Nullable="true" />
@@ -946,12 +967,6 @@
           <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" />
           <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
         </ComplexType>
-        <EntityType Name="Number">
-          <Key>
-            <PropertyRef Name="Number1" />
-          </Key>
-          <Property Name="Number1" Type="Int32" Nullable="false" />
-        </EntityType>
         <ComplexType Name="rptGetCandidatesStaging_Result">
           <Property Type="String" Name="position_name" Nullable="false" MaxLength="50" />
           <Property Type="Int32" Name="ScreeningSubmitted" Nullable="true" />
@@ -971,244 +986,324 @@
           <Property Type="Int32" Name="OFFERED" Nullable="true" />
           <Property Type="Int32" Name="Total" Nullable="true" />
         </ComplexType>
-       
-        </Schema>
+      </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="HRPortalModelStoreContainer" CdmEntityContainer="HRPortalEntities">
+        <EntityContainerMapping StorageEntityContainer="Caihrops_portalModelStoreContainer" CdmEntityContainer="HRPortalEntities">
           <EntitySetMapping Name="C__MigrationHistory">
-            <EntityTypeMapping TypeName="HRPortalModel.C__MigrationHistory">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.C__MigrationHistory">
               <MappingFragment StoreEntitySet="__MigrationHistory">
-                <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
-                <ScalarProperty Name="Model" ColumnName="Model" />
-                <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
                 <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
+                <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetRoles">
-            <EntityTypeMapping TypeName="HRPortalModel.AspNetRole">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.AspNetRole">
               <MappingFragment StoreEntitySet="AspNetRoles">
-                <ScalarProperty Name="IsSysAdmin" ColumnName="IsSysAdmin" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IsSysAdmin" ColumnName="IsSysAdmin" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUserClaims">
-            <EntityTypeMapping TypeName="HRPortalModel.AspNetUserClaim">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.AspNetUserClaim">
               <MappingFragment StoreEntitySet="AspNetUserClaims">
-                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
-                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUserLogins">
-            <EntityTypeMapping TypeName="HRPortalModel.AspNetUserLogin">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.AspNetUserLogin">
               <MappingFragment StoreEntitySet="AspNetUserLogins">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
                 <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
+                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Vendor_Id" ColumnName="Vendor_Id" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CANDIDATES">
-            <EntityTypeMapping TypeName="HRPortalModel.CANDIDATE">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.CANDIDATE">
               <MappingFragment StoreEntitySet="CANDIDATES">
-                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-                <ScalarProperty Name="ISINNOTICEPERIOD" ColumnName="ISINNOTICEPERIOD" />
-                <ScalarProperty Name="RESUME_SOURCE" ColumnName="RESUME_SOURCE" />
-                <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
-                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-                <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
-                <ScalarProperty Name="ANY_OTHER_OFFER" ColumnName="ANY_OTHER_OFFER" />
-                <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
-                <ScalarProperty Name="CURRENT_LOCATION" ColumnName="CURRENT_LOCATION" />
-                <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
-                <ScalarProperty Name="DOB" ColumnName="DOB" />
-                <ScalarProperty Name="ALTERNATE_EMAIL_ID" ColumnName="ALTERNATE_EMAIL_ID" />
-                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
-                <ScalarProperty Name="ALTERNATE_MOBILE_NO" ColumnName="ALTERNATE_MOBILE_NO" />
-                <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
-                <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
-                <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
-                <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
-                <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
                 <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+                <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+                <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+                <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+                <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
+                <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
+                <ScalarProperty Name="ALTERNATE_MOBILE_NO" ColumnName="ALTERNATE_MOBILE_NO" />
+                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+                <ScalarProperty Name="ALTERNATE_EMAIL_ID" ColumnName="ALTERNATE_EMAIL_ID" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
+                <ScalarProperty Name="CURRENT_LOCATION" ColumnName="CURRENT_LOCATION" />
+                <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
+                <ScalarProperty Name="ANY_OTHER_OFFER" ColumnName="ANY_OTHER_OFFER" />
+                <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+                <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
+                <ScalarProperty Name="RESUME_SOURCE" ColumnName="RESUME_SOURCE" />
+                <ScalarProperty Name="ISINNOTICEPERIOD" ColumnName="ISINNOTICEPERIOD" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ERROR_LOG">
-            <EntityTypeMapping TypeName="HRPortalModel.ERROR_LOG">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.ERROR_LOG">
               <MappingFragment StoreEntitySet="ERROR_LOG">
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-                <ScalarProperty Name="ERR_EVENT" ColumnName="ERR_EVENT" />
-                <ScalarProperty Name="ERR_PAGE" ColumnName="ERR_PAGE" />
-                <ScalarProperty Name="ERR_SYSTEM_NAME" ColumnName="ERR_SYSTEM_NAME" />
-                <ScalarProperty Name="ERR_SYSTEM_ID" ColumnName="ERR_SYSTEM_ID" />
-                <ScalarProperty Name="ERR_CODE" ColumnName="ERR_CODE" />
-                <ScalarProperty Name="ERR_DESC" ColumnName="ERR_DESC" />
-                <ScalarProperty Name="ERR_TYPE" ColumnName="ERR_TYPE" />
                 <ScalarProperty Name="ERR_ID" ColumnName="ERR_ID" />
+                <ScalarProperty Name="ERR_TYPE" ColumnName="ERR_TYPE" />
+                <ScalarProperty Name="ERR_DESC" ColumnName="ERR_DESC" />
+                <ScalarProperty Name="ERR_CODE" ColumnName="ERR_CODE" />
+                <ScalarProperty Name="ERR_SYSTEM_ID" ColumnName="ERR_SYSTEM_ID" />
+                <ScalarProperty Name="ERR_SYSTEM_NAME" ColumnName="ERR_SYSTEM_NAME" />
+                <ScalarProperty Name="ERR_PAGE" ColumnName="ERR_PAGE" />
+                <ScalarProperty Name="ERR_EVENT" ColumnName="ERR_EVENT" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EVENTSCHEDULEs">
-            <EntityTypeMapping TypeName="HRPortalModel.EVENTSCHEDULE">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.EVENTSCHEDULE">
               <MappingFragment StoreEntitySet="EVENTSCHEDULE">
-                <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
-                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-                <ScalarProperty Name="STATUSENUM" ColumnName="STATUSENUM" />
-                <ScalarProperty Name="APPOINTMENTLENGTH" ColumnName="APPOINTMENTLENGTH" />
-                <ScalarProperty Name="DATETIMESCHEDULED" ColumnName="DATETIMESCHEDULED" />
-                <ScalarProperty Name="KEY" ColumnName="KEY" />
-                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+                <ScalarProperty Name="KEY" ColumnName="KEY" />
+                <ScalarProperty Name="DATETIMESCHEDULED" ColumnName="DATETIMESCHEDULED" />
+                <ScalarProperty Name="APPOINTMENTLENGTH" ColumnName="APPOINTMENTLENGTH" />
+                <ScalarProperty Name="STATUSENUM" ColumnName="STATUSENUM" />
+                <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
+                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EXCEPTION_LOGGING">
-            <EntityTypeMapping TypeName="HRPortalModel.EXCEPTION_LOGGING">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.EXCEPTION_LOGGING">
               <MappingFragment StoreEntitySet="EXCEPTION_LOGGING">
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="EXCEPTION_DATETIME" ColumnName="EXCEPTION_DATETIME" />
-                <ScalarProperty Name="EXCEPTION_URL" ColumnName="EXCEPTION_URL" />
-                <ScalarProperty Name="EXCEPTION_PAGEDETAILS" ColumnName="EXCEPTION_PAGEDETAILS" />
-                <ScalarProperty Name="EXCEPTION_SOURCE" ColumnName="EXCEPTION_SOURCE" />
-                <ScalarProperty Name="EXCEPTION_TYPE" ColumnName="EXCEPTION_TYPE" />
-                <ScalarProperty Name="EXCEPTION_MSG" ColumnName="EXCEPTION_MSG" />
                 <ScalarProperty Name="LOG_ID" ColumnName="LOG_ID" />
+                <ScalarProperty Name="EXCEPTION_MSG" ColumnName="EXCEPTION_MSG" />
+                <ScalarProperty Name="EXCEPTION_TYPE" ColumnName="EXCEPTION_TYPE" />
+                <ScalarProperty Name="EXCEPTION_SOURCE" ColumnName="EXCEPTION_SOURCE" />
+                <ScalarProperty Name="EXCEPTION_PAGEDETAILS" ColumnName="EXCEPTION_PAGEDETAILS" />
+                <ScalarProperty Name="EXCEPTION_URL" ColumnName="EXCEPTION_URL" />
+                <ScalarProperty Name="EXCEPTION_DATETIME" ColumnName="EXCEPTION_DATETIME" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="JOB_HISTORY">
-            <EntityTypeMapping TypeName="HRPortalModel.JOB_HISTORY">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.JOB_HISTORY">
               <MappingFragment StoreEntitySet="JOB_HISTORY">
-                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
-                <ScalarProperty Name="JOB_COMMENTS" ColumnName="JOB_COMMENTS" />
-                <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
                 <ScalarProperty Name="JOB_HIST_ID" ColumnName="JOB_HIST_ID" />
+                <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+                <ScalarProperty Name="JOB_COMMENTS" ColumnName="JOB_COMMENTS" />
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="JOBPOSTINGs">
-            <EntityTypeMapping TypeName="HRPortalModel.JOBPOSTING">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.JOBPOSTING">
               <MappingFragment StoreEntitySet="JOBPOSTING">
-                <ScalarProperty Name="POSITION_TYPE" ColumnName="POSITION_TYPE" />
-                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-                <ScalarProperty Name="CUSTOMER_NAME" ColumnName="CUSTOMER_NAME" />
-                <ScalarProperty Name="JD_SOURCE" ColumnName="JD_SOURCE" />
-                <ScalarProperty Name="JD_FILE_PATH" ColumnName="JD_FILE_PATH" />
-                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-                <ScalarProperty Name="WORK_LOCATION" ColumnName="WORK_LOCATION" />
-                <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
-                <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
-                <ScalarProperty Name="NO_OF_VACANCIES" ColumnName="NO_OF_VACANCIES" />
-                <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
-                <ScalarProperty Name="JOB_DESCRIPTION" ColumnName="JOB_DESCRIPTION" />
-                <ScalarProperty Name="JOB_CODE" ColumnName="JOB_CODE" />
                 <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+                <ScalarProperty Name="JOB_CODE" ColumnName="JOB_CODE" />
+                <ScalarProperty Name="JOB_DESCRIPTION" ColumnName="JOB_DESCRIPTION" />
+                <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+                <ScalarProperty Name="POSITION_TYPE" ColumnName="POSITION_TYPE" />
+                <ScalarProperty Name="NO_OF_VACANCIES" ColumnName="NO_OF_VACANCIES" />
+                <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+                <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
+                <ScalarProperty Name="WORK_LOCATION" ColumnName="WORK_LOCATION" />
+                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+                <ScalarProperty Name="JD_FILE_PATH" ColumnName="JD_FILE_PATH" />
+                <ScalarProperty Name="JD_SOURCE" ColumnName="JD_SOURCE" />
+                <ScalarProperty Name="CUSTOMER_NAME" ColumnName="CUSTOMER_NAME" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Numbers">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.Number">
+              <MappingFragment StoreEntitySet="Numbers">
+                <ScalarProperty Name="Number1" ColumnName="Number" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="STATUS_HISTORY">
-            <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.STATUS_HISTORY">
               <MappingFragment StoreEntitySet="STATUS_HISTORY">
-                <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
-                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="SCHEDULE_LENGTH_MINS" ColumnName="SCHEDULE_LENGTH_MINS" />
-                <ScalarProperty Name="SCHEDULED_TO" ColumnName="SCHEDULED_TO" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-                <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
-                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+                <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+                <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="SCHEDULED_TO" ColumnName="SCHEDULED_TO" />
+                <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
+                <ScalarProperty Name="SCHEDULE_LENGTH_MINS" ColumnName="SCHEDULE_LENGTH_MINS" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="STATUS_MASTER">
-            <EntityTypeMapping TypeName="HRPortalModel.STATUS_MASTER">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.STATUS_MASTER">
               <MappingFragment StoreEntitySet="STATUS_MASTER">
-                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="STATUS_ORDER" ColumnName="STATUS_ORDER" />
-                <ScalarProperty Name="STATUS_DESCRIPTION" ColumnName="STATUS_DESCRIPTION" />
-                <ScalarProperty Name="STATUS_NAME" ColumnName="STATUS_NAME" />
                 <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+                <ScalarProperty Name="STATUS_NAME" ColumnName="STATUS_NAME" />
+                <ScalarProperty Name="STATUS_DESCRIPTION" ColumnName="STATUS_DESCRIPTION" />
+                <ScalarProperty Name="STATUS_ORDER" ColumnName="STATUS_ORDER" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="UserLogs">
-            <EntityTypeMapping TypeName="HRPortalModel.UserLog">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.UserLog">
               <MappingFragment StoreEntitySet="UserLog">
-                <ScalarProperty Name="IsOnline" ColumnName="IsOnline" />
-                <ScalarProperty Name="UserMAC" ColumnName="UserMAC" />
-                <ScalarProperty Name="UserIP" ColumnName="UserIP" />
-                <ScalarProperty Name="LoggedOutOn" ColumnName="LoggedOutOn" />
-                <ScalarProperty Name="LoggedInOn" ColumnName="LoggedInOn" />
-                <ScalarProperty Name="LoggedInBy" ColumnName="LoggedInBy" />
-                <ScalarProperty Name="UserLogDesc" ColumnName="UserLogDesc" />
-                <ScalarProperty Name="UserLogName" ColumnName="UserLogName" />
                 <ScalarProperty Name="UserLogId" ColumnName="UserLogId" />
+                <ScalarProperty Name="UserLogName" ColumnName="UserLogName" />
+                <ScalarProperty Name="UserLogDesc" ColumnName="UserLogDesc" />
+                <ScalarProperty Name="LoggedInBy" ColumnName="LoggedInBy" />
+                <ScalarProperty Name="LoggedInOn" ColumnName="LoggedInOn" />
+                <ScalarProperty Name="LoggedOutOn" ColumnName="LoggedOutOn" />
+                <ScalarProperty Name="UserIP" ColumnName="UserIP" />
+                <ScalarProperty Name="UserMAC" ColumnName="UserMAC" />
+                <ScalarProperty Name="IsOnline" ColumnName="IsOnline" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="UserXRoles">
-            <EntityTypeMapping TypeName="HRPortalModel.UserXRole">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.UserXRole">
               <MappingFragment StoreEntitySet="UserXRole">
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="VENDOR_MASTER">
-            <EntityTypeMapping TypeName="HRPortalModel.VENDOR_MASTER">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.VENDOR_MASTER">
               <MappingFragment StoreEntitySet="VENDOR_MASTER">
-                <ScalarProperty Name="VENDOR_TYPE" ColumnName="VENDOR_TYPE" />
-                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="VENDOR_CONTACT_NO" ColumnName="VENDOR_CONTACT_NO" />
-                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
-                <ScalarProperty Name="VENDOR_SPOC" ColumnName="VENDOR_SPOC" />
-                <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
                 <ScalarProperty Name="VENDOR_ID" ColumnName="VENDOR_ID" />
+                <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
+                <ScalarProperty Name="VENDOR_SPOC" ColumnName="VENDOR_SPOC" />
+                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+                <ScalarProperty Name="VENDOR_CONTACT_NO" ColumnName="VENDOR_CONTACT_NO" />
+                <ScalarProperty Name="VENDOR_TYPE" ColumnName="VENDOR_TYPE" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="getSearchResults" FunctionName="HRPortalModel.Store.getSearchResults">
+          <EntitySetMapping Name="JOBXVENDORs">
+            <EntityTypeMapping TypeName="Caihrops_portalModel.JOBXVENDOR">
+              <MappingFragment StoreEntitySet="JOBXVENDOR">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Vendor_Id" ColumnName="Vendor_Id" />
+                <ScalarProperty Name="Job_Id" ColumnName="Job_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="AspNetUserRoles" TypeName="Caihrops_portalModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+            <EndProperty Name="AspNetRoles">
+              <ScalarProperty Name="Id" ColumnName="RoleId" />
+            </EndProperty>
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <FunctionImportMapping FunctionName="Caihrops_portalModel.Store.SplitString" FunctionImportName="SplitString">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="HRPortalModel.getSearchResults_Result">
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.SplitString_Result">
+                <ScalarProperty Name="Item" ColumnName="Item" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="Caihrops_portalModel.Store.fnSplitString" FunctionImportName="fnSplitString">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.fnSplitString_Result">
+                <ScalarProperty Name="splitdata" ColumnName="splitdata" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="Caihrops_portalModel.Store.funcSplitValue" FunctionImportName="funcSplitValue">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.funcSplitValue_Result">
+                <ScalarProperty Name="ListValue" ColumnName="ListValue" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetCandidateDetailsByLastworkingdate" FunctionName="Caihrops_portalModel.Store.GetCandidateDetailsByLastworkingdate">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.GetCandidateDetailsByLastworkingdate_Result">
+                <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+                <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+                <ScalarProperty Name="PARTNER" ColumnName="PARTNER" />
+                <ScalarProperty Name="SUBMITTED_ON" ColumnName="SUBMITTED_ON" />
+                <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="getSearchResults" FunctionName="Caihrops_portalModel.Store.getSearchResults">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.getSearchResults_Result">
                 <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
                 <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
                 <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
@@ -1228,56 +1323,9 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <EntitySetMapping Name="AspNetUsers">
-            <EntityTypeMapping TypeName="HRPortalModel.AspNetUser">
-              <MappingFragment StoreEntitySet="AspNetUsers">
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="Vendor_Id" ColumnName="Vendor_Id" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
-                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
-                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
-                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
-                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
-                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <AssociationSetMapping Name="AspNetUserRoles" TypeName="HRPortalModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
-            <EndProperty Name="AspNetUser">
-              <ScalarProperty Name="Id" ColumnName="UserId" />
-            </EndProperty>
-            <EndProperty Name="AspNetRole">
-              <ScalarProperty Name="Id" ColumnName="RoleId" />
-            </EndProperty>
-            <Condition ColumnName="RoleId" IsNull="false" />
-          </AssociationSetMapping>
-          <EntitySetMapping Name="JOBXVENDORs">
-            <EntityTypeMapping TypeName="HRPortalModel.JOBXVENDOR">
-              <MappingFragment StoreEntitySet="JOBXVENDOR">
-                <ScalarProperty Name="Job_Id" ColumnName="Job_Id" />
-                <ScalarProperty Name="Vendor_Id" ColumnName="Vendor_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="fnSplitString" FunctionName="HRPortalModel.Store.fnSplitString" />
-         
-         
-          <FunctionImportMapping FunctionImportName="SplitString" FunctionName="HRPortalModel.Store.SplitString" />
-          <FunctionImportMapping FunctionImportName="funcSplitValue" FunctionName="HRPortalModel.Store.funcSplitValue" />
-          
-          <FunctionImportMapping FunctionImportName="rptGetCandidatesIdleTimeByWeek" FunctionName="HRPortalModel.Store.rptGetCandidatesIdleTimeByWeek">
+          <FunctionImportMapping FunctionImportName="rptGetCandidatesIdleTimeByWeek" FunctionName="Caihrops_portalModel.Store.rptGetCandidatesIdleTimeByWeek">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesIdleTimeByWeek_Result">
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.rptGetCandidatesIdleTimeByWeek_Result">
                 <ScalarProperty Name="position_name" ColumnName="position_name" />
                 <ScalarProperty Name="ScreeningSubmitted" ColumnName="ScreeningSubmitted" />
                 <ScalarProperty Name="Round1" ColumnName="Round1" />
@@ -1286,9 +1334,9 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="rptGetCandidatesIdleTimeDetailsByWeek" FunctionName="HRPortalModel.Store.rptGetCandidatesIdleTimeDetailsByWeek">
+          <FunctionImportMapping FunctionImportName="rptGetCandidatesIdleTimeDetailsByWeek" FunctionName="Caihrops_portalModel.Store.rptGetCandidatesIdleTimeDetailsByWeek">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesIdleTimeDetailsByWeek_Result">
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.rptGetCandidatesIdleTimeDetailsByWeek_Result">
                 <ScalarProperty Name="position_name" ColumnName="position_name" />
                 <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
                 <ScalarProperty Name="PARTNER" ColumnName="PARTNER" />
@@ -1298,17 +1346,9 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="rptGetStagingData" FunctionName="HRPortalModel.Store.rptGetStagingData" />
-          <EntitySetMapping Name="Numbers">
-            <EntityTypeMapping TypeName="HRPortalModel.Number">
-              <MappingFragment StoreEntitySet="Numbers">
-                <ScalarProperty Name="Number1" ColumnName="Number" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="rptGetCandidatesStaging" FunctionName="HRPortalModel.Store.rptGetCandidatesStaging">
+          <FunctionImportMapping FunctionImportName="rptGetCandidatesStaging" FunctionName="Caihrops_portalModel.Store.rptGetCandidatesStaging">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesStaging_Result">
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.rptGetCandidatesStaging_Result">
                 <ScalarProperty Name="position_name" ColumnName="position_name" />
                 <ScalarProperty Name="ScreeningSubmitted" ColumnName="ScreeningSubmitted" />
                 <ScalarProperty Name="Round1" ColumnName="Round1" />
@@ -1319,9 +1359,9 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="rptGetCandidatesStagingByPartner" FunctionName="HRPortalModel.Store.rptGetCandidatesStagingByPartner">
+          <FunctionImportMapping FunctionImportName="rptGetCandidatesStagingByPartner" FunctionName="Caihrops_portalModel.Store.rptGetCandidatesStagingByPartner">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesStagingByPartner_Result">
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.rptGetCandidatesStagingByPartner_Result">
                 <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
                 <ScalarProperty Name="PARTNER" ColumnName="PARTNER" />
                 <ScalarProperty Name="SCREENING" ColumnName="SCREENING" />

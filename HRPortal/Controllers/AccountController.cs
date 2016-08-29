@@ -189,7 +189,7 @@ namespace HRPortal.Controllers
                             AspNetUser objUser = await db.AspNetUsers.FindAsync(user.Id);
                             objUser.FirstName = model.FirstName;
                             objUser.LastName = model.LastName;
-                            objUser.CreatedOn = DateTime.Now;
+                            objUser.CreatedOn = HelperFuntions.GetDateTime();
                             objUser.CreatedBy = CookieStore.GetCookie(CacheKey.Uid.ToString())==string.Empty?User.Identity.Name: CookieStore.GetCookie(CacheKey.Uid.ToString());
                             objUser.IsActive  = true;
                             objUser.Vendor_Id = !string.IsNullOrEmpty(frm["ddlVendorList"]) ? Guid.Parse(frm["ddlVendorList"]) : Guid.Empty;// model.Vendor_Id;
@@ -311,7 +311,7 @@ namespace HRPortal.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                if (user == null)// if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -606,9 +606,10 @@ namespace HRPortal.Controllers
             {
                 return Redirect(returnUrl);
             }
-            bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
-            var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
-            return RedirectToAction("Index", isHome);
+            //bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
+            //var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
+            //return RedirectToAction("Index", isHome);
+            return RedirectToAction("Index", "Home");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

@@ -89,21 +89,10 @@ namespace HRPortal.Models
                             where rlx.UserId == Guid.Parse(user.Id)
                             select rle.Name).FirstOrDefault();
 
-            //var rolename = (from usr in db.AspNetUsers.ToList()
-            //                join rlx in db.UserXRoles.ToList() on Guid.Parse(usr.Id) equals rlx.UserId
-            //                join rle in db.AspNetRoles.ToList() on rlx.RoleId equals Guid.Parse(rle.Id)
-            //                where usr.Id == id
-            //                select rle.Name).FirstOrDefault();
-
-            //HttpContext.Current.Session[CacheKey.VendorId.ToString()] = user.Vendor_Id;
-            //HttpContext.Current.Session[CacheKey.RoleName.ToString()] = rolename;
-            //HttpContext.Current.Session[CacheKey.Uid.ToString()]= user.Id;
-            //HttpContext.Current.Session[CacheKey.UserName.ToString()] = user.FirstName + " " + user.LastName;
             CookieStore.SetCookie(CacheKey.Uid.ToString(), user.Id, TimeSpan.FromDays(cookieTimeout));
             CookieStore.SetCookie(CacheKey.VendorId.ToString(), user.Vendor_Id.Value.ToString(), TimeSpan.FromDays(cookieTimeout));
             CookieStore.SetCookie(CacheKey.RoleName.ToString(), rolename, TimeSpan.FromDays(cookieTimeout));
             CookieStore.SetCookie(CacheKey.UserName.ToString(), user.FirstName + " " + user.LastName, TimeSpan.FromDays(cookieTimeout));
-            
         }
         
         /// <summary>
@@ -120,14 +109,16 @@ namespace HRPortal.Models
         public void UserLogs(bool isIn,string email, string username)
         {
             UserLog ulog = new UserLog();
+            
+
             if (isIn)
             {
                 ulog.UserLogName = username;
-                ulog.LoggedInBy = email;// HttpRuntime.Cache.Get("LogInEmail") != null ? HttpRuntime.Cache.Get("LogInEmail").ToString() : string.Empty;
-                ulog.LoggedInOn = DateTime.Now;
-                ulog.UserLogDesc = "Logged In";// "Computer Name is-" + Dns.GetHostEntry(HttpContext.Current.Request.UserHostAddress).HostName;
+                ulog.LoggedInBy = email;
+                ulog.LoggedInOn = HelperFuntions.GetDateTime();
+                ulog.UserLogDesc = "Logged In";
                 ulog.IsOnline = true;
-                ulog.UserIP =  GetLocalIPAddress();// System.Net.Dns.GetHostName();
+                ulog.UserIP =  GetLocalIPAddress();
                 db.UserLogs.Add(ulog);
                 db.SaveChanges();
                 int cookieTimeout = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["CookieTimeOutInDays"]);
@@ -138,7 +129,7 @@ namespace HRPortal.Models
                 ulog = db.UserLogs.Where(u => u.IsOnline == true && u.UserLogId == lid).FirstOrDefault();
                 if (ulog != null)
                 {
-                    ulog.LoggedOutOn = DateTime.Now;
+                    ulog.LoggedOutOn = HelperFuntions.GetDateTime();
                     ulog.UserLogDesc = username;
                     ulog.IsOnline = false;
                     db.Entry(ulog).State = EntityState.Modified;

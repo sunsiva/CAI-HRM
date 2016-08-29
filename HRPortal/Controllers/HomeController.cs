@@ -51,12 +51,12 @@ namespace HRPortal.Controllers
                         }
                         ViewBag.StatusList = vmodelCan.GetStatusList();
                         ViewBag.VendorList = vmodelCan.GetVendorList();
-                        ViewBag.PositionList = vmodelCan.GetPositionList();
+                        ViewBag.PositionList = vmodelCan.GetPositionForPartner();
                     }
                     else
                     {
                         jobCanObj.JobItems = dbJobs.Where(row => row.ISACTIVE == true).ToList();
-                        jobCanObj=GetJobSearchResults(jobCanObj.JobItems);
+                        jobCanObj = GetJobSearchResults(jobCanObj.JobItems);
                     }
 
                     jobCanObj = (jobCanObj.CandidateItems != null && jobCanObj.CandidateItems.Count > 0)
@@ -83,7 +83,7 @@ namespace HRPortal.Controllers
                         jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
                         ViewBag.StatusList = vmodelCan.GetStatusList();
                         ViewBag.VendorList = vmodelCan.GetVendorList();
-                        ViewBag.PositionList = vmodelCan.GetPositionList();
+                        ViewBag.PositionList = vmodelCan.GetPositionForPartner();
 
                         if (jobCanObj.CandidateItems.Count > 0)
                         {
@@ -174,14 +174,14 @@ namespace HRPortal.Controllers
                 sHist.CANDIDATE_ID = Guid.Parse(id);
                 sHist.ISACTIVE = true;
                 sHist.MODIFIED_BY = uid;
-                sHist.MODIFIED_ON = DateTime.Now;
+                sHist.MODIFIED_ON = HelperFuntions.GetDateTime();
                 db.STATUS_HISTORY.Add(sHist);
                 await db.SaveChangesAsync();
 
                 CANDIDATE cANDIDATE = db.CANDIDATES.Where(i => i.CANDIDATE_ID == cId).FirstOrDefault();
                 cANDIDATE.STATUS = status;
                 cANDIDATE.MODIFIED_BY = uid;
-                cANDIDATE.MODIFIED_ON = DateTime.Now;
+                cANDIDATE.MODIFIED_ON = HelperFuntions.GetDateTime();
                 db.Entry(cANDIDATE).State = EntityState.Modified;
                 await db.SaveChangesAsync();
 
@@ -352,7 +352,7 @@ namespace HRPortal.Controllers
                 throw ex; }
            
         }
-
+        
         private JobAndCandidateViewModels GetJobSearchResults(List<JOBPOSTING> dbJobs)
         {
             var cookie = CookieStore.GetCookie(CacheKey.JobSearchHome.ToString());
@@ -363,22 +363,23 @@ namespace HRPortal.Controllers
                 name = val[0]; stdt = val[1]; edt = val[2];
             }
             jobCanObj.JobItems = (from j in dbJobs
-                                        join u1 in db.AspNetUsers.ToList() on j.CREATED_BY equals u1.Id into tempUsr1
-                                        from u1 in tempUsr1.DefaultIfEmpty()
-                                        where j.POSITION_NAME.ToUpper().Contains(name.ToUpper())
-                                        && (stdt != string.Empty ? ((Convert.ToDateTime(j.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
-                                        && (edt != string.Empty ? Convert.ToDateTime(j.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
-                                        select new { Job = j }).Select(item => new JOBPOSTING
-                                        {
-                                            JOB_ID = item.Job.JOB_ID,
-                                            JOB_CODE = item.Job.JOB_CODE,
-                                            JOB_DESCRIPTION = item.Job.JOB_DESCRIPTION,
-                                            POSITION_NAME = item.Job.POSITION_NAME,
-                                            NO_OF_VACANCIES = item.Job.NO_OF_VACANCIES,
-                                            YEARS_OF_EXP_TOTAL = item.Job.YEARS_OF_EXP_TOTAL,
-                                            CREATED_ON = item.Job.CREATED_ON,
-                                            ISACTIVE=item.Job.ISACTIVE
-                                        }).ToList();
+                                  join u1 in db.AspNetUsers.ToList() on j.CREATED_BY equals u1.Id into tempUsr1
+                                  from u1 in tempUsr1.DefaultIfEmpty()
+                                  where j.POSITION_NAME.ToUpper().Contains(name.ToUpper())
+                                  && (stdt != string.Empty ? ((Convert.ToDateTime(j.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
+                                  && (edt != string.Empty ? Convert.ToDateTime(j.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
+                                  select new { Job = j }).Select(item => new JOBPOSTING
+                                  {
+                                      JOB_ID = item.Job.JOB_ID,
+                                      JOB_CODE = item.Job.JOB_CODE,
+                                      JOB_DESCRIPTION = item.Job.JOB_DESCRIPTION,
+                                      POSITION_NAME = item.Job.POSITION_NAME,
+                                      CUSTOMER_NAME = item.Job.CUSTOMER_NAME,
+                                      NO_OF_VACANCIES = item.Job.NO_OF_VACANCIES,
+                                      YEARS_OF_EXP_TOTAL = item.Job.YEARS_OF_EXP_TOTAL,
+                                      CREATED_ON = item.Job.CREATED_ON,
+                                      ISACTIVE = item.Job.ISACTIVE
+                                  }).ToList();
             return jobCanObj;
         }
 

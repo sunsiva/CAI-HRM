@@ -122,7 +122,7 @@ namespace HRPortal.Models
                 rec.STATUSENUM = 1;
                 rec.ISACTIVE = true;
                 rec.CREATED_BY = uid;
-                rec.CREATED_ON = DateTime.Now;
+                rec.CREATED_ON = HelperFuntions.GetDateTime();
                 ent.EVENTSCHEDULEs.Add(rec);
                 ent.SaveChanges();
             }

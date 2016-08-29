@@ -28,7 +28,7 @@ namespace HRPortal.Controllers
         // GET: Job
         public async Task<ActionResult> Index(string sOdr, int? page)
         {
-            var jobLst = await dbContext.JOBPOSTINGs.Where(row => row.ISACTIVE == true).ToListAsync();
+            var jobLst = await dbContext.JOBPOSTINGs.ToListAsync();
             jobLst = GetPagination(jobLst, sOdr, page);
             ViewBag.TotalRecord = jobLst.Count();
             int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;
@@ -52,6 +52,14 @@ namespace HRPortal.Controllers
             jOBPOSTING.MODIFIED_BY = userLst.Where(u => u.Id == jOBPOSTING.MODIFIED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
 
             jOBPOSTING.JD_FILE_PATH = string.IsNullOrEmpty(owner.jd) ? string.Empty : Path.Combine("/UploadDocument/", owner.jd);
+            var jobs = dbContext.JOB_HISTORY.Where(j => j.JOB_ID == jOBPOSTING.JOB_ID).ToList();
+            string cmnts = string.Empty;
+            foreach (var v in jobs)
+            {
+                cmnts = cmnts +" || "+ v.JOB_COMMENTS;
+            }
+            jOBPOSTING.COMMENTS = cmnts;
+
             if (jOBPOSTING == null)
             {
                 return HttpNotFound();
@@ -71,7 +79,7 @@ namespace HRPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<ActionResult> Create([Bind(Include = "JOB_ID,JOB_CODE,JOB_DESCRIPTION,POSITION_NAME,NO_OF_VACANCIES,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,CLOSE_DATE,ISIMMEDIATEPOSITION,WORK_LOCATION,CUSTOMER_NAME,COMMENTS,JD_FILE_PATH,ISACTIVE,MODIFIED_BY,MODIFIED_ON,CREATED_BY,CREATED_ON")] JOBPOSTING jOBPOSTING, HttpPostedFileBase file,FormCollection frm)
         {
             using (var dbContextTransaction = dbContext.Database.BeginTransaction())
@@ -80,27 +88,26 @@ namespace HRPortal.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-
                         jOBPOSTING.JOB_ID = Guid.NewGuid();
                         jOBPOSTING.JOB_CODE = GetAutoJobCode(jOBPOSTING.POSITION_NAME.ToUpper());
                         jOBPOSTING.ISACTIVE = true;
                         jOBPOSTING.JD_FILE_PATH = FileUpload(file);
                         //jOBPOSTING.POSITION_TYPE = frm["PositionType"];
                         jOBPOSTING.CREATED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                        jOBPOSTING.CREATED_ON = DateTime.Now;
+                        jOBPOSTING.CREATED_ON = HelperFuntions.GetDateTime();
                         dbContext.JOBPOSTINGs.Add(jOBPOSTING);
                         await dbContext.SaveChangesAsync();
 
-                        var lstOfVendor = frm["ddlVendorList"].Split(',');
-                        JOBXVENDOR jobxven;
-                        foreach (var item in lstOfVendor)
-                        {
-                            jobxven = new JOBXVENDOR();
-                            jobxven.Job_Id = jOBPOSTING.JOB_ID;
-                            jobxven.Vendor_Id = string.IsNullOrEmpty(item) ? Guid.Empty : new Guid(item);
-                            dbContext.JOBXVENDORs.Add(jobxven);
-                        }
-                        await dbContext.SaveChangesAsync();
+                        //var lstOfVendor = frm["ddlVendorList"].Split(',');
+                        //JOBXVENDOR jobxven;
+                        //foreach (var item in lstOfVendor)
+                        //{
+                        //    jobxven = new JOBXVENDOR();
+                        //    jobxven.Job_Id = jOBPOSTING.JOB_ID;
+                        //    jobxven.Vendor_Id = string.IsNullOrEmpty(item) ? Guid.Empty : new Guid(item);
+                        //    dbContext.JOBXVENDORs.Add(jobxven);
+                        //}
+                        //await dbContext.SaveChangesAsync();
 
                         dbContextTransaction.Commit();
 
@@ -112,7 +119,8 @@ namespace HRPortal.Controllers
                                 string filename = Path.GetFileName(file.FileName);
                                 jOBPOSTING.JD_FILE_PATH = Path.Combine(Server.MapPath("~/UploadDocument"), filename);
                             }
-                            await avm.sendMailForNewJob(jOBPOSTING, true, lstOfVendor);
+                            //await avm.sendMailForNewJob(jOBPOSTING, true, lstOfVendor);
+                            await avm.sendMailForNewJob(jOBPOSTING, true);
                         }
 
                         return RedirectToAction("Index");
@@ -126,7 +134,7 @@ namespace HRPortal.Controllers
         }
 
         // GET: Job/Edit/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<ActionResult> Edit(Guid? id)
         {
             ViewBag.VendorList = vmodelCan.GetVendorListWithIDs();
@@ -158,32 +166,34 @@ namespace HRPortal.Controllers
                 {
                     if (ModelState.IsValid)
                     {
+                        
                         jOBPOSTING.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                        jOBPOSTING.MODIFIED_ON = DateTime.Now;
+                        jOBPOSTING.MODIFIED_ON = HelperFuntions.GetDateTime();
                         jOBPOSTING.JD_FILE_PATH = (file == null ? frm["JD_FILE_PATH"] : FileUpload(file));
                         //jOBPOSTING.POSITION_TYPE = frm["PositionType"];
                         dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
                         await dbContext.SaveChangesAsync();
 
-                        var lstOfVendor = frm["ddlVendorList"].Split(',');
-                        JOBXVENDOR jobxven;
+
 
                         //Delete old data for the same JOB to insert new Vendors mapping on the Job.
-                        var jobs = dbContext.JOBXVENDORs.Where(j => j.Job_Id == jOBPOSTING.JOB_ID).ToList();
-                        foreach(var v in jobs)
-                        { 
-                            dbContext.JOBXVENDORs.Remove(v);
-                        }
-                        await dbContext.SaveChangesAsync();
+                        //var lstOfVendor = frm["ddlVendorList"].Split(',');
+                        //JOBXVENDOR jobxven;
+                        //var jobs = dbContext.JOBXVENDORs.Where(j => j.Job_Id == jOBPOSTING.JOB_ID).ToList();
+                        //foreach (var v in jobs)
+                        //{
+                        //    dbContext.JOBXVENDORs.Remove(v);
+                        //}
+                        //await dbContext.SaveChangesAsync();
 
-                        foreach (var item in lstOfVendor)
-                        {
-                            jobxven = new JOBXVENDOR();
-                            jobxven.Job_Id = jOBPOSTING.JOB_ID;
-                            jobxven.Vendor_Id = string.IsNullOrEmpty(item) ? Guid.Empty : new Guid(item);
-                            dbContext.JOBXVENDORs.Add(jobxven);
-                        }
-                        await dbContext.SaveChangesAsync();
+                        //foreach (var item in lstOfVendor)
+                        //{
+                        //    jobxven = new JOBXVENDOR();
+                        //    jobxven.Job_Id = jOBPOSTING.JOB_ID;
+                        //    jobxven.Vendor_Id = string.IsNullOrEmpty(item) ? Guid.Empty : new Guid(item);
+                        //    dbContext.JOBXVENDORs.Add(jobxven);
+                        //}
+                        //await dbContext.SaveChangesAsync();
 
                         dbContextTransaction.Commit();
 
@@ -198,8 +208,9 @@ namespace HRPortal.Controllers
                         //    await avm.sendMailForNewJob(jOBPOSTING, false);
                         //}
 
-
-                        return RedirectToAction("Index");
+                        var qryStr = Request.UrlReferrer.Query.Split('&');
+                        string pNo = qryStr.Count() > 0 ? qryStr[0].Split('=')[1].ToString() : "1";
+                        return RedirectToAction("Index", new { page = pNo });
                     }
                     return View(jOBPOSTING);
                 }
@@ -212,7 +223,7 @@ namespace HRPortal.Controllers
         }
 
         // GET: Job/Delete/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<ActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -242,7 +253,7 @@ namespace HRPortal.Controllers
             else {
                     //dbContext.JOBPOSTINGs.Remove(jOBPOSTING);
                     jOBPOSTING.MODIFIED_BY = _uid;
-                    jOBPOSTING.MODIFIED_ON = DateTime.Now;
+                    jOBPOSTING.MODIFIED_ON = HelperFuntions.GetDateTime();
                     jOBPOSTING.ISACTIVE = false;
                     dbContext.Entry(jOBPOSTING).State = EntityState.Modified;
                     await dbContext.SaveChangesAsync();
@@ -253,11 +264,13 @@ namespace HRPortal.Controllers
                     jobhist.JOB_COMMENTS = model.COMMENTS;
                     jobhist.IS_ACTIVE = false;
                     jobhist.CREATED_BY = string.IsNullOrEmpty(_uid) ? User.Identity.Name : _uid;
-                    jobhist.CREATED_ON = DateTime.Now;
+                    jobhist.CREATED_ON = HelperFuntions.GetDateTime();
                     dbContext.JOB_HISTORY.Add(jobhist);
                     await dbContext.SaveChangesAsync();
                 }
-            return RedirectToAction("Index");
+                var qryStr = Request.UrlReferrer.Query.Split('&');
+                string pNo = qryStr.Count() > 0 ? qryStr[0].Split('=')[1].ToString() : "1";
+                return RedirectToAction("Index", new { page = pNo });
             }
             catch (Exception ex) { throw ex; }
         }
