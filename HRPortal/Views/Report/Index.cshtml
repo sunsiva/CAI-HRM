@@ -1,0 +1,87 @@
+﻿
+@{
+    ViewBag.Title = "Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/Tabs.css" rel="stylesheet" />
+
+<div class="container">
+    <div id="page-wrapper">
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Reports</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <div class="col-xs-3">
+                <!-- required for floating -->
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs tabs-left">
+                    <li class="active"><a href="#Staging" data-toggle="tab">Staging</a></li>
+                    <li class=""><a href="#StagingPartner" data-toggle="tab">Staging By Partner</a></li>
+                    <li class=""><a href="#LWD" data-toggle="tab">LWD</a></li>
+                    <li class=""><a href="#IdleTime" data-toggle="tab">Idle Time</a></li>
+                    <li class=""><a href="#IdleTimeDetails" data-toggle="tab">Idle Time Details</a></li>
+                </ul>
+            </div>
+
+            <div class="col-xs-9">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="Staging">
+
+                        @Html.Partial("_StagingReport")
+                    </div>
+                    <div class="tab-pane" id="StagingPartner">
+                        @Html.Action("Staging", "Report")
+                    </div>
+                    <div class="tab-pane" id="LWD">
+                        @Html.Action("CadidatesByLastWorkingDay", "Report")
+                    </div>
+                    <div class="tab-pane" id="IdleTime">
+                        @Html.Action("CadidatesIdleTime", "Report")
+                    </div>
+                    <div class="tab-pane" id="IdleTimeDetails">
+                        @Html.Action("CadidatesIdleTimeDetails", "Report")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+        <link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
+        <script lang="ja" type="text/javascript">
+            $(function () {
+                $('#ddlVendorList').multiselect(
+               {
+                   includeSelectAllOption: true,
+                   enableCaseInsensitiveFiltering: true,
+                   nonSelectedText: '--Select Partner--'
+               });
+
+                $('#btnSearchStaging').click(function () {
+                    //alert($('#ddlVendorList').val());
+                    $.get("/Report/StagingReport", { partner: $('#ddlVendorList').val() }, function (data) {
+                        $("#Staging").html(data);
+                    });
+                });
+
+            });
+            function weekChangeEvent(val) {
+                $.get("/Report/CadidatesIdleTimeDetails", { week: val }, function (data) {
+                    $("#IdleTimeDetails").html(data);
+                });
+            }
+            function weekChangeStgEvent(val) {
+                $.get("/Report/CadidatesIdleTime", { week: val }, function (data) {
+                    $("#IdleTime").html(data);
+                });
+
+            }
+
+        </script>
+    }

@@ -1,7 +1,22 @@
-﻿
+﻿@using System.Web.Mvc;
 
 @model IEnumerable<HRPortal.Models.StagingReportViewModel>
 @using HRPortal.Models
+
+
+@if (ViewBag.WeekList)
+{
+    @Html.Label("Week", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.DropDownList("Week", new List<SelectListItem>
+        {
+        new SelectListItem {Text="1-2 Weeks (8-14 days)",Value="1week",Selected=true },
+        new SelectListItem {Text="2-3 Weeks (15-21 days)",Value="2week" },
+        new SelectListItem {Text=">3 Weeks (>22 days)",Value="3week" } },
+    new { @onchange = "weekChangeStgEvent(this.value)" })
+       
+    </div>
+}
 
 <div class="container" id="StagingPartial">
     <div class="row">
@@ -15,13 +30,13 @@
                         <thead>
                             <tr>
                                 <th>
-                                    POSITION_NAME
+                                    POSITION NAME
                                 </th>
-                                @if(ViewBag.partner)
+                                @if (ViewBag.partner)
                                 {
-                                <th>
-                                    PARTNER NAME
-                                </th>
+                                    <th>
+                                        PARTNER NAME
+                                    </th>
                                 }
                                 <th>
                                     SCREENING
@@ -35,28 +50,32 @@
                                 <th>
                                     ROUND 3
                                 </th>
-                                <th>
-                                    OFFERED
-                                </th>
-                                <th>
-                                    Total
-                                </th>
+                                @if (ViewBag.Offered)
+                                {
+                                    <th>
+                                        OFFERED
+                                    </th>
 
+
+                                    <th>
+                                        TOTAL
+                                    </th>
+                                }
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
-                             {
+                            {
                                 <tr>
                                     <td align="left">
                                         @item.Position_Name
                                     </td>
                                     @if (ViewBag.partner)
                                     {
-                                    <td align="left">
-                                        @item.Partner_Name
-                                    </td>
-                                     }
+                                        <td align="left">
+                                            @item.Partner_Name
+                                        </td>
+                                    }
                                     <td align="right">
                                         @item.Screening
                                     </td>
@@ -69,12 +88,15 @@
                                     <td align="right">
                                         @item.Round3
                                     </td>
-                                    <td align="right">
-                                        @item.Offered
-                                    </td>
-                                    <td align="right">
-                                        @item.Total
-                                    </td>
+                                    @if (ViewBag.Offered)
+                                    {
+                                        <td align="right">
+                                            @item.Offered
+                                        </td>
+                                        <td align="right">
+                                            @item.Total
+                                        </td>
+                                    }
                                 </tr>
                             }
                         </tbody>

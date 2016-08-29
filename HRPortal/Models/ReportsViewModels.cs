@@ -24,8 +24,8 @@ namespace HRPortal.Models
         public string Position_Name { get; set; }
         public string Candidate_name { get; set; }
         public string Partner_Name { get; set; }
-        public DateTime Submitted_On { get; set; }
-        public DateTime Last_Working_Date { get; set; }
+        public string Submitted_On { get; set; }
+        public string Last_Working_Date { get; set; }
         public string Status { get; set; }
     }
 }

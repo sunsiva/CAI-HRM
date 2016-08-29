@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="HRPortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+<Schema Namespace="Caihrops_portalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="__MigrationHistory">
     <Key>
       <PropertyRef Name="MigrationId" />
@@ -180,10 +180,14 @@
     <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
   </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
   <EntityType Name="JOBXVENDOR">
     <Key>
+      <PropertyRef Name="Id" />
       <PropertyRef Name="Vendor_Id" />
     </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Vendor_Id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="Job_Id" Type="uniqueidentifier" />
   </EntityType>
@@ -337,7 +341,7 @@
   </Association>
   <Association Name="FK_JOBXVENDOR_VENDOR_MASTER">
     <End Role="VENDOR_MASTER" Type="Self.VENDOR_MASTER" Multiplicity="1" />
-    <End Role="JOBXVENDOR" Type="Self.JOBXVENDOR" Multiplicity="0..1" />
+    <End Role="JOBXVENDOR" Type="Self.JOBXVENDOR" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="VENDOR_MASTER">
         <PropertyRef Name="VENDOR_ID" />
@@ -414,13 +418,7 @@
   <Function Name="rptGetCandidatesStagingByPartner" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Partner" Type="nvarchar(max)" Mode="In" />
   </Function>
-  <Function Name="rptGetStagingData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-    <Parameter Name="Status" Type="nvarchar" Mode="In" />
-    <Parameter Name="Round1" Type="bit" Mode="In" />
-    <Parameter Name="Round2" Type="bit" Mode="In" />
-    <Parameter Name="Round3" Type="bit" Mode="In" />
-  </Function>
-  <EntityContainer Name="HRPortalModelStoreContainer">
+  <EntityContainer Name="Caihrops_portalModelStoreContainer">
     <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
@@ -433,13 +431,19 @@
     <EntitySet Name="EXCEPTION_LOGGING" EntityType="Self.EXCEPTION_LOGGING" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="JOB_HISTORY" EntityType="Self.JOB_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="JOBPOSTING" EntityType="Self.JOBPOSTING" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="JOBXVENDOR" EntityType="Self.JOBXVENDOR" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Numbers" EntityType="Self.Numbers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserLog" EntityType="Self.UserLog" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserXRole" EntityType="Self.UserXRole" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="VENDOR_MASTER" EntityType="Self.VENDOR_MASTER" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="JOBXVENDOR" EntityType="Self.JOBXVENDOR" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [JOBXVENDOR].[Id] AS [Id], 
+    [JOBXVENDOR].[Vendor_Id] AS [Vendor_Id], 
+    [JOBXVENDOR].[Job_Id] AS [Job_Id]
+    FROM [dbo].[JOBXVENDOR] AS [JOBXVENDOR]</DefiningQuery>
+    </EntitySet>
     <AssociationSet Name="FK_AspNetUserRoles_AspNetRoles" Association="Self.FK_AspNetUserRoles_AspNetRoles">
       <End Role="AspNetRoles" EntitySet="AspNetRoles" />
       <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />

@@ -367,6 +367,7 @@
     <Content Include="Content\images\Excel-icon.png" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\sb-admin-2.css" />
+    <Content Include="Content\Tabs.css" />
     <Content Include="Content\tags\jquery.tagit.css" />
     <Content Include="Content\tags\tagit.ui-zendesk.css" />
     <Content Include="Content\timeline.css" />
@@ -417,6 +418,7 @@
     <Content Include="HRPortal.edmx.diagram">
       <DependentUpon>HRPortal.edmx</DependentUpon>
     </Content>
+    <Content Include="Views\Report\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

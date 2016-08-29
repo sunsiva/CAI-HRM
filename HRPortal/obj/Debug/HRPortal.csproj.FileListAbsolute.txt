@@ -185,7 +185,6 @@ D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\Microsoft.Owin.
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.dll
 D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.pdb
-D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.csprojResolveAssemblyReference.cache
 D:\HROps\Application\HRPortal\obj\Debug\HRPortal.csprojResolveAssemblyReference.cache
 D:\HROps\Application\HRPortal\bin\roslyn\csc.exe
 D:\HROps\Application\HRPortal\bin\roslyn\csc.exe.config
@@ -284,3 +283,4 @@ D:\HROps\Application\HRPortal\bin\Microsoft.Owin.Security.Twitter.xml
 D:\HROps\Application\HRPortal\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 D:\HROps\Application\HRPortal\obj\Debug\HRPortal.dll
 D:\HROps\Application\HRPortal\obj\Debug\HRPortal.pdb
+D:\source\HDC\HR_Portal\Source\Application\HRPortal\HRPortal\obj\Debug\HRPortal.csprojResolveAssemblyReference.cache
