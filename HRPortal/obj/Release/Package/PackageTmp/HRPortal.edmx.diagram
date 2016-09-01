@@ -4,31 +4,32 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="2391b50c05684ccaa6eee97d322bb062" Name="Diagram1">
-        <EntityTypeShape EntityType="HRPortalModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="7.75" />
-        <EntityTypeShape EntityType="HRPortalModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.75" />
-        <EntityTypeShape EntityType="HRPortalModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1.375" />
-        <EntityTypeShape EntityType="HRPortalModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="4.125" />
-        <EntityTypeShape EntityType="HRPortalModel.CANDIDATE" Width="1.5" PointX="8" PointY="10.375" />
-        <EntityTypeShape EntityType="HRPortalModel.ERROR_LOG" Width="1.5" PointX="2.75" PointY="7.75" />
-        <EntityTypeShape EntityType="HRPortalModel.EVENTSCHEDULE" Width="1.5" PointX="10.75" PointY="4.75" />
-        <EntityTypeShape EntityType="HRPortalModel.EXCEPTION_LOGGING" Width="1.5" PointX="10.75" PointY="9.75" />
-        <EntityTypeShape EntityType="HRPortalModel.JOB_HISTORY" Width="1.5" PointX="8" PointY="7.25" />
-        <EntityTypeShape EntityType="HRPortalModel.JOBPOSTING" Width="1.5" PointX="5.75" PointY="9.375" />
-        <EntityTypeShape EntityType="HRPortalModel.STATUS_HISTORY" Width="1.5" PointX="10" PointY="1" />
-        <EntityTypeShape EntityType="HRPortalModel.STATUS_MASTER" Width="1.5" PointX="7.75" PointY="1" />
-        <EntityTypeShape EntityType="HRPortalModel.UserLog" Width="1.5" PointX="0.75" PointY="11.75" />
-        <EntityTypeShape EntityType="HRPortalModel.UserXRole" Width="1.5" PointX="7.75" PointY="4.75" />
-        <EntityTypeShape EntityType="HRPortalModel.VENDOR_MASTER" Width="1.5" PointX="2.75" PointY="11.75" />
-        <AssociationConnector Association="HRPortalModel.FK_CANDIDATES_JOBPOSTING" />
-        <AssociationConnector Association="HRPortalModel.FK_JOB_HISTORY_JOBPOSTING" />
-        <AssociationConnector Association="HRPortalModel.FK_STATUS_HISTORY_STATUS_MASTER" />
-        <EntityTypeShape EntityType="HRPortalModel.AspNetUser" Width="1.5" PointX="3" PointY="1.125" />
-        <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="HRPortalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="HRPortalModel.AspNetUserRoles" />
-        <EntityTypeShape EntityType="HRPortalModel.JOBXVENDOR" Width="1.5" PointX="5" PointY="15.625" />
-        <AssociationConnector Association="HRPortalModel.FK_JOBXVENDOR_VENDOR_MASTER" />
+      <Diagram DiagramId="e114ebbb0da340b1bd52578f964cbac6" Name="Diagram1">
+        <EntityTypeShape EntityType="Caihrops_portalModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.AspNetUser" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.CANDIDATE" Width="1.5" PointX="8" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.ERROR_LOG" Width="1.5" PointX="2.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.EVENTSCHEDULE" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.EXCEPTION_LOGGING" Width="1.5" PointX="0.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.JOB_HISTORY" Width="1.5" PointX="8" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.JOBPOSTING" Width="1.5" PointX="5.75" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.Number" Width="1.5" PointX="2.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.STATUS_HISTORY" Width="1.5" PointX="13" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.STATUS_MASTER" Width="1.5" PointX="10.75" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.UserLog" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.UserXRole" Width="1.5" PointX="12.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.VENDOR_MASTER" Width="1.5" PointX="7.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.JOBXVENDOR" Width="1.5" PointX="10" PointY="1.75" IsExpanded="true" />
+        <AssociationConnector Association="Caihrops_portalModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="Caihrops_portalModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="Caihrops_portalModel.FK_CANDIDATES_JOBPOSTING" ManuallyRouted="false" />
+        <AssociationConnector Association="Caihrops_portalModel.FK_JOB_HISTORY_JOBPOSTING" ManuallyRouted="false" />
+        <AssociationConnector Association="Caihrops_portalModel.FK_STATUS_HISTORY_STATUS_MASTER" ManuallyRouted="false" />
+        <AssociationConnector Association="Caihrops_portalModel.FK_JOBXVENDOR_VENDOR_MASTER" ManuallyRouted="false" />
+        <AssociationConnector Association="Caihrops_portalModel.AspNetUserRoles" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

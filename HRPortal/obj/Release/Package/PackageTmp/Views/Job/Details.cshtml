@@ -3,14 +3,13 @@
 @{
     ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var isActive =(Model.ISACTIVE == true ? "Active" : "In-Active");
+    var isActive =(Model.ISACTIVE == true ? "Active" : "Inactive");
     var jdpath = (Model.JD_FILE_PATH == "" ? "" : Model.JD_FILE_PATH);
     }
 
 <h2 align="center">Job Details</h2>
 
 <div>
-    @*<h4>JOB DETAILS</h4>*@
     <hr />
         <dl class="dl-horizontal">
             <dt>
@@ -30,13 +29,19 @@
             </dd>
 
             <dt>
-                @Html.DisplayName("POSITION NAME")
+                @Html.DisplayName("POSITION")
             </dt>
 
             <dd>
                 @Html.DisplayFor(model => model.POSITION_NAME)
             </dd>
+            <dt>
+                @Html.DisplayName("CUSTOMER")
+            </dt>
 
+            <dd>
+                @Html.DisplayFor(model => model.CUSTOMER_NAME)
+            </dd>
             <dt>
                 @Html.DisplayName("NO OF VACANCIES")
             </dt>
@@ -44,13 +49,6 @@
             <dd>
                 @Html.DisplayFor(model => model.NO_OF_VACANCIES)
             </dd>
-            @*<dt>
-                @Html.DisplayName("POSITION TYPE")
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.POSITION_TYPE)
-            </dd>*@
             <dt>
                 @Html.DisplayName("TOTAL EXPERIENCE")
             </dt>

@@ -382,5 +382,30 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="getCandidatesSchedules" FunctionName="Caihrops_portalModel.Store.getCandidatesSchedules">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.getCandidatesSchedules_Result">
+          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+          <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
+          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+          <ScalarProperty Name="POSITION" ColumnName="POSITION" />
+          <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
+          <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
+          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+          <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
+          <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="SCHEDULED_ON" ColumnName="SCHEDULED_ON" />
+          <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
+          <ScalarProperty Name="SCHEDULED_LENGTH" ColumnName="SCHEDULED_LENGTH" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
   </EntityContainerMapping>
 </Mapping>

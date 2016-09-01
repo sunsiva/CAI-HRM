@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Caihrops_portalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Caihrops_portalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -402,6 +402,9 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
           </ReturnType>
         </Function>
         <Function Name="GetCandidateDetailsByLastworkingdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="getCandidatesSchedules" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="NavigDate" Type="nvarchar" Mode="In" />
+        </Function>
         <Function Name="getSearchResults" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="PositionName" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="CandidateName" Type="nvarchar" Mode="In" />
@@ -482,8 +485,7 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
             <End Role="STATUS_HISTORY" EntitySet="STATUS_HISTORY" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Caihrops_portalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -914,16 +916,19 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
             <Parameter Name="flag" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="rptGetCandidatesIdleTimeByWeek" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesIdleTimeByWeek_Result)">
-            <Parameter Name="Week" Mode="In" Type="String" />
+          <Parameter Name="Week" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="rptGetCandidatesIdleTimeDetailsByWeek" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesIdleTimeDetailsByWeek_Result)">
-            <Parameter Name="Week" Mode="In" Type="String" />
+          <Parameter Name="Week" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="rptGetCandidatesStaging" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesStaging_Result)">
-            <Parameter Name="Partner" Mode="In" Type="String" />
+          <Parameter Name="Partner" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="rptGetCandidatesStagingByPartner" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesStagingByPartner_Result)">
-            <Parameter Name="Partner" Mode="In" Type="String" />
+          <Parameter Name="Partner" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="getCandidatesSchedules" ReturnType="Collection(Caihrops_portalModel.getCandidatesSchedules_Result)">
+            <Parameter Name="NavigDate" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetCandidateDetailsByLastworkingdate_Result">
@@ -985,6 +990,27 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
           <Property Type="Int32" Name="ROUND3" Nullable="true" />
           <Property Type="Int32" Name="OFFERED" Nullable="true" />
           <Property Type="Int32" Name="Total" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="getCandidatesSchedules_Result">
+          <Property Type="Guid" Name="CANDIDATE_ID" Nullable="false" />
+          <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="MOBILE_NO" Nullable="false" MaxLength="25" />
+          <Property Type="String" Name="EMAIL" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="POSITION" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="RESUME_FILE_PATH" Nullable="true" MaxLength="166" />
+          <Property Type="String" Name="NOTICE_PERIOD" Nullable="false" MaxLength="50" />
+          <Property Type="Decimal" Name="YEARS_OF_EXP_TOTAL" Nullable="false" Precision="18" Scale="2" />
+          <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" Precision="23" />
+          <Property Type="String" Name="CURRENT_COMPANY" Nullable="false" MaxLength="150" />
+          <Property Type="String" Name="VENDOR_NAME" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
+          <Property Type="Guid" Name="STATUS_ID" Nullable="false" />
+          <Property Type="DateTime" Name="CREATED_ON" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="MODIFIED_ON" Nullable="true" Precision="23" />
+          <Property Type="String" Name="MODIFIED_BY" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="SCHEDULED_ON" Nullable="true" Precision="23" />
+          <Property Type="String" Name="SCHEDULED_FOR" Nullable="true" MaxLength="500" />
+          <Property Type="Int32" Name="SCHEDULED_LENGTH" Nullable="true" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1370,6 +1396,31 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
                 <ScalarProperty Name="ROUND3" ColumnName="ROUND3" />
                 <ScalarProperty Name="OFFERED" ColumnName="OFFERED" />
                 <ScalarProperty Name="Total" ColumnName="Total" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="getCandidatesSchedules" FunctionName="Caihrops_portalModel.Store.getCandidatesSchedules">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Caihrops_portalModel.getCandidatesSchedules_Result">
+                <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+                <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+                <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
+                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+                <ScalarProperty Name="POSITION" ColumnName="POSITION" />
+                <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
+                <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
+                <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+                <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+                <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
+                <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+                <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+                <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="SCHEDULED_ON" ColumnName="SCHEDULED_ON" />
+                <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
+                <ScalarProperty Name="SCHEDULED_LENGTH" ColumnName="SCHEDULED_LENGTH" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

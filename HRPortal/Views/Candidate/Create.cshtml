@@ -60,6 +60,7 @@
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @required = "mandatory" } })
                     @Html.ValidationMessageFor(model => model.MOBILE_NO, "", new { @class = "text-danger" })
+                    <span align="right" id="errMsgIsDuplicate" class="text-danger"></span>
                     <span align="right" id="errMsgMob" class="text-danger"></span>
                 </div>
             </div>
@@ -79,6 +80,7 @@
                     @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control date-picker", placeholder = "Select a date..." } })
                     @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger", @required = "mandatory" })
                     <span align="right" id="errMsgIsDuplicate" class="text-danger"></span>
+                    <span align="right" id="errMsgDob" class="text-danger"></span>
                 </div>
             </div>
 
@@ -195,7 +197,6 @@ else
 <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
     <script lang="ja" type="text/javascript">
         $(document).ready(function () {
-
             $('#rdoIsNPYes').click(function () {
                 $('#txtNP').hasClass('hide') ? "" : $('#txtNP').removeClass('show') && $('#txtNP').addClass('hide');
                 $('#txtLWD').hasClass('hide') ? $('#txtLWD').removeClass('hide') && $('#txtLWD').addClass('show'):"";
@@ -249,7 +250,7 @@ else
                         $("#CandidateForm").submit()
                     }
                     else {
-                        $("#errMsgIsDuplicate").text("This candidate's profile is already exist in database.");
+                        $("#errMsgIsDuplicate").text("This candidate's profile is already exist.");
                         return false;
                     }
                 }
@@ -306,16 +307,16 @@ else
                 if (value != "") {
                     var year = value.split('/');
                     if (parseInt(year[2]) >= 2000) {
-                        $("#errMsgIsDuplicate").text("DOB is not valid.");
+                        $("#errMsgDob").text("DOB is not valid.");
                         return false;
                     }
                     else {
-                        $("#errMsgIsDuplicate").text("");
+                        $("#errMsgDob").text("");
                         return true;
                     }
                 }
                 else {
-                    $("#errMsgIsDuplicate").text("The DOB field is required.");
+                    $("#errMsgDob").text("The DOB field is required.");
                     return false;
                 }
             };
@@ -342,7 +343,7 @@ else
 
             function IsDuplicateProf() {
                 $("#errMsgIsDuplicate").text("");
-                if ($("#MOBILE_NO").val() != "" && $("#DOB").val() != "")
+                if ($("#MOBILE_NO").val() != "" || $("#DOB").val() != "")
                 {
                     $.get("/Candidate/IsCandidateDuplicate", { mob: $("#MOBILE_NO").val(), dob: $("#DOB").val() },
                         function (data) {
@@ -352,7 +353,7 @@ else
                                return true;
                            }
                            else {
-                               $("#errMsgIsDuplicate").text("This candidate's profile is already exist in database.");
+                               $("#errMsgIsDuplicate").text("This candidate's profile is already exist.");
                                $("#hdnIsValidated").val("");
                                return false;
                            }

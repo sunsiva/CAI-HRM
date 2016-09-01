@@ -526,7 +526,7 @@ namespace HRPortal.Controllers
         private void SetVendorList()
         {
             var query = db.VENDOR_MASTER.Where(s=>s.ISACTIVE==true).Select(i => new { i.VENDOR_ID, i.VENDOR_NAME });
-            if(CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
+            if(CookieStore.GetCookie(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
             {
                 var vendorId = Guid.Parse(HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.VendorId.ToString())));
                 query = query.Where(i => i.VENDOR_ID == vendorId);
@@ -537,7 +537,7 @@ namespace HRPortal.Controllers
         private void SetRoleList()
         {
             var query = db.AspNetRoles.Select(i => new { i.Id, i.Name });
-            if (CookieStore.GetCookie(CacheKey.Uid.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
+            if (CookieStore.GetCookie(CacheKey.RoleName.ToString()).ToString().ToUpper().Contains("SUPERUSER"))
             {
                 query = query.Where(i => i.Name == "User");
             }

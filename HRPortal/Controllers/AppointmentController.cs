@@ -47,7 +47,7 @@ namespace HRPortal.Controllers
                 if (System.Configuration.ConfigurationManager.AppSettings["IsAppointmentMail"] == "true")
                 {
                     Guid canId = Guid.Parse("BC30BED0-8F41-4CE0-B8BD-DF47B30060CB");
-                    await appVM.SendInvite(NewEventDate + " " + NewEventTime, NewEventDuration, sendTo, canId, Title);
+                    await appVM.SendInvite(NewEventDate + " " + NewEventTime, NewEventDuration, sendTo, canId, Title,true);
                 }
                 return appVM.SaveEvent(Title, NewEventDate, NewEventTime, NewEventDuration);
             }
@@ -106,45 +106,16 @@ namespace HRPortal.Controllers
         #region "Schedules"
         public ActionResult Schedules(string sOdr, int? page)
         {
-            List<CandidateViewModels> lstCan = GetCandidateSchedules(DateTime.Now);
+            List<CandidateViewModels> lstCan = appVM.GetCandidateSchedules(DateTime.Now);
             var objCan = lstCan != null ? GetPagination(lstCan, sOdr, page) : lstCan;
             return View(objCan);
         }
 
-        private List<CandidateViewModels> GetCandidateSchedules(DateTime scheduleDt)
+        public ActionResult SearchResults(DateTime scheduleDt)
         {
-            try
-            {
-                var dbCan = db.CANDIDATES.Where(c => c.ISACTIVE == true).ToList();
-                var dbJobs = db.JOBPOSTINGs.ToList();
-                var Canlist = (from c in dbCan
-                                    join j in dbJobs on c.JOB_ID equals j.JOB_ID
-                                    join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id
-                                    join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID
-                                    join sh in db.STATUS_HISTORY.ToList() on c.CANDIDATE_ID equals sh.CANDIDATE_ID
-                                    where sh.SCHEDULED_TO != null && sh.SCHEDULED_TO.Value.ToString("dd-MM-yyyy")== scheduleDt.ToString("dd-MM-yyyy")
-                                    select new { Candidate = c, Job = j,StsHist = sh }).Select(i => new CandidateViewModels
-                                    {
-                                        CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
-                                        CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
-                                        POSITION = i.Job.POSITION_NAME,
-                                        RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH) ? string.Empty : Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
-                                        NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
-                                        YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
-                                        LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
-                                        VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
-                                        STATUS = vmodel.GetStatusNameById(i.Candidate.CANDIDATE_ID),
-                                        STATUS_ID = i.Candidate.STATUS,
-                                        CREATED_ON = i.Candidate.CREATED_ON,
-                                        MODIFIED_ON = i.StsHist.SCHEDULED_TO 
-                                    }).ToList();
-                
-                return Canlist;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            List<CandidateViewModels> lstCan = appVM.GetCandidateSchedules(scheduleDt);
+            var objCan = lstCan != null ? GetPagination(lstCan, "", pageSize) : lstCan;
+            return PartialView(objCan);
         }
 
         private string GetPartnerName(string pId)

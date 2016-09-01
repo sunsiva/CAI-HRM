@@ -171,18 +171,35 @@ namespace HRPortal.Controllers
             return View(cANDIDATE);
         }
         
-        public async Task<ActionResult> ScheduleCandidate(string id, string date,string length,string sendTo, string comments,string statusId)
+        public async Task<ActionResult> ScheduleCandidate(string id, string date,string length,string sendTo, string comments,string statusId,string reSch)
         {
-            try {
+            try
+            {
                 var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                var stsLst = db.STATUS_MASTER.ToList();
-                var sOrdr = stsLst.Where(i => i.STATUS_ID == Guid.Parse(statusId)).FirstOrDefault();
-                int stsOrdr = sOrdr.STATUS_NAME.Contains("TBS-F") ? 2 : 1;
-                var stsId = stsLst.Where(i => i.STATUS_ORDER == sOrdr.STATUS_ORDER + stsOrdr).FirstOrDefault();
-
+                Guid canId = (string.IsNullOrEmpty(id) ? Guid.Empty : Guid.Parse(id));
+                string stsDesc = string.Empty;
                 STATUS_HISTORY sHist = new STATUS_HISTORY();
-                sHist.STATUS_ID = stsId.STATUS_ID;
-                sHist.CANDIDATE_ID = Guid.Parse(id);
+                //BEGIN:SET TO INACTIVE BEFORE SETTING NEW STATUS in STATUS HISTORY TABLE
+                var oHist = await db.STATUS_HISTORY.Where(c => c.CANDIDATE_ID == canId).ToListAsync();
+                oHist.ForEach(a => a.ISACTIVE = false);
+                await db.SaveChangesAsync();
+                //END:SET TO INACTIVE BEFORE SETTING NEW STATUS
+
+                if (reSch=="true") //For re-scheduling
+                {
+                    stsDesc = date+"--"+length+" MINS";
+                    sHist.STATUS_ID = (string.IsNullOrEmpty(statusId) ? Guid.Empty : Guid.Parse(statusId));
+                }
+                else { 
+                    var stsLst = db.STATUS_MASTER.ToList();
+                    var sOrdr = stsLst.Where(i => i.STATUS_ID == Guid.Parse(statusId)).FirstOrDefault();
+                    int stsOrdr = sOrdr.STATUS_NAME.Contains("TBS-F") ? 2 : 1;
+                    var stsId = stsLst.Where(i => i.STATUS_ORDER == sOrdr.STATUS_ORDER + stsOrdr).FirstOrDefault();
+                    stsDesc = stsId.STATUS_DESCRIPTION.ToString();
+                    sHist.STATUS_ID = stsId.STATUS_ID;
+                }
+                
+                sHist.CANDIDATE_ID = canId;
                 sHist.ISACTIVE = true;
                 sHist.SCHEDULED_TO = Convert.ToDateTime(date);
                 sHist.SCHEDULED_FOR = sendTo;
@@ -201,10 +218,11 @@ namespace HRPortal.Controllers
                 await db.SaveChangesAsync();
                 if (System.Configuration.ConfigurationManager.AppSettings["IsAppointmentMail"] == "true")
                 {
-                    await appointmentVM.SendInvite(date, length, sendTo, Guid.Parse(id), comments);
+                    bool reSche = reSch == "true" ? true : false;
+                    await appointmentVM.SendInvite(date, length, sendTo, Guid.Parse(id), comments,reSche);
                 }
 
-                return Json(stsId.STATUS_DESCRIPTION.ToString(), JsonRequestBehavior.AllowGet);
+                return Json(stsDesc, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -240,7 +258,7 @@ namespace HRPortal.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
-            ViewBag.PositionList = vmodel.GetAllActivePositions();
+            ViewBag.PositionList = vmodel.GetAllPositions();
             if (cANDIDATE == null)
             {
                 return HttpNotFound();
@@ -313,7 +331,7 @@ namespace HRPortal.Controllers
             cANDIDATE.CREATED_BY = userLst.Where(u => u.Id == cANDIDATE.CREATED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
             cANDIDATE.MODIFIED_BY = userLst.Where(u => u.Id == cANDIDATE.MODIFIED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
 
-                if (cANDIDATE == null)
+            if (cANDIDATE == null)
             {
                 return HttpNotFound();
             }
@@ -400,10 +418,21 @@ namespace HRPortal.Controllers
             return await SearchCriteria(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         }
 
+        /// <summary>
+        /// Check the profile duplicate
+        /// </summary>
+        /// <param name="mob"></param>
+        /// <param name="dob"></param>
+        /// <returns></returns>
         private bool IsProfileDuplicate(string mob, string dob)
         {
+            bool isDupli = true;
             var dupli = db.CANDIDATES.Where(u => u.MOBILE_NO == mob).ToList();
-            bool isDupli = (dupli != null && dupli.Where(u=>u.DOB.ToShortDateString() == (!string.IsNullOrEmpty(dob) ? DateTime.Parse(dob).ToShortDateString() : string.Empty)).Count()>0 ? true : false);
+            if(dupli.Count()==0)
+            {
+                DateTime oDob = string.IsNullOrEmpty(dob) ? DateTime.Now : DateTime.Parse(dob);
+                isDupli = (db.CANDIDATES.Where(u=>u.DOB == oDob && u.MOBILE_NO == mob).Count()>0 ? true : false);
+            }
             return isDupli;
         }
 

@@ -1,4 +1,5 @@
 ﻿using HRPortal.Common;
+using HRPortal.Helper;
 using HRPortal.Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ using System.Web.Mvc;
 namespace HRPortal.Controllers
 {
     [LogActionFilter]
-    [Authorize(Roles = "Admin,SuperAdmin")]
     public class ReportController : Controller
     {
         private CandidateViewModels vmodelCan = new CandidateViewModels();
@@ -45,12 +45,19 @@ namespace HRPortal.Controllers
 
         public ActionResult Staging(string partner)
         {
+            bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
             ViewBag.VendorList = vmodelCan.GetVendorListWithIDs();
             List<StagingReportViewModel> lstStagingReport;
             ViewBag.partner = true;
             ViewBag.Offered = true;
             ViewBag.VenderList = true;
             ViewBag.WeekList = false;
+
+            if (!isSuperAdmin)
+            {
+                partner = CookieStore.GetCookie(CacheKey.VendorId.ToString());
+            }
+            
             var rptList = db.rptGetCandidatesStagingByPartner(partner);
             lstStagingReport = rptList.Select(i => new StagingReportViewModel
             {
@@ -63,6 +70,7 @@ namespace HRPortal.Controllers
                 Offered = Convert.ToInt32(i.OFFERED),
                 Total = Convert.ToInt32(i.Total)
             }).ToList();
+
             return PartialView("_StagingReport", lstStagingReport);
         }
         public ActionResult CadidatesByLastWorkingDay()

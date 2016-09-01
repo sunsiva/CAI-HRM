@@ -161,5 +161,14 @@ namespace HRPortal
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<rptGetCandidatesStagingByPartner_Result>("rptGetCandidatesStagingByPartner", partnerParameter);
         }
+    
+        public virtual ObjectResult<getCandidatesSchedules_Result> getCandidatesSchedules(string navigDate)
+        {
+            var navigDateParameter = navigDate != null ?
+                new ObjectParameter("NavigDate", navigDate) :
+                new ObjectParameter("NavigDate", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getCandidatesSchedules_Result>("getCandidatesSchedules", navigDateParameter);
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace HRPortal.Models
             toDate = toDate.Date + to;
             using (HRPortalEntities ent = new HRPortalEntities())
             {
-                var rslt = ent.EVENTSCHEDULEs.Where(s => s.DATETIMESCHEDULED >= 
+                var rslt = ent.EVENTSCHEDULEs.Where(s => s.DATETIMESCHEDULED >=
                     fromDate && System.Data.Entity.DbFunctions.AddMinutes(
                     s.DATETIMESCHEDULED, s.APPOINTMENTLENGTH) <= toDate);
                 List<DiaryEvent> result = new List<DiaryEvent>();
@@ -57,7 +57,7 @@ namespace HRPortal.Models
             }
         }
 
-        public  List<DiaryEvent> LoadAppointmentSummaryInDateRange(double start, double end)
+        public List<DiaryEvent> LoadAppointmentSummaryInDateRange(double start, double end)
         {
             var fromDate = ConvertFromUnixTimestamp(start);
             var toDate = ConvertFromUnixTimestamp(end);
@@ -126,7 +126,7 @@ namespace HRPortal.Models
         /// <param name="canId"></param>
         /// <param name="comments"></param>
         /// <returns></returns>
-        public async Task<string> sendMailTBS(Guid canId, string comments)
+        public async Task<string> sendMailTBS(Guid canId, string comments, string date, string length)
         {
             try
             {
@@ -136,21 +136,21 @@ namespace HRPortal.Models
                 var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 List<AspNetUser> lstUsrs = dbContext.AspNetUsers.ToList();
                 var profOwner = lstUsrs.Where(x => x.Id == canLst.CREATED_BY).FirstOrDefault();
-                var vid = lstUsrs.Where(u=>u.Id==profOwner.Id).Select(v=>v.Vendor_Id).FirstOrDefault().ToString();
+                var vid = lstUsrs.Where(u => u.Id == profOwner.Id).Select(v => v.Vendor_Id).FirstOrDefault().ToString();
                 var lstSuperuser = (from u in lstUsrs
                                     join ur in dbContext.UserXRoles on Guid.Parse(u.Id) equals ur.UserId
                                     join r in dbContext.AspNetRoles on ur.RoleId equals Guid.Parse(r.Id)
-                                    where (r.Name.ToUpper().Contains("SUPERUSER") && u.IsActive==true && u.Vendor_Id == Guid.Parse(vid)
+                                    where (r.Name.ToUpper().Contains("SUPERUSER") && u.IsActive == true && u.Vendor_Id == Guid.Parse(vid)
                                      && u.Email != profOwner.Email)
                                     select u.Email).ToList();
 
                 string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
                 string bccs = System.Configuration.ConfigurationManager.AppSettings["BCCMailIdForMonitor"];
                 string strSubject = "HROps-Interview To Be Scheduled For " + canName;
-                string bodyHtml = "Hi " + profOwner.FirstName + ", <br><br> FYI - Interview to be scheduled for the candidate <b>" + canName + " </b> and for the position of <b>" + job.POSITION_NAME +
+                string bodyHtml = "Hi " + profOwner.FirstName + ", <br><br> FYI - Interview to be scheduled for the candidate <b>" + canName + " </b> on <b>" + date + "</b> for " + length + " minutes and for the position of <b>" + job.POSITION_NAME +
                     "</b>.<br><br>USER COMMENTS: " + comments + " <br> <br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
                 //=====================================
-                               
+
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress(HRPConst.PRIM_EMAIL_FROM, UserName);
                 message.To.Add(new MailAddress(profOwner.Email));
@@ -180,6 +180,7 @@ namespace HRPortal.Models
             return "Mail Sent";
         }
 
+
         /// <summary>
         /// To trigger e-mail to all in the system when creating new job.
         /// </summary>
@@ -198,8 +199,8 @@ namespace HRPortal.Models
                 //                select (u.Email)).ToList();
 
                 string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
-                string strSubject = isNew? "HROps-New Job Posted - ": "HROps-Job Modified - " + jobposting.POSITION_NAME;
-                string bodyHtml = "Hi, <br><br> A " + (isNew ? "new" : "modified")+" position is posted with a job code <b>" + jobposting.JOB_CODE + " </b>. Below is the position detail, <br><br> <b>Position Name:</b> " + jobposting.POSITION_NAME +
+                string strSubject = (isNew ? "HROps-New Job Posted - " : "HROps-Job Modified - ") + jobposting.POSITION_NAME;
+                string bodyHtml = "Hi, <br><br> A " + (isNew ? "new" : "modified") + " position is posted with a job code <b>" + jobposting.JOB_CODE + " </b>. Below is the position detail, <br><br> <b>Position Name:</b> " + jobposting.POSITION_NAME +
                     "</b><br><br><b>Position Description:</b> " + jobposting.JOB_DESCRIPTION + " <br> <br> <br> Regards,<br><b> Admin </b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
                 //===================================================================================
 
@@ -304,13 +305,13 @@ namespace HRPortal.Models
             var rows = eventList.ToArray();
             return Json(rows, JsonRequestBehavior.AllowGet);
         }
-        
-        public async Task SendInvite(string NewEventDate, string NewEventDuration, string sendTo, Guid canId, string comments)
+
+        public async Task SendInvite(string NewEventDate, string NewEventDuration, string sendTo, Guid canId, string comments,bool isReSchedul)
         {
             try
             {
                 string serverPath = HttpContext.Current.Server.MapPath("~/UploadDocument/");
-                string filepath = Path.Combine(serverPath+@"ical\", "ical.test.ics");
+                string filepath = Path.Combine(serverPath + @"ical\", "ical.test.ics");
                 // use PUBLISH for appointments
                 // use REQUEST for meeting requests
                 const string METHOD = "REQUEST";
@@ -334,10 +335,16 @@ namespace HRPortal.Models
                 }
                 // Properties of the meeting request
                 // keep guid in sending program to modify or cancel the request later
-                string strSubject = "HROps-Interview Scheduled For -"+ canName;
-                string bodyPlainText = "Hi, Interview has been scheduled for the position of "+job.POSITION_NAME+". Regards, "+UserName+".";
+                string strSubject = "HROps-Interview Scheduled For -" + canName;
+                string bodyPlainText = "Hi, Interview has been scheduled for the position of " + job.POSITION_NAME + ". Regards, " + UserName + ".";
+                if(isReSchedul)
+                {
+                    strSubject = "HROps-Interview Re-Scheduled For -" + canName;
+                    bodyPlainText = "Hi, Interview has been re-scheduled for the position of " + job.POSITION_NAME + ". Regards, " + UserName + ".";
+                }
+
                 string bodyHtml = "Hi, <br><br> Interview has been scheduled for the position of <b>" + job.POSITION_NAME +
-                    "</b>. Attached candidate profile for your reference. <br> <br>USER COMMENTS: " + comments+"<br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
+                    "</b>. Attached candidate profile for your reference. <br> <br>USER COMMENTS: " + comments + "<br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
                 string location = "Available";
                 string organizerMail = UserEmail;
                 string filename = "Test.txt";//--- Attachments
@@ -398,7 +405,7 @@ namespace HRPortal.Models
                 evt.Priority = priority;
 
                 //--- attendes are optional
-                IAttendee at = new Attendee("mailto:"+organizerMail+"");
+                IAttendee at = new Attendee("mailto:" + organizerMail + "");
                 at.ParticipationStatus = "NEEDS-ACTION";
                 at.RSVP = true;
                 at.Role = "REQ-PARTICIPANT";
@@ -432,7 +439,7 @@ namespace HRPortal.Models
                         // Add an attachment to email
                         message.Attachments.Add(new System.Net.Mail.Attachment(filename));
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     { }
                 }
 
@@ -465,7 +472,45 @@ namespace HRPortal.Models
                 SmtpClient client = new SmtpClient();
                 await client.SendMailAsync(message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get the candidates schedules for the particular day
+        /// </summary>
+        /// <param name="scheduleDt"></param>
+        /// <returns></returns>
+        public List<CandidateViewModels> GetCandidateSchedules(DateTime scheduleDt)
+        {
+            try
+            {
+                var schedules = dbContext.getCandidatesSchedules(scheduleDt.ToString("dd/MM/yyyy")).ToList();
+                if(schedules.Count()>0)
+                {
+                    var lstOfSchedules = schedules.Select(i => new CandidateViewModels
+                    {
+                        CANDIDATE_ID = i.CANDIDATE_ID,
+                        CANDIDATE_NAME = i.CANDIDATE_NAME,
+                        POSITION = i.POSITION,
+                        RESUME_FILE_PATH = string.IsNullOrEmpty(i.RESUME_FILE_PATH) ? string.Empty : Path.Combine("/UploadDocument/", i.RESUME_FILE_PATH),
+                        NOTICE_PERIOD = i.NOTICE_PERIOD,
+                        YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
+                        LAST_WORKING_DATE = i.LAST_WORKING_DATE,
+                        VENDOR_NAME = i.VENDOR_NAME,
+                        STATUS = i.STATUS,
+                        STATUS_ID = i.STATUS_ID.ToString(),
+                        CREATED_ON = i.CREATED_ON,
+                        SCHEDULED_TO = i.SCHEDULED_ON,
+                        SCHEDULED_LENGTH = i.SCHEDULED_LENGTH.ToString(),
+                    }).ToList();
+                    return lstOfSchedules;
+                }
+                return  new List<CandidateViewModels>();
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -482,7 +527,7 @@ namespace HRPortal.Models
             }
             return binaryData;
         }
-        
+
         private DateTime ConvertFromUnixTimestamp(double timestamp)
         {
             var origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);

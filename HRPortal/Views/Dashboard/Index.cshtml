@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
- }
+}
 <link href="~/Content/font-awesome.css" rel="stylesheet" />
 <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
 <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
@@ -107,6 +107,50 @@
             </div>
         </div>
         <div class="col-lg-3 col-md-6">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-warning fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="dtDefrd">@Model.ToT_Candidates_DEFRD</div>
+                        </div>
+                        <div class="text-right">Candidates Deferred</div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer">
+                        @*<span class="pull-left" title="This is not functioning right now. Under progress." >View Details</span>*@
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-dashboard fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="dtDrop">@Model.ToT_Candidates_DROP</div>
+                        </div>
+                        <div class="text-right">Candidates Dropped</div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer">
+                        @*<span class="pull-left" title="This is not functioning right now. Under progress." >View Details</span>*@
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
             <div class="panel panel-red">
                 <div class="panel-heading">
                     <div class="row">
@@ -128,25 +172,25 @@
                 </a>
             </div>
         </div>
-        
+
     </div>
 
     @using (Html.BeginForm())
     {
-    <div class="">
-        <div class="panel-group" id="SearchCriteriaPartial">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a href="#">
-                            <span data-toggle="collapse" href="#collapse1" id="CollapseMe" class="glyphicon glyphicon-plus"></span> 
+        <div class="">
+            <div class="panel-group" id="SearchCriteriaPartial">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a href="#">
+                                <span data-toggle="collapse" href="#collapse1" id="CollapseMe" class="glyphicon glyphicon-plus"></span>
                             </a>Filters
-                    </h4>
-                </div>
-                <div id="collapse1" class="panel-collapse collapse form-horizontal table">
-                    <div class="form-group panel-body">
-                        <div class="col-md-11" align="center">
-                            <br />
+                        </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse form-horizontal table">
+                        <div class="form-group panel-body">
+                            <div class="col-md-11" align="center">
+                                <br />
                                 <div id="srchCandidates">
                                     <input type="text" id="txtPartner" placeholder="Partner" />
                                     <input type="text" id="txtPosition" placeholder="Position Name" />
@@ -156,47 +200,47 @@
                                         <span class="glyphicon glyphicon-search"></span>
                                     </a>
                                 </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="reports" class="hide">
-        <div class="panel-group" id="ReportPartial">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a href="#">
-                            <span data-toggle="collapse" href="#collapse2" id="CollapseRep" class="glyphicon glyphicon-plus"></span>
-                        </a>Report
-                    </h4>
-                </div>
-                <div id="collapse2" class="panel-collapse collapse form-horizontal table">
-                    <div class="form-group panel-body">
-                        <div class="col-md-11" align="center">
-                            <br />
-                            <div id="srchReportCriteria">
-                                @Html.DropDownList("ddlCriteriaVendor", (SelectList)ViewBag.VendorList, new { multiple = "multiple" }) <br />
-                                <input type="checkbox" id="chkScreenSub" checked value="Screening Submitted" /> Screening
-                                <input type="checkbox" id="chkR1" name="chkR1" checked value="Round1"> Round1
-                                <input type="checkbox" id="chkR2" checked value="Round2" /> Round2
-                                <input type="checkbox" id="chkR3" checked value="Round3" /> Round3 <br />
-                                Export To <a href="#" title="Export To Excel" id="btnExport" onclick="ExportToExcel()"> <img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div id="reports" class="hide">
+            <div class="panel-group" id="ReportPartial">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a href="#">
+                                <span data-toggle="collapse" href="#collapse2" id="CollapseRep" class="glyphicon glyphicon-plus"></span>
+                            </a>Report
+                        </h4>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse form-horizontal table">
+                        <div class="form-group panel-body">
+                            <div class="col-md-11" align="center">
+                                <br />
+                                <div id="srchReportCriteria">
+                                    @Html.DropDownList("ddlCriteriaVendor", (SelectList)ViewBag.VendorList, new { multiple = "multiple" }) <br />
+                                    <input type="checkbox" id="chkScreenSub" checked value="Screening Submitted" /> Screening
+                                    <input type="checkbox" id="chkR1" name="chkR1" checked value="Round1"> Round1
+                                    <input type="checkbox" id="chkR2" checked value="Round2" /> Round2
+                                    <input type="checkbox" id="chkR3" checked value="Round3" /> Round3 <br />
+                                    Export To <a href="#" title="Export To Excel" id="btnExport" onclick="ExportToExcel()"> <img src="~/Content/images/Excel-icon.png" style="height:35px;width:35px" /></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
-   
-   <div class="hide">
+
+    <div class="hide">
         <marquee class="text-danger" width=400 height=20> *View Details - is not functioning right now. Under progress.</marquee>
     </div>
-    
+
 </div>
 
 @section Scripts {
@@ -211,7 +255,7 @@
                 format: 'MM/DD/YYYY'
             });
         });
-        
+
         $('#ddlCriteriaVendor').multiselect({
             enableCaseInsensitiveFiltering: true,
             nonSelectedText: '-- Select Partner --'
@@ -226,7 +270,7 @@
         $(this).hasClass('glyphicon-plus') ? $(this).removeClass('glyphicon-plus') && $(this).addClass('glyphicon-minus') : $(this).removeClass('glyphicon-minus')
         && $(this).addClass('glyphicon-plus');
     });
-    
+
     $('#txtPosition').on('keyup', function () {
             getCount();
     });
@@ -248,9 +292,11 @@
                     $("#dtPrgs").text(data.ToT_Candidates_PRGS);
                     $("#dtJoined").text(data.ToT_Candidates_JOIN);
                     $("#dtRejected").text(data.ToT_Candidates_RJTD);
+                    $("#dtDefrd").text(data.ToT_Candidates_DEFRD);
+                    $("#dtDrop").text(data.ToT_Candidates_DROP);
             });
     };
-      
+
     window.ExportToExcel = function () {
         window.location = '/Dashboard/ExportToExcel?status=' + $("#chkScreenSub").is(':checked') + '&r1=' + $("#chkR1").is(':checked') + '&r2=' + $("#chkR2").is(':checked') + '&r3=' + $("#chkR3").is(':checked') + '&partner=' + $("#ddlCriteriaVendor").val();
     };

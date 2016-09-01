@@ -438,6 +438,9 @@
     <FunctionImport Name="rptGetCandidatesStagingByPartner" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesStagingByPartner_Result)">
       <Parameter Name="Partner" Mode="In" Type="String" />
     </FunctionImport>
+    <FunctionImport Name="getCandidatesSchedules" ReturnType="Collection(Caihrops_portalModel.getCandidatesSchedules_Result)">
+      <Parameter Name="NavigDate" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="GetCandidateDetailsByLastworkingdate_Result">
     <Property Type="String" Name="POSITION_NAME" Nullable="false" MaxLength="50" />
@@ -498,5 +501,26 @@
     <Property Type="Int32" Name="ROUND3" Nullable="true" />
     <Property Type="Int32" Name="OFFERED" Nullable="true" />
     <Property Type="Int32" Name="Total" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="getCandidatesSchedules_Result">
+    <Property Type="Guid" Name="CANDIDATE_ID" Nullable="false" />
+    <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="MOBILE_NO" Nullable="false" MaxLength="25" />
+    <Property Type="String" Name="EMAIL" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="POSITION" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="RESUME_FILE_PATH" Nullable="true" MaxLength="166" />
+    <Property Type="String" Name="NOTICE_PERIOD" Nullable="false" MaxLength="50" />
+    <Property Type="Decimal" Name="YEARS_OF_EXP_TOTAL" Nullable="false" Precision="18" Scale="2" />
+    <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" Precision="23" />
+    <Property Type="String" Name="CURRENT_COMPANY" Nullable="false" MaxLength="150" />
+    <Property Type="String" Name="VENDOR_NAME" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
+    <Property Type="Guid" Name="STATUS_ID" Nullable="false" />
+    <Property Type="DateTime" Name="CREATED_ON" Nullable="false" Precision="23" />
+    <Property Type="DateTime" Name="MODIFIED_ON" Nullable="true" Precision="23" />
+    <Property Type="String" Name="MODIFIED_BY" Nullable="true" MaxLength="100" />
+    <Property Type="DateTime" Name="SCHEDULED_ON" Nullable="true" Precision="23" />
+    <Property Type="String" Name="SCHEDULED_FOR" Nullable="true" MaxLength="500" />
+    <Property Type="Int32" Name="SCHEDULED_LENGTH" Nullable="true" />
   </ComplexType>
 </Schema>

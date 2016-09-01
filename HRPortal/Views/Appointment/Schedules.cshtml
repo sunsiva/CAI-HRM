@@ -1,152 +1,21 @@
 ﻿@model  IEnumerable<HRPortal.Models.CandidateViewModels>
-@using PagedList;
-@using PagedList.Mvc;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int pSize = ViewBag.PageSize == null ? 1 : ViewBag.PageSize;
-    int pNo = ViewBag.PageNo == null ? 1 : ViewBag.PageNo;
-    var modal = Model != null ? Model.ToPagedList(pNo, pSize) : null;
-    int sl = (pNo == 1 ? 0 : (pNo - 1) * 10);
 }
 
 <h2>Schedules</h2>
 <link href="~/Content/tags/jquery.tagit.css" rel="stylesheet" />
 <link href="~/Content/tags/tagit.ui-zendesk.css" rel="stylesheet" />
 <div class="container text-center" id="dvSchedule">
-    <a href="javascript:void(0);" class="glyphicon glyphicon-chevron-left" id="navLeft"  title="Previous day"><i></i></a>
-    <span  style="background-color:gold" id="scheduleDate">@DateTime.Now.ToString("dd-MMM-yyyy")</span>
-    <a href="javascript:void(0);" class="glyphicon glyphicon-chevron-right" id="navRight" title="Next day"><i></i></a>
+    <a href="javascript:void(0);" class="glyphicon glyphicon-chevron-left" style="font-size:x-large" id="navLeft"  title="Previous day"><i></i></a>
+    <span  style="background-color:gold;font-size:large" id="scheduleDate">@DateTime.Now.ToString("dd-MMM-yyyy")</span>
+    <a href="javascript:void(0);" class="glyphicon glyphicon-chevron-right" style="font-size:x-large" id="navRight" title="Next day"><i></i></a>
 </div>
 <br />
 <div class="container" id="CandidatesPartial">
     <div class="row">
         <div class="col-md-12">
-            <div class="table-responsive">
-                @if (modal != null)
-                {
-                    <table class="table table-striped table-hover table-condensed table-bordered">
-                        <tr>
-                            <th>#</th>
-                            <th>
-                                @Html.ActionLink("CANDIDATE NAME", "Schedules", new { sOdr = ViewBag.CNameSort })
-                            </th>
-                            <th>
-                                PARTNER
-                            </th>
-                            <th>
-                                @Html.ActionLink("POSITION/SKILL", "Schedules", new { sOdr = ViewBag.SkillSort })
-                            </th>
-                            <th>
-                                NOTICE PERIOD
-                                /LWD
-                            </th>
-                            <th>
-                                YEARS OF EXP
-                            </th>
-                            
-                            <th>
-                                SUBMISSION DATE
-                            </th>
-                            <th>
-                                PROFILE
-                            </th>
-                            <th>
-                                SCHEDULED DATE/TIME
-                            </th>
-                            <th>
-                                @Html.ActionLink("STATUS", "Schedules", new { sOdr = ViewBag.StatusSort })
-                            </th>
-                        </tr>
-
-                        @foreach (var item in modal)
-                        {
-                            <tr>
-                                <td>@(sl = sl + 1) </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CANDIDATE_NAME)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.VENDOR_NAME)
-                                </td>
-                                <td>@Html.DisplayFor(modelItem => item.POSITION)</td>
-                                <td>
-                                    @(item.LAST_WORKING_DATE != null ? (item.LAST_WORKING_DATE.Value.ToString("dd-MMM-yyyy")) : item.NOTICE_PERIOD)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.YEARS_OF_EXP_TOTAL)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CREATED_ON)
-                                </td>
-                                <td>
-                                    <a href="@item.RESUME_FILE_PATH" target="_blank" title="Click To Download Candidate CV">Download</a>
-                                </td>
-                                <td>
-                                    @(item.MODIFIED_ON != null ? item.MODIFIED_ON.Value.ToString() : "")
-                                </td>
-                                <td>
-                                    @if (item.STATUS.ToUpper().ToString().Contains("SCHEDULED"))
-                                    {
-                                        <a href="#StatusModal" id="btnStsPnl_@item.CANDIDATE_ID" data-toggle="modal" onclick='myPanel(this); return false;' data-custom-name="@item.CANDIDATE_NAME" data-custom-value="@item.CANDIDATE_ID" data-custom-statusid="@item.STATUS_ID" title="Click To Change The Status">@item.STATUS</a>
-                                    <span id="stsSecondTxt_@item.CANDIDATE_ID"></span>
-                                    }
-                                    else { @Html.DisplayFor(modelItem => item.STATUS) }
-                                </td>
-                            </tr>
-                        }
-
-                        <tr>
-                            <td><input type="hidden" id="hdnCandidateId" /><input type="hidden" id="hdnStatusId" /></td>
-                            <td align="right" class="" colspan="12">@Model.Count() Record(s) Found.</td>
-                        </tr>
-
-                    </table>
-                    <div class="clearfix"></div>
-                    <table align="right">
-                        <tr>
-                            <td>Page @(modal.PageCount < modal.PageNumber ? 0 : modal.PageNumber) of @modal.PageCount  </td>
-                            <td width="10px"></td>
-                            <td>
-                                @Html.PagedListPager(modal, page => Url.Action("Index", "Candidate", new { page, sOdr = ViewBag.CurrentSort }))
-                            </td>
-                        </tr>
-                    </table>
-                }
-                else
-                {
-                    <table class="table table-striped table-hover table-condensed table-bordered">
-                        <tr>
-                            <th>#</th>
-                            <th>
-                                CANDIDATE NAME
-                            </th>
-                            <th>
-                                PARTNER
-                            </th>
-                            <th>
-                                POSITION/SKILL
-                            </th>
-                            <th>
-                                NOTICE PERIOD
-                                /LWD
-                            </th>
-                            <th>
-                                YEARS OF.EXP
-                            </th>
-                            <th>
-                                SUBMISSION DATE
-                            </th>
-                            <th>
-                                SCHEDULED DATE/TIME
-                            </th>
-                            <th width="100px">STATUS</th>
-                        </tr>
-                        <tr>
-                            <td align="center" colspan="10" class="text-danger"> No Record(s) Found.</td>
-                        </tr>
-                    </table>
-                }
-            </div>
+            <div id="searchResults"> @Html.Partial("SearchResults",Model) </div>
         </div>
     </div>
 </div>
@@ -156,7 +25,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Schedule Interview for - <b><span class="candidate-name"></span></b> </h4>
+                <h4 class="modal-title">Re-Schedule Interview For - <b><span class="candidate-name"></span></b> </h4>
             </div>
             <div class="modal-body">
                 <div class="form-group form-group-required">
@@ -193,7 +62,6 @@
                 </div>
                 <br />
                 <br />
-
             </div>
             <div class="modal-footer">
                 <div class="pull-left"><span class="text-danger" id="errMsgModal"><small>If you don't save, your changes will be lost.</small></span></div>
@@ -205,7 +73,6 @@
         </div>
     </div>
 </div>
-
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -246,6 +113,96 @@
                 singleField: true,
                 singleFieldNode: $('#sendTo')
             });
+        };
+
+        window.fnBtnStatusClick = function () {
+            if ($("#txtdatetimepicker").val() == "") {
+                $("#errMsgModal").text("Please schedule a date.");
+                $("#txtdatetimepicker").focus();
+                return false;
+            }
+            else if ($("#ddlScheduleLength").val() == "") {
+                $("#errMsgModal").text("Please select a length(duration).");
+                $("#ddlScheduleLength").focus();
+                return false;
+            }
+            else if ($("#sendTo").val() == "") {
+                $("#errMsgModal").text("Please enter email address whom to be sent.");
+                return false;
+            }
+            else if ($("#txtStsComments").val() == "") {
+                $("#errMsgModal").text("Please write a comments to change.");
+                $("#txtStsComments").focus();
+                return false;
+            }
+            else {
+                $.get("/Candidate/ScheduleCandidate", { id: $("#hdnCandidateId").val(), date: $("#txtdatetimepicker").val(), length: $("#ddlScheduleLength").val(), sendTo: $("#sendTo").val(), comments: $("#txtStsComments").val(), statusId: $("#hdnStatusId").val(), reSch:"true" },
+                    function (data) {
+                        var id = $("#hdnCandidateId").val();
+                        $("#schTxt_" + id).text(data);
+                    });
+
+                $("#btnStatus").attr("data-dismiss", "modal");
+            }
+        };
+
+        var url = "/Appointment/SearchResults";
+        $('#navLeft').click(function () {
+            var dateSplit = $('#scheduleDate').text().split("-");
+            objdate = new Date(dateSplit[1] + " " + dateSplit[0] + ", " + dateSplit[2]);
+            if (objdate) {
+                objdate.setDate(objdate.getDate() - 1);
+                var formtDate = getFormattedDate(objdate.toLocaleDateString());
+                $('#scheduleDate').text(formtDate);
+                $.ajax({
+                    url: url,
+                    data: { scheduleDt: formtDate },
+                    contentType: 'application/html; charset=utf-8',
+                    type: 'GET',
+                    dataType: 'html'
+                })
+                .success(function (result){
+                    //alert(result)
+                    $('#searchResults').html(result);
+                })
+                .fail(function (xhr,status) {
+                    alert(status);
+                })
+            }
+        });
+
+        $('#navRight').click(function () {
+            var dateSplit = $('#scheduleDate').text().split("-");
+            objdate = new Date(dateSplit[1] + " " + dateSplit[0] + ", " + dateSplit[2]);
+            if (objdate) {
+                objdate.setDate(objdate.getDate() + 1);
+                var formtDate = getFormattedDate(objdate    .toLocaleDateString());
+               $('#scheduleDate').text(formtDate);
+               $.ajax({
+                   url: url,
+                   data: { scheduleDt: formtDate },
+                   contentType: 'application/html; charset=utf-8',
+                   type: 'GET',
+                   dataType: 'html'
+               })
+                .success(function (result) {
+                    //alert(result)
+                    $('#searchResults').html(result);
+                })
+                .fail(function (xhr, status) {
+                    alert(status);
+                })
+            }
+        });
+
+        window.getFormattedDate = function(data) {
+            var sptdate = String(data).split("/");
+            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            var myMonth = sptdate[0];
+            var myDay = sptdate[1];
+            var myYear = sptdate[2];
+            var combineDatestr = myDay + "-" + months[myMonth - 1] + "-" + myYear;
+            return combineDatestr;
         };
     });
 </script>

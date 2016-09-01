@@ -28,7 +28,7 @@ namespace HRPortal.Controllers
         // GET: Job
         public async Task<ActionResult> Index(string sOdr, int? page)
         {
-            var jobLst = await dbContext.JOBPOSTINGs.ToListAsync();
+            var jobLst = await dbContext.JOBPOSTINGs.OrderByDescending(m=>m.CREATED_ON).ToListAsync();
             jobLst = GetPagination(jobLst, sOdr, page);
             ViewBag.TotalRecord = jobLst.Count();
             int pSize = ViewBag.PageSize == null ? 0 : ViewBag.PageSize;

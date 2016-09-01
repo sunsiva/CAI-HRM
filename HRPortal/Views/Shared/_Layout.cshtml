@@ -1,13 +1,16 @@
 ﻿<!DOCTYPE html>
 <html>
 @using HRPortal.Helper;
-@{ 
+@{
     var role = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper();
     bool isSuperAdmin = role.Contains("ADMIN") ? true : false;
     bool isSuperUser = role.Contains("SUPERUSER") ? true : false;
     var dashboardTxt = isSuperAdmin == true ? "Candidates" : "Jobs";
     var isHome = isSuperAdmin == true ? "Dashboard" : "Home";
-    }
+    int CanCnt = CookieStore.GetCookie("TodaysCanCnt").ToString() != string.Empty ? Convert.ToInt32(CookieStore.GetCookie("TodaysCanCnt")) : 0;
+    int JobCnt = CookieStore.GetCookie("TodaysJobCnt").ToString() != string.Empty ? Convert.ToInt32(CookieStore.GetCookie("TodaysJobCnt")) : 0;
+    int SchCnt = CookieStore.GetCookie("TodaysScheduleCnt").ToString() != string.Empty ? Convert.ToInt32(CookieStore.GetCookie("TodaysScheduleCnt")) : 0;
+}
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,14 +42,25 @@
                 <ul class="nav navbar-nav">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        
                         if (isSuperAdmin)
                         {
                             <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Dashboard") ? "active" : "")">@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
-                            <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Home") ? "active" : "")">@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
-                            <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Job") ? "active" : "")">@Html.ActionLink("Job", "Index", "Job")</li>
-                            <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Schedules" && ViewContext.RouteData.Values["Controller"].ToString() == "Appointment") ? "active" : "")">@Html.ActionLink("Schedules", "Schedules", "Appointment")</li>
-                            <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Report") ? "active" : "")">@Html.ActionLink("Report", "Index", "Report")</li>
+                            <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Home") ? "active" : "")">
+                                <a href="@Url.Action("Index", "Home")">
+                                    @dashboardTxt @if (CanCnt > 0) {<span class="badge-notify-header" id="badgeCanCnt" title="Today's Profiles">@CanCnt</span>}
+                                </a>
+                            </li>
+                            <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Job") ? "active" : "")">
+                                <a href="@Url.Action("Index", "Job")">
+                                    Job @if (JobCnt > 0) {<span class="badge-notify-header" id="badgeJobCnt" title="Today's Jobs">@JobCnt</span>}
+                                </a>
+                            </li>
+                            <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Schedules" && ViewContext.RouteData.Values["Controller"].ToString() == "Appointment") ? "active" : "")">
+                                <a href="@Url.Action("Schedules", "Appointment")">
+                                    Schedules @if (SchCnt > 0)
+                                    {<span class="badge pull-right" style="background-color:red" id="badgeSchCnt" title="No.Of Schedules Today">@SchCnt</span>}
+                                </a>
+                            </li>
                         }
                         else if (isSuperUser)
                         {
@@ -58,6 +72,7 @@
                             <li  class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Home") ? "active" : "")">@Html.ActionLink(dashboardTxt, "Index", "Home")</li>
                             <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Candidate") ? "active" : "")">@Html.ActionLink("Candidate", "Index", "Candidate")</li>
                         }
+                        <li class="@((ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Report") ? "active" : "")">@Html.ActionLink("Report", "Index", "Report")</li>
                         @*<li>@Html.ActionLink("Appointment", "Index", "Appointment")</li>*@
                     }
                 </ul>

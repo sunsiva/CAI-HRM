@@ -34,7 +34,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/25/2013 14:34:54</publishTime>
     </File>
     <File Include="bin/HRPortal.dll">
-      <publishTime>08/29/2016 10:52:04</publishTime>
+      <publishTime>09/01/2016 21:45:24</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
       <publishTime>03/31/2016 13:24:09</publishTime>
@@ -282,6 +282,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Content/Site.css">
       <publishTime>05/27/2016 22:48:36</publishTime>
     </File>
+    <File Include="Content/Tabs.css">
+      <publishTime>08/29/2016 20:30:40</publishTime>
+    </File>
     <File Include="Content/tags/jquery.tagit.css">
       <publishTime>05/31/2016 15:07:00</publishTime>
     </File>
@@ -340,7 +343,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/01/2016 19:49:16</publishTime>
     </File>
     <File Include="HRPortal.edmx.diagram">
-      <publishTime>08/04/2016 20:24:06</publishTime>
+      <publishTime>08/29/2016 20:00:42</publishTime>
     </File>
     <File Include="packages.config">
       <publishTime>08/08/2016 23:48:44</publishTime>
@@ -511,37 +514,40 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/01/2016 19:03:40</publishTime>
     </File>
     <File Include="Views/Appointment/Schedules.cshtml">
-      <publishTime>08/26/2016 12:16:25</publishTime>
+      <publishTime>09/01/2016 16:57:41</publishTime>
+    </File>
+    <File Include="Views/Appointment/SearchResults.cshtml">
+      <publishTime>09/01/2016 18:26:32</publishTime>
     </File>
     <File Include="Views/Candidate/Create.cshtml">
-      <publishTime>07/27/2016 20:17:08</publishTime>
+      <publishTime>08/31/2016 18:32:25</publishTime>
     </File>
     <File Include="Views/Candidate/Delete.cshtml">
-      <publishTime>07/11/2016 19:44:06</publishTime>
+      <publishTime>08/29/2016 22:59:24</publishTime>
     </File>
     <File Include="Views/Candidate/Details.cshtml">
       <publishTime>07/12/2016 10:15:49</publishTime>
     </File>
     <File Include="Views/Candidate/Edit.cshtml">
-      <publishTime>08/26/2016 15:10:10</publishTime>
+      <publishTime>08/29/2016 20:00:43</publishTime>
     </File>
     <File Include="Views/Candidate/Index.cshtml">
-      <publishTime>08/25/2016 18:58:57</publishTime>
+      <publishTime>08/30/2016 15:17:43</publishTime>
     </File>
     <File Include="Views/Candidate/SquadJobs.cshtml">
       <publishTime>07/11/2016 19:37:04</publishTime>
     </File>
     <File Include="Views/Candidate/_CandidateList.cshtml">
-      <publishTime>07/22/2016 23:59:10</publishTime>
+      <publishTime>08/29/2016 20:00:43</publishTime>
     </File>
     <File Include="Views/Candidate/_FileUpload.cshtml">
       <publishTime>04/14/2016 19:42:44</publishTime>
     </File>
     <File Include="Views/Candidate/_SearchCriteria.cshtml">
-      <publishTime>08/24/2016 12:31:53</publishTime>
+      <publishTime>08/29/2016 20:00:43</publishTime>
     </File>
     <File Include="Views/Dashboard/Index.cshtml">
-      <publishTime>08/25/2016 20:30:08</publishTime>
+      <publishTime>09/01/2016 15:57:32</publishTime>
     </File>
     <File Include="Views/Home/About.cshtml">
       <publishTime>04/05/2016 17:42:07</publishTime>
@@ -550,13 +556,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/05/2016 17:41:53</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>08/23/2016 18:35:15</publishTime>
+      <publishTime>09/01/2016 14:47:24</publishTime>
     </File>
     <File Include="Views/Home/_CandidateList.cshtml">
-      <publishTime>08/26/2016 19:35:46</publishTime>
+      <publishTime>09/01/2016 12:54:05</publishTime>
     </File>
     <File Include="Views/Home/_JobList.cshtml">
-      <publishTime>07/14/2016 18:58:03</publishTime>
+      <publishTime>08/29/2016 20:00:43</publishTime>
     </File>
     <File Include="Views/Home/_SearchCriteria.cshtml">
       <publishTime>08/04/2016 18:59:59</publishTime>
@@ -568,16 +574,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/09/2016 23:18:57</publishTime>
     </File>
     <File Include="Views/Job/Delete.cshtml">
-      <publishTime>08/23/2016 20:15:19</publishTime>
+      <publishTime>08/29/2016 20:00:43</publishTime>
     </File>
     <File Include="Views/Job/Details.cshtml">
-      <publishTime>08/23/2016 19:24:05</publishTime>
+      <publishTime>08/29/2016 20:00:43</publishTime>
     </File>
     <File Include="Views/Job/Edit.cshtml">
-      <publishTime>08/29/2016 10:46:57</publishTime>
+      <publishTime>09/01/2016 19:56:35</publishTime>
     </File>
     <File Include="Views/Job/Index.cshtml">
-      <publishTime>08/29/2016 10:46:45</publishTime>
+      <publishTime>08/29/2016 22:52:08</publishTime>
     </File>
     <File Include="Views/Manage/AddPhoneNumber.cshtml">
       <publishTime>03/31/2016 13:24:04</publishTime>
@@ -606,6 +612,15 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Manage/VerifyPhoneNumber.cshtml">
       <publishTime>03/31/2016 13:24:04</publishTime>
     </File>
+    <File Include="Views/Report/Index.cshtml">
+      <publishTime>09/01/2016 19:11:33</publishTime>
+    </File>
+    <File Include="Views/Report/_LWDReport.cshtml">
+      <publishTime>08/29/2016 20:31:21</publishTime>
+    </File>
+    <File Include="Views/Report/_StagingReport.cshtml">
+      <publishTime>09/01/2016 19:27:33</publishTime>
+    </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>05/26/2016 19:13:49</publishTime>
     </File>
@@ -619,10 +634,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/01/2016 19:49:16</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>08/25/2016 17:01:51</publishTime>
+      <publishTime>09/01/2016 19:10:04</publishTime>
     </File>
     <File Include="Views/Shared/_LoginPartial.cshtml">
-      <publishTime>07/07/2016 19:55:01</publishTime>
+      <publishTime>08/29/2016 20:00:43</publishTime>
     </File>
     <File Include="Views/Vendor/Create.cshtml">
       <publishTime>08/09/2016 23:19:26</publishTime>
@@ -634,7 +649,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/21/2016 16:38:43</publishTime>
     </File>
     <File Include="Views/Vendor/Edit.cshtml">
-      <publishTime>08/25/2016 14:26:55</publishTime>
+      <publishTime>08/29/2016 20:00:43</publishTime>
     </File>
     <File Include="Views/Vendor/Index.cshtml">
       <publishTime>06/24/2016 17:16:49</publishTime>
@@ -646,7 +661,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/31/2016 13:23:44</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>08/29/2016 10:52:07</publishTime>
+      <publishTime>09/01/2016 19:37:30</publishTime>
     </File>
   </ItemGroup>
 </Project>

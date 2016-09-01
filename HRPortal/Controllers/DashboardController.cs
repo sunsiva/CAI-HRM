@@ -53,17 +53,19 @@ namespace HRPortal.Controllers
                         select stsMst).ToList();
 
             model.ToT_Candidates_OFRD = data.Where(x => x.STATUS_NAME.Contains("OFFRD")).Count();
-            model.ToT_Candidates_PRGS = data.Where(x => !x.STATUS_NAME.Contains("OFFRD") && !x.STATUS_NAME.Contains("JOIN") && !x.STATUS_NAME.Contains("RJ")).Count();
+            model.ToT_Candidates_PRGS = data.Where(x => !x.STATUS_NAME.Contains("OFFRD") && !x.STATUS_NAME.Contains("JOIN") && !x.STATUS_NAME.Contains("RJ") && !x.STATUS_NAME.Contains("DROP") && !x.STATUS_NAME.Contains("DEFRD")).Count();
             model.ToT_Candidates_RJTD = data.Where(x => x.STATUS_NAME.Contains("RJ")).Count();
             model.ToT_Candidates_JOIN = data.Where(x => x.STATUS_NAME.Contains("JOIN")).Count();
+            model.ToT_Candidates_DEFRD = data.Where(x => x.STATUS_NAME.Contains("DEFRD")).Count();
+            model.ToT_Candidates_DROP = data.Where(x => x.STATUS_NAME.Contains("DROP")).Count();
             model.ToT_Active_Jobs = db.JOBPOSTINGs.Where(x => x.ISACTIVE == true).ToList().Count();
             return model;
         }
 
-        public ActionResult ExportToExcel(bool status, bool r1, bool r2, bool r3,bool offerd, string partner)
+        public ActionResult ExportToExcel(bool status, bool r1, bool r2, bool r3, bool offerd, string partner)
         {
-          //  try
-           // {
+            //  try
+            // {
             //    System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
             //    string isSS = (status? "true":"false");
             //    partner = (partner == "null" ? string.Empty : partner);
@@ -100,7 +102,7 @@ namespace HRPortal.Controllers
             //    string fileName = "Report_" + DateTime.Now.Day + DateTime.Now.ToString("MMM") + ".xls";
             //    Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
             //    Response.ContentType = "application/ms-excel";  //application/vnd.ms-excel
-                
+
             //    Response.Charset = "";
             //    StringWriter sw = new StringWriter();
             //    System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
@@ -108,7 +110,7 @@ namespace HRPortal.Controllers
             //    Response.Output.Write(sw.ToString());
             //    Response.Flush();
             //    Response.End();
-                return new EmptyResult();// RedirectToAction("Index", "Dashboard");
+            return new EmptyResult();// RedirectToAction("Index", "Dashboard");
             //}
             //catch (Exception ex) { throw ex; }
         }

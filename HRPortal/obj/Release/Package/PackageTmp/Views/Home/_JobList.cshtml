@@ -24,10 +24,13 @@
                             JOB DESCRIPTION
                         </th>
                         <th>
-                            @Html.ActionLink("POSITION NAME", "Index", new { sOdr = ViewBag.PositionSort })
+                            @Html.ActionLink("POSITION", "Index", new { sOdr = ViewBag.PositionSort })
                         </th>
                         <th>
                             NO.OF VACANCIES
+                        </th>
+                        <th>
+                            CUSTOMER
                         </th>
                         <th>
                             YEARS OF EXP
@@ -56,6 +59,9 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.NO_OF_VACANCIES)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CUSTOMER_NAME)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.YEARS_OF_EXP_TOTAL)

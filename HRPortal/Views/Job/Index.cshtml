@@ -59,8 +59,11 @@
                         <tr class="text-center">
                             <td>@(sl = sl + 1) </td>
                             <td>
-                                @Html.ActionLink(item.JOB_CODE.ToString(), "Create", "Candidate", new { JCode = item.JOB_CODE, JID = item.JOB_ID, styp = "A" }, htmlAttributes: new { @title = "Click To Map Profile" })
-                                @*@Html.DisplayFor(modelItem => item.JOB_CODE)*@
+                            @if (item.ISACTIVE == true)
+                            {@Html.ActionLink(item.JOB_CODE.ToString(), "Create", "Candidate", new { JCode = item.JOB_CODE, JID = item.JOB_ID, styp = "A" }, htmlAttributes: new { @title = "Click To Map Profile" })
+                            }
+                            else
+                            {@Html.DisplayFor(modelItem => item.JOB_CODE)}
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.POSITION_NAME)

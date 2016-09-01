@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "Delete";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var cmnts = Model.COMMENTS;
+    Model.COMMENTS = string.Empty;
 }
 
 <h2 align="center">De-activate A Job</h2>
@@ -73,7 +75,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.COMMENTS)
+            @cmnts
         </dd>
 
         <dt>
@@ -83,15 +85,6 @@
         <dd>
             @Html.DisplayFor(model => model.ISACTIVE)
         </dd>
-
-        @*<dt>
-            @Html.DisplayName("MODIFIED_BY")
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MODIFIED_BY)
-        </dd>*@
-
         <dt>
             @Html.DisplayName("LAST MODIFIED ON")
         </dt>

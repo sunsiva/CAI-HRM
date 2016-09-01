@@ -26,21 +26,34 @@ namespace HRPortal.Controllers
 
         public async Task<ActionResult> Index(string sOdr, int? page)
         {
-            try {
-
+            try
+            {
                 if (User.Identity.IsAuthenticated)
                 {
-                    //GetCurrentUser(ctxt); TODO: get everything form application db context for initial setup
+                    //To set badge count on the menu
+                    bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
+                    if (isSuperAdmin)
+                    { 
+                        //int canCnt = db.CANDIDATES.Where(u => u.CREATED_ON.ToShortDateString() == DateTime.Now.ToShortDateString()).Count();
+                        //int jobCnt = db.JOBPOSTINGs.Where(u => u.CREATED_ON.ToShortDateString() == DateTime.Now.ToShortDateString()).Count();
+                        int schCnt = appVM.GetCandidateSchedules(DateTime.Now).Count();
 
-                    if (CookieStore.GetCookie(CacheKey.Uid.ToString()) == null) { 
+                        //CookieStore.SetCookie("TodaysCanCnt", canCnt.ToString(), TimeSpan.FromHours(1));
+                        //CookieStore.SetCookie("TodaysJobCnt", jobCnt.ToString(), TimeSpan.FromHours(1));
+                        CookieStore.SetCookie("TodaysScheduleCnt", schCnt.ToString(), TimeSpan.FromHours(1));
+                    }
+
+                    if (CookieStore.GetCookie(CacheKey.Uid.ToString()) == null)
+                    {
                         loginVM.SetUserToCache(User.Identity.Name);
                     }
 
-                    if(System.Configuration.ConfigurationManager.AppSettings["IsAutoUpdateFdkPending"]=="true")
-                    { 
+                    if (System.Configuration.ConfigurationManager.AppSettings["IsAutoUpdateFdkPending"] == "true" &&
+                       (17 == HelperFuntions.GetDateTime().Hour || 16 == HelperFuntions.GetDateTime().Hour))
+                    {
                         vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
                     }
-                    
+
                     var dbJobs = await db.JOBPOSTINGs.ToListAsync();
                     if (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                     {
@@ -110,39 +123,40 @@ namespace HRPortal.Controllers
 
         public async Task<ActionResult> ExportToExcel()
         {
-            try { 
-            System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
-            var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
-            var dbJobs = await db.JOBPOSTINGs.ToListAsync();
-            var srchSrc = GetCandidateSearchResults(dbCan, dbJobs).CandidateItems.ToList();
-            var dataSrc = srchSrc.Select(i => new {
-                CandidateName= i.CANDIDATE_NAME,
-                MobileNo = i.MOBILE_NO,
-                Email = i.EMAIL,
-                Partner = i.VENDOR_NAME,
-                Position = i.POSITION,
-                NoticePeriod=i.NOTICE_PERIOD,
-                LastWorkingDay=i.LAST_WORKING_DATE,
-                TotalExp = i.YEARS_OF_EXP_TOTAL,
-                PublishedOn = i.CREATED_ON,
-                LastModifiedBy=i.MODIFIED_BY,
-                Status =i.STATUS
-            }).ToList();
-            gv.DataSource = dataSrc;
-            gv.DataBind();
-            Response.ClearContent();
-            Response.Buffer = true;
-            string fileName = "Candidates_" + DateTime.Now.Day + DateTime.Now.ToString("MMM") + "_" + DateTime.Now.Hour + "_" + DateTime.Now.Minute + "_" + DateTime.Now.Second + ".xls";
-            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-            Response.ContentType = "application/ms-excel";
-            Response.Charset = "";
-            StringWriter sw = new StringWriter();
-            System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
-            gv.RenderControl(htw);
-            Response.Output.Write(sw.ToString());
-            Response.Flush();
-            Response.End();
-            return RedirectToAction("Index", "Home");
+            try
+            {
+                System.Web.UI.WebControls.GridView gv = new System.Web.UI.WebControls.GridView();
+                var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
+                var dbJobs = await db.JOBPOSTINGs.ToListAsync();
+                var srchSrc = GetCandidateSearchResults(dbCan, dbJobs).CandidateItems.ToList();
+                var dataSrc = srchSrc.Select(i => new {
+                    CandidateName = i.CANDIDATE_NAME,
+                    MobileNo = i.MOBILE_NO,
+                    Email = i.EMAIL,
+                    Partner = i.VENDOR_NAME,
+                    Position = i.POSITION,
+                    NoticePeriod = i.NOTICE_PERIOD,
+                    LastWorkingDay = i.LAST_WORKING_DATE,
+                    TotalExp = i.YEARS_OF_EXP_TOTAL,
+                    PublishedOn = i.CREATED_ON,
+                    LastModifiedBy = i.MODIFIED_BY,
+                    Status = i.STATUS
+                }).ToList();
+                gv.DataSource = dataSrc;
+                gv.DataBind();
+                Response.ClearContent();
+                Response.Buffer = true;
+                string fileName = "Candidates_" + DateTime.Now.Day + DateTime.Now.ToString("MMM") + "_" + DateTime.Now.Hour + "_" + DateTime.Now.Minute + "_" + DateTime.Now.Second + ".xls";
+                Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+                Response.ContentType = "application/ms-excel";
+                Response.Charset = "";
+                StringWriter sw = new StringWriter();
+                System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
+                gv.RenderControl(htw);
+                Response.Output.Write(sw.ToString());
+                Response.Flush();
+                Response.End();
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception ex) { throw ex; }
         }
@@ -154,24 +168,30 @@ namespace HRPortal.Controllers
         /// <param name="status"></param>
         /// <param name="comments"></param>
         /// <returns></returns>
-        public async Task<ActionResult> StatusUpdate(string id, string status, string comments)
+        public async Task<ActionResult> StatusUpdate(string id, string date, string length, string status, string comments)
         {
             try
             {
-                if(string.IsNullOrEmpty(status) && string.IsNullOrEmpty(id))
+                if (string.IsNullOrEmpty(status) && string.IsNullOrEmpty(id))
                 {
                     return new EmptyResult();
                 }
-                
+
                 Guid cId = Guid.Parse(id);
                 string uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 STATUS_HISTORY sHist = new STATUS_HISTORY();
                 Guid stsId = Guid.Parse(status);
                 var stsMst = db.STATUS_MASTER.Where(s => s.STATUS_ID == stsId).FirstOrDefault();
-             
+
                 sHist.STATUS_ID = Guid.Parse(status);
                 sHist.COMMENTS = comments;
                 sHist.CANDIDATE_ID = Guid.Parse(id);
+                if (!string.IsNullOrEmpty(date.Trim()))
+                {
+                    sHist.SCHEDULED_TO = Convert.ToDateTime(date);
+                    sHist.SCHEDULE_LENGTH_MINS = int.Parse(length);
+                }
+
                 sHist.ISACTIVE = true;
                 sHist.MODIFIED_BY = uid;
                 sHist.MODIFIED_ON = HelperFuntions.GetDateTime();
@@ -187,7 +207,7 @@ namespace HRPortal.Controllers
 
                 if (stsMst != null && stsMst.STATUS_DESCRIPTION.Contains("ToBeSchedule") && System.Configuration.ConfigurationManager.AppSettings["IsTBSMail"] == "true")
                 {
-                    await appVM.sendMailTBS(cId, comments);
+                    await appVM.sendMailTBS(cId, comments, date, length);
                 }
                 return new EmptyResult();
             }
@@ -204,46 +224,47 @@ namespace HRPortal.Controllers
         {
             ViewBag.CurrentSort = sOdr;
 
-            if (jobCanObj.CandidateItems != null && jobCanObj.CandidateItems.Count > 0) { 
-            ViewBag.CNameSort = string.IsNullOrEmpty(sOdr) ? "Name_desc" : "";
-            ViewBag.PartnerSort = sOdr == "Partner_desc" ? "Partner_asc" : "Partner_desc";
-            ViewBag.PDateSort = sOdr == "SubDate_desc" ? "SubDate_asc" : "SubDate_desc";
-            ViewBag.SkillSort = sOdr == "Skill_desc" ? "Skill_asc" : "Skill_desc";
-            ViewBag.StatusSort = sOdr == "Sts_desc" ? "Sts_asc" : "Sts_desc";
-
-            switch (sOdr)
+            if (jobCanObj.CandidateItems != null && jobCanObj.CandidateItems.Count > 0)
             {
-                case "Name_desc":
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.CANDIDATE_NAME).ToList();
-                    break;
-                case "Partner_desc":
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.VENDOR_NAME).ToList();
-                    break;
-                case "Partner_asc":
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.VENDOR_NAME).ToList();
-                    break;
-                case "SubDate_desc":
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.CREATED_ON).ToList();
-                    break;
-                case "SubDate_asc":
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.CREATED_ON).ToList();
-                    break;
-                case "Skill_desc":
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.POSITION).ToList();
-                    break;
-                case "Skill_asc":
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.POSITION).ToList();
-                    break;
-                case "Sts_desc":
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.STATUS).ToList();
-                    break;
-                case "Sts_asc":
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.STATUS).ToList();
-                    break;
-                default:
-                    jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.CANDIDATE_NAME).ToList();
-                    break;
-            }
+                ViewBag.CNameSort = string.IsNullOrEmpty(sOdr) ? "Name_desc" : "";
+                ViewBag.PartnerSort = sOdr == "Partner_desc" ? "Partner_asc" : "Partner_desc";
+                ViewBag.PDateSort = sOdr == "SubDate_desc" ? "SubDate_asc" : "SubDate_desc";
+                ViewBag.SkillSort = sOdr == "Skill_desc" ? "Skill_asc" : "Skill_desc";
+                ViewBag.StatusSort = sOdr == "Sts_desc" ? "Sts_asc" : "Sts_desc";
+
+                switch (sOdr)
+                {
+                    case "Name_desc":
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.CANDIDATE_NAME).ToList();
+                        break;
+                    case "Partner_desc":
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.VENDOR_NAME).ToList();
+                        break;
+                    case "Partner_asc":
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.VENDOR_NAME).ToList();
+                        break;
+                    case "SubDate_desc":
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.CREATED_ON).ToList();
+                        break;
+                    case "SubDate_asc":
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.CREATED_ON).ToList();
+                        break;
+                    case "Skill_desc":
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.POSITION).ToList();
+                        break;
+                    case "Skill_asc":
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.POSITION).ToList();
+                        break;
+                    case "Sts_desc":
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderByDescending(s => s.STATUS).ToList();
+                        break;
+                    case "Sts_asc":
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.STATUS).ToList();
+                        break;
+                    default:
+                        jobCanObj.CandidateItems = jobCanObj.CandidateItems.OrderBy(s => s.CANDIDATE_NAME).ToList();
+                        break;
+                }
             }
             else {
                 ViewBag.JCodeSort = sOdr == "JCode_asc" ? "JCode_desc" : "JCode_asc";
@@ -292,30 +313,30 @@ namespace HRPortal.Controllers
                     name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5];
                 }
 
-                if(System.Configuration.ConfigurationManager.AppSettings["IsCallSP_Temp"] == "true")
-                { 
+                if (System.Configuration.ConfigurationManager.AppSettings["IsCallSP_Temp"] == "true")
+                {
                     var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, "").ToList();
                     jobCanObj.CandidateItems = canlist.Select(i => new CandidateViewModels
-                                                {
-                                                CANDIDATE_ID = i.CANDIDATE_ID,
-                                                CANDIDATE_NAME = i.CANDIDATE_NAME,
-                                                MOBILE_NO = i.MOBILE_NO,
-                                                EMAIL = i.EMAIL,
-                                                POSITION = i.POSITION,
-                                                RESUME_FILE_PATH = (string.IsNullOrEmpty(i.RESUME_FILE_PATH) ? string.Empty :i.RESUME_FILE_PATH),
-                                                NOTICE_PERIOD = i.NOTICE_PERIOD,
-                                                YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
-                                                LAST_WORKING_DATE = i.LAST_WORKING_DATE,
-                                                VENDOR_NAME = i.VENDOR_NAME,
-                                                STATUS = i.STATUS,
-                                                STATUS_ID = i.STATUS_ID,
-                                                CREATED_ON = i.CREATED_ON,
-                                                MODIFIED_ON = i.MODIFIED_ON,
-                                                MODIFIED_BY = i.MODIFIED_BY,
-                                            }).ToList();
-            }
+                    {
+                        CANDIDATE_ID = i.CANDIDATE_ID,
+                        CANDIDATE_NAME = i.CANDIDATE_NAME,
+                        MOBILE_NO = i.MOBILE_NO,
+                        EMAIL = i.EMAIL,
+                        POSITION = i.POSITION,
+                        RESUME_FILE_PATH = (string.IsNullOrEmpty(i.RESUME_FILE_PATH) ? string.Empty : i.RESUME_FILE_PATH),
+                        NOTICE_PERIOD = i.NOTICE_PERIOD,
+                        YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
+                        LAST_WORKING_DATE = i.LAST_WORKING_DATE,
+                        VENDOR_NAME = i.VENDOR_NAME,
+                        STATUS = i.STATUS,
+                        STATUS_ID = i.STATUS_ID,
+                        CREATED_ON = i.CREATED_ON,
+                        MODIFIED_ON = i.MODIFIED_ON,
+                        MODIFIED_BY = i.MODIFIED_BY,
+                    }).ToList();
+                }
                 else
-                { 
+                {
                     jobCanObj.CandidateItems = (from c in dbCan
                                                 join j in dbJobs on c.JOB_ID equals j.JOB_ID
                                                 join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id
@@ -348,11 +369,13 @@ namespace HRPortal.Controllers
 
                 return jobCanObj;
             }
-            catch(Exception ex) {
-                throw ex; }
-           
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
-        
+
         private JobAndCandidateViewModels GetJobSearchResults(List<JOBPOSTING> dbJobs)
         {
             var cookie = CookieStore.GetCookie(CacheKey.JobSearchHome.ToString());
@@ -388,12 +411,12 @@ namespace HRPortal.Controllers
             try
             {
                 var model = db.STATUS_MASTER
-                    .Where(p => p.STATUS_NAME.StartsWith(term) && p.ISACTIVE==true)
+                    .Where(p => p.STATUS_NAME.StartsWith(term) && p.ISACTIVE == true)
                     .Take(10)
                     .Select(p => new
                     {
-                // jQuery UI needs the label property to function 
-                label = p.STATUS_NAME.Trim()
+                        // jQuery UI needs the label property to function 
+                        label = p.STATUS_NAME.Trim()
                     });
 
                 // Json returns [{"label":value}]
@@ -404,7 +427,7 @@ namespace HRPortal.Controllers
                 return Json("{'ex':'Exception'}");
             }
         }
-        
+
         private string GetPartnerName(string pId)
         {
             var vendor = (from u in db.AspNetUsers.Where(i => i.Id == pId)
@@ -459,7 +482,8 @@ namespace HRPortal.Controllers
         {
             Exception e = filterContext.Exception;
             //Log Exception e to DB.
-            if (!filterContext.ExceptionHandled) { 
+            if (!filterContext.ExceptionHandled)
+            {
                 LoggingUtil.LogException(e, errorLevel: ErrorLevel.Critical);
                 filterContext.ExceptionHandled = true;
             }

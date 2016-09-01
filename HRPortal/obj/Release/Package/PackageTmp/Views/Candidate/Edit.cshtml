@@ -1,30 +1,24 @@
-﻿@model HRPortal.CANDIDATE
+﻿@model CANDIDATE
+@using HRPortal.Helper;
 
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var hideNp = "hide"; var hideLWD = "hide"; var npYes = false; var npNo = false;
+    bool isAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
 }
 
 <h2 align="center">Edit Candidate</h2>
 
 @using (Html.BeginForm("Edit", "Candidate", FormMethod.Post, new { enctype = "multipart/form-data", @Id = "CandidateFormEdit" })) 
 {
-        @*@Html.AntiForgeryToken()*@
         <span align="right" id="errMsg" class="text-danger col-lg-offset-4"></span>
         <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.CANDIDATE_ID)
         @Html.HiddenFor(model=>model.JOB_ID)
         @Html.HiddenFor(model => model.STATUS)
-        @*<div class="form-group">
-        @Html.Label("JOB CODE", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.JOB_ID, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
-            @Html.ValidationMessageFor(model => model.JOB_ID, "", new { @class = "text-danger" })
-        </div>
-        </div>*@
-
+       
         <div class="form-group form-group-required">
             @Html.LabelFor(model => model.CANDIDATE_NAME,"CANDIDATE NAME", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -37,7 +31,6 @@
             @Html.LabelFor(model => model.YEARS_OF_EXP_TOTAL,"TOTAL EXPERIENCE", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.YEARS_OF_EXP_TOTAL, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.YEARS_OF_EXP_TOTAL, "", new { @class = "text-danger", @required = "mandatory" })*@
                 <span align="right" id="errMsgTotExp" class="text-danger"></span>
             </div>
         </div>
@@ -84,6 +77,15 @@
                     @Html.ValidationMessageFor(model => model.CURRENT_LOCATION, "", new { @class = "text-danger" })
                 </div>
             </div>
+            @if(isAdmin)
+            { 
+                <div class="form-group">
+                    @Html.LabelFor(model => model.JOB_ID, "POSITION", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("ddlCriteriaPosition", (SelectList)ViewBag.PositionList)
+                    </div>
+                </div>
+            }
             <div class="form-group">
                 @Html.LabelFor(model => model.YEARS_OF_EXP_RELEVANT,"RELEVANT EXPERIENCE", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -91,7 +93,6 @@
                     @Html.ValidationMessageFor(model => model.YEARS_OF_EXP_RELEVANT, "", new { @class = "text-danger" })
                 </div>
             </div>
-
 
             <div class="form-group">
                 @Html.LabelFor(model => model.ALTERNATE_MOBILE_NO,"ALTERNATE MOBILE", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -160,13 +161,13 @@
             </div>
         </div>
 
-            <div class="form-group form-group-required">
-                <label for="file" class="control-label col-md-2">RESUME UPLOAD :</label>
-                <div class="col-md-10">
-                    <input class="form-control" type="file" name="file" size="335" accept="Application/*,Text/*,.doc,.docx,.rtf" id="file" />
-                    <span align="right" id="errMsgCVUpload" class="text-danger"></span>
-                </div>
+        <div class="form-group form-group-required">
+            <label for="file" class="control-label col-md-2">RESUME UPLOAD :</label>
+            <div class="col-md-10">
+                <input class="form-control" type="file" name="file" size="335" accept="Application/*,Text/*,.doc,.docx,.rtf" id="file" />
+                <span align="right" id="errMsgCVUpload" class="text-danger"></span>
             </div>
+        </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -181,6 +182,10 @@
     @if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "S")
     { @Html.ActionLink("Back to List", "SquadJobs", "Candidate", new { page= Request.QueryString["p"] }, null)
     }
+    else if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "H")
+    {
+        @Html.ActionLink("Back to List", "Index", "Home", new { page = Request.QueryString["p"] }, null)
+    }
     else {
     @Html.ActionLink("Back to List", "Index", new { page = Request.QueryString["p"] })
     }
@@ -190,12 +195,20 @@
     @Scripts.Render("~/bundles/jqueryval")
 <script src="~/Scripts/moment.js"></script>
 <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
 <script lang="ja" type="text/javascript">
     $(document).ready(function () {
         $('.date-picker').datetimepicker({
             format: 'MM/DD/YYYY'
         });
         
+        var objNP = '@Model.NOTICE_PERIOD';
+        if (objNP)
+        {
+            $('#ddlNoticePeriod').val(objNP);
+        }
+
         $('#rdoIsNPYes').click(function () {
             $('#txtNP').hasClass('hide') ? "" : $('#txtNP').removeClass('show') && $('#txtNP').addClass('hide');
             $('#txtLWD').hasClass('hide') ? $('#txtLWD').removeClass('hide') && $('#txtLWD').addClass('show') : "";
@@ -206,6 +219,16 @@
             $('#txtLWD').hasClass('hide') ? "" : $('#txtLWD').removeClass('show') && $('#txtLWD').addClass('hide');
         });
 
+        $('#ddlCriteriaPosition').multiselect(
+        {
+            enableCaseInsensitiveFiltering: true,
+            nonSelectedText: '-- Select Position --'
+        });
+
+        var srcPosition = '@Model.JOB_ID';
+        //SetPosition
+        $("#ddlCriteriaPosition").val(srcPosition);// Set the value
+        $("#ddlCriteriaPosition").multiselect("refresh");
 
         $("#btnCandiEdit").click(function () {
                 var dtEmail = $("#EMAIL").val(), dtAltEmail = $("#ALTERNATE_EMAIL_ID").val(), dtPh = $("#MOBILE_NO").val(), dtAltPh = $("#ALTERNATE_MOBILE_NO").val();

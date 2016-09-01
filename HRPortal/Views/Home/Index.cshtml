@@ -8,9 +8,9 @@
 <div class="row">
     <div class="col-md-4">
         <br />
-        
-        @if(User.Identity.IsAuthenticated)
-        { 
+
+        @if (User.Identity.IsAuthenticated)
+        {
             if (isSuperAdmin)
             {
                 @Html.Partial("_SearchCriteria")
@@ -27,164 +27,215 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-<script src="~/Scripts/moment.js"></script>
-<script src="~/Scripts/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
-<link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
-<script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
+    <script src="~/Scripts/jquery.cookie.js"></script>
 
-<script lang="ja" type="text/javascript">
-    $(document).ready(function () {
-        $('.date-picker').datetimepicker({
-            format: 'DD/MM/YYYY' // This format is for SP
-        });
-
-        $('.job-date-picker').datetimepicker({
-            format: 'MM/DD/YYYY'
-        });
-
-        $('#ddlCriteriaVendor').multiselect(
-            {
-                includeSelectAllOption: true,
-                enableCaseInsensitiveFiltering: true,
-                nonSelectedText: '-- Select Partner --'
-                //  onChange: function(option, checked, select) {
-              //if (checked === true) {
-              //  //action taken here if true
-              //  alert('Checked' + checked + '.');
-              //  alert('Changed option ' + $(option).val() + '.');
-              //  } },
-            });
-
-        $('#ddlStatusSearchList').multiselect(
-            {
-                //includeSelectAllOption: true,
-                enableCaseInsensitiveFiltering: true,
-                nonSelectedText: '-- Select Status --'
-            });
-
-        $('#ddlCriteriaPosition').multiselect(
-            {
-               includeSelectAllOption: true,
-                enableCaseInsensitiveFiltering: true,
-                nonSelectedText: '-- Select Position --'
-            });
-
-        $('#btnClearSearchC').click(function () {
-            $("#txtCriteriaCanName").val('');
-            $("#ddlCriteriaVendor").multiselect("clearSelection");
-            $("#ddlCriteriaPosition").multiselect("clearSelection");
-            $("#ddlStatusSearchList").multiselect("clearSelection");
-            $("#txtCriteriaStDate").val(''); $("#txtCriteriaEndDate").val('');
-            $("#spnFilter").removeClass('show').addClass('hide');
-            $.get("/Home/ClearSearch", { id: "CAN" },
-                function (data) {
-                    $("#CandidatesPartial").html(data);
-                });
-        });
-
-        $('#btnClearSearchJ').click(function () {
-            $("#txtPositionName").val('');
-            $("#txtPublishedStDate").val(''); $("#txtPublishedEndDate").val('');
-            $("#spnFilter").removeClass('show').addClass('hide');
-            $.get("/Home/ClearSearch", { id: "JOB" },
-                function (data) {
-                    $("#JobDetailsPartial").html(data);
-                });
-        });
-
-        window.myPanel = function (data) {
-            $(".candidate-name").text(data.dataset.customName);
-            $("#hdnCandidateId").val(data.dataset.customValue);
-            var currentSts = $("#btnStsPnl_" + data.dataset.customValue + "").text();
-            $("#txtStsComments").val("");
-            $("#btnStatus").removeAttr("data-dismiss", "modal");
-            $("#ddlStatusList option:contains(" + currentSts + ")").attr("selected", "selected");
-        };
-
-        window.fnBtnStatusClick = function () {
-            if ($("#ddlStatusList").val() == "") {
-                $("#errMsgModal").text("Please select a status to change.");
-                $("#ddlStatusList").focus();
-                return false;
-            }
-            else if ($("#txtStsComments").val() == "") {
-                $("#errMsgModal").text("Please write a comments to change.");
-                $("#txtStsComments").focus();
-                return false;
+    <script lang="ja" type="text/javascript">
+        function ddlStatusListChange(value) {
+            var selText = $("#ddlStatusList option:selected").text();
+            if (selText.toLowerCase().indexOf("tobescheduled") >= 0) {
+                $("#divhideshow").removeClass("hidden")
+                $("#divhideshow").addClass("show")
             }
             else {
-                $.get("/Home/StatusUpdate", { id: $("#hdnCandidateId").val(), status: $("#ddlStatusList").val(), comments: $("#txtStsComments").val() },
-                    function (data) {
-                        $("#btnStsPnl_" + $("#hdnCandidateId").val() + "").text($("#ddlStatusList option:selected").text());
-                    });
-                $("#btnStatus").attr("data-dismiss", "modal");
+                $("#divhideshow").removeClass("show")
+                $("#divhideshow").addClass("hidden")
             }
-        };
+        }
 
-        $('#CollapseMe').click(function () {
-            $(this).hasClass('glyphicon-triangle-bottom') ? $(this).removeClass('glyphicon-triangle-bottom') && $(this).addClass('glyphicon-triangle-top') : $(this).removeClass('glyphicon-triangle-top') && $(this).addClass('glyphicon-triangle-bottom');
-        });
+        $(document).ready(function ()
+        {
+            
 
-        $("#btnSearchCriteria").click(function () {
-            var vendor = $("#ddlCriteriaVendor").val() == null ? "" : $("#ddlCriteriaVendor").val().join(','), position = $("#ddlCriteriaPosition").val() == null ? "" : $("#ddlCriteriaPosition").val().join(',')
-            , status = $("#ddlStatusSearchList").val() == null ? "" : $("#ddlStatusSearchList").val().join(',');
-            $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
-                $("#CandidatesPartial").html(data);
-                $("#spnFilter").removeClass('hide').addClass('show');
+            $('.date-picker').datetimepicker({
+                format: 'DD/MM/YYYY' // This format is for SP
             });
-        });
 
-        $("#btnSearchCriteriaJob").click(function () {
-            $.get("/Home/SearchCriteria", { name: $("#txtPositionName").val(), vendor: "", status: "", stdt: $("#txtPublishedStDate").val(), edt: $("#txtPublishedEndDate").val() }, function (data) {
-                $("#JobDetailsPartial").html(data);
-                $("#spnFilter").removeClass('hide').addClass('show');
+            $('.job-date-picker').datetimepicker({
+                format: 'MM/DD/YYYY'
             });
+
+            $('#txtdatepicker').datetimepicker({
+                format: 'DD/MM/YYYY' // This format is for SP,
+                //pickTime: false
+            });
+
+            $('#txttimepicker').datetimepicker({
+                format: "hh:mm A" // This format is for SP
+            });
+
+            $('#ddlCriteriaVendor').multiselect(
+                {
+                    includeSelectAllOption: true,
+                    enableCaseInsensitiveFiltering: true,
+                    nonSelectedText: '-- Select Partner --'
+                    //  onChange: function(option, checked, select) {
+                    //if (checked === true) {
+                    //  //action taken here if true
+                    //  alert('Checked' + checked + '.');
+                    //  alert('Changed option ' + $(option).val() + '.');
+                    //  } },
+                });
+
+            $('#ddlStatusSearchList').multiselect(
+                {
+                    //includeSelectAllOption: true,
+                    enableCaseInsensitiveFiltering: true,
+                    nonSelectedText: '-- Select Status --'
+                });
+
+            $('#ddlCriteriaPosition').multiselect(
+                {
+                    includeSelectAllOption: true,
+                    enableCaseInsensitiveFiltering: true,
+                    nonSelectedText: '-- Select Position --'
+                });
+
+            $('#btnClearSearchC').click(function () {
+                $("#txtCriteriaCanName").val('');
+                $("#ddlCriteriaVendor").multiselect("clearSelection");
+                $("#ddlCriteriaPosition").multiselect("clearSelection");
+                $("#ddlStatusSearchList").multiselect("clearSelection");
+                $("#txtCriteriaStDate").val(''); $("#txtCriteriaEndDate").val('');
+                $("#spnFilter").removeClass('show').addClass('hide');
+                $.get("/Home/ClearSearch", { id: "CAN" },
+                    function (data) {
+                        $("#CandidatesPartial").html(data);
+                    });
+            });
+
+            $('#btnClearSearchJ').click(function () {
+                $("#txtPositionName").val('');
+                $("#txtPublishedStDate").val(''); $("#txtPublishedEndDate").val('');
+                $("#spnFilter").removeClass('show').addClass('hide');
+                $.get("/Home/ClearSearch", { id: "JOB" },
+                    function (data) {
+                        $("#JobDetailsPartial").html(data);
+                    });
+            });
+
+            window.myPanel = function (data) {
+                $(".candidate-name").text(data.dataset.customName);
+                $("#hdnCandidateId").val(data.dataset.customValue);
+                var currentSts = $("#btnStsPnl_" + data.dataset.customValue + "").text();
+                $("#txtStsComments").val("");
+                var indexToSelect = $('#ddlStatusList option:contains(' + currentSts + ')').index();
+                $("#ddlStatusList")[0].selectedIndex = indexToSelect;
+                $("#btnStatus").removeAttr("data-dismiss", "modal");
+                $("#ddlStatusList option:contains(" + currentSts + ")").attr("selected", "selected");
+                $("#txtdatepicker").val("");
+                $("#txttimepicker").val("");
+                $("#divhideshow").removeClass("show")
+                $("#divhideshow").addClass("hidden")
+            };
+
+            window.fnBtnStatusClick = function () {
+                if ($("#ddlStatusList option:selected").text().toLowerCase().indexOf("tobescheduled") >= 0) {
+                    if ($("#txtdatepicker").val() == "") {
+                        $("#errMsgModal").text("Please schedule a date.");
+                        $("#txtdatepicker").focus();
+                        return false;
+                    }
+                    else if ($("#txttimepicker").val() == "") {
+                        $("#errMsgModal").text("Please schedule time.");
+                        $("#txttimepicker").focus();
+                        return false;
+                    }
+                    else if ($("#ddlScheduleLength").val() == "") {
+                        $("#errMsgModal").text("Please select a length(duration).");
+                        $("#ddlScheduleLength").focus();
+                        return false;
+                    }
+                }
+                else {
+                    $("#txtdatepicker").val("");
+                    $("#txttimepicker").val("");
+                }
+                if ($("#ddlStatusList").val() == "") {
+                    $("#errMsgModal").text("Please select a status to change.");
+                    $("#ddlStatusList").focus();
+                    return false;
+                }
+                else if ($("#txtStsComments").val() == "") {
+                    $("#errMsgModal").text("Please write a comments to change.");
+                    $("#txtStsComments").focus();
+                    return false;
+                }
+                else {
+                    $.get("/Home/StatusUpdate", { id: $("#hdnCandidateId").val(), date: $("#txtdatepicker").val() + ' ' + $("#txttimepicker").val(), length: $("#ddlScheduleLength").val(), status: $("#ddlStatusList").val(), comments: $("#txtStsComments").val(), reSch: "false" },
+                        function (data) {
+                            $("#btnStsPnl_" + $("#hdnCandidateId").val() + "").text($("#ddlStatusList option:selected").text());
+                        });
+                    $("#btnStatus").attr("data-dismiss", "modal");
+                }
+            };
+
+            $('#CollapseMe').click(function () {
+                $(this).hasClass('glyphicon-triangle-bottom') ? $(this).removeClass('glyphicon-triangle-bottom') && $(this).addClass('glyphicon-triangle-top') : $(this).removeClass('glyphicon-triangle-top') && $(this).addClass('glyphicon-triangle-bottom');
+            });
+
+            $("#btnSearchCriteria").click(function () {
+                var vendor = $("#ddlCriteriaVendor").val() == null ? "" : $("#ddlCriteriaVendor").val().join(','), position = $("#ddlCriteriaPosition").val() == null ? "" : $("#ddlCriteriaPosition").val().join(',')
+                , status = $("#ddlStatusSearchList").val() == null ? "" : $("#ddlStatusSearchList").val().join(',');
+                $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
+                    $("#CandidatesPartial").html(data);
+                    $("#spnFilter").removeClass('hide').addClass('show');
+                });
+            });
+
+            $("#btnSearchCriteriaJob").click(function () {
+                $.get("/Home/SearchCriteria", { name: $("#txtPositionName").val(), vendor: "", status: "", stdt: $("#txtPublishedStDate").val(), edt: $("#txtPublishedEndDate").val() }, function (data) {
+                    $("#JobDetailsPartial").html(data);
+                    $("#spnFilter").removeClass('hide').addClass('show');
+                });
+            });
+
+            //BEGIN: Job Search: Set the cookie value to criteria controls back whenever the page gets loaded
+            var srcJob = $.cookie('JobSearchHome');
+            if (srcJob && srcJob.replace('|||||', ''))
+                $("#spnFilter").removeClass('hide').addClass('show');
+            else
+                $("#spnFilter").removeClass('show').addClass('hide');
+
+            srcJob = srcJob ? srcJob.split('|') : "";
+            var srcPName = srcJob[0], srcPSDt = srcJob[1], srcPEDt = srcJob[2];
+            $("#txtPositionName").val(srcPName);
+            $("#txtPublishedStDate").val(srcPSDt);
+            $("#txtPublishedEndDate").val(srcPEDt);
+            //END:
+
+            //BEGIN: Candidate Search: Set the cookie value to criteria controls back whenever the page gets loaded
+            var src = $.cookie('CANSearchHome');
+            if (src && src.replace('|||||', ''))
+                $("#spnFilter").removeClass('hide').addClass('show');
+            else
+                $("#spnFilter").removeClass('show').addClass('hide');
+
+            src = src && src.replace('|||||', '') ? src.split('|') : '';
+            var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5];
+            $("#txtCriteriaCanName").val(srcName);
+            $("#txtCriteriaStDate").val(srcStDt);
+            $("#txtCriteriaEndDate").val(srcEnDt);
+
+            //SetPosition
+            var arrPosition = srcPosition ? srcPosition.split(",") : "";
+            $("#ddlCriteriaPosition").val(arrPosition);// Set the value
+            $("#ddlCriteriaPosition").multiselect("refresh");
+
+            //SetPartner
+            var arrPartner = srcPartner ? srcPartner.split(",") : "";
+            $("#ddlCriteriaVendor").val(arrPartner);// Set the value
+            $("#ddlCriteriaVendor").multiselect("refresh");
+
+            //SetStatus
+            var arrStatus = srcStatus ? srcStatus.split(",") : "";
+            $("#ddlStatusSearchList").val(arrStatus);// Set the value
+            $("#ddlStatusSearchList").multiselect("refresh");
+            //END: Set the cookie value to criteria controls back whenever the page gets loaded
+
         });
-
-        //BEGIN: Job Search: Set the cookie value to criteria controls back whenever the page gets loaded
-        var srcJob = $.cookie('JobSearchHome');
-        if (srcJob && srcJob.replace('|||||', ''))
-            $("#spnFilter").removeClass('hide').addClass('show');
-        else
-            $("#spnFilter").removeClass('show').addClass('hide');
-
-        srcJob = srcJob ? srcJob.split('|') : "";
-        var srcPName = srcJob[0], srcPSDt = srcJob[1], srcPEDt = srcJob[2];
-        $("#txtPositionName").val(srcPName);
-        $("#txtPublishedStDate").val(srcPSDt);
-        $("#txtPublishedEndDate").val(srcPEDt);
-        //END:
-
-        //BEGIN: Candidate Search: Set the cookie value to criteria controls back whenever the page gets loaded
-        var src = $.cookie('CANSearchHome');
-        if (src && src.replace('|||||', ''))
-            $("#spnFilter").removeClass('hide').addClass('show');
-        else
-            $("#spnFilter").removeClass('show').addClass('hide');
-
-        src = src && src.replace('|||||', '') ? src.split('|') : '';
-        var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5];
-        $("#txtCriteriaCanName").val(srcName);
-        $("#txtCriteriaStDate").val(srcStDt);
-        $("#txtCriteriaEndDate").val(srcEnDt);
-
-        //SetPosition
-        var arrPosition = srcPosition ? srcPosition.split(",") : "";
-        $("#ddlCriteriaPosition").val(arrPosition);// Set the value
-        $("#ddlCriteriaPosition").multiselect("refresh");
-
-        //SetPartner
-        var arrPartner = srcPartner ? srcPartner.split(",") : "";
-        $("#ddlCriteriaVendor").val(arrPartner);// Set the value
-        $("#ddlCriteriaVendor").multiselect("refresh");
-
-        //SetStatus
-        var arrStatus = srcStatus ? srcStatus.split(",") : "";
-        $("#ddlStatusSearchList").val(arrStatus);// Set the value
-        $("#ddlStatusSearchList").multiselect("refresh");
-        //END: Set the cookie value to criteria controls back whenever the page gets loaded
-
-    });
-</script>
+    </script>
 }

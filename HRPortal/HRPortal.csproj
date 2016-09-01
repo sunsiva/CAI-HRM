@@ -263,6 +263,9 @@
     <Compile Include="GetCandidateDetailsByLastworkingdate_Result.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
+    <Compile Include="getCandidatesSchedules_Result.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
     <Compile Include="getSearchResults_Result.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
@@ -400,6 +403,7 @@
     </Content>
     <Content Include="Scripts\bootstrap-multiselect.js" />
     <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Views\Appointment\Schedules.cshtml" />
     <Content Include="Views\Candidate\Index.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Web.config">
@@ -410,7 +414,6 @@
     <Content Include="Views\Candidate\_CandidateList.cshtml" />
     <Content Include="Views\Report\_StagingReport.cshtml" />
     <Content Include="Views\Report\_LWDReport.cshtml" />
-    <Content Include="Views\Appointment\Schedules.cshtml" />
     <EntityDeploy Include="HRPortal.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>HRPortal.Designer.cs</LastGenOutput>
@@ -419,6 +422,7 @@
       <DependentUpon>HRPortal.edmx</DependentUpon>
     </Content>
     <Content Include="Views\Report\Index.cshtml" />
+    <Content Include="Views\Appointment\SearchResults.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

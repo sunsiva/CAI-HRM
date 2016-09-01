@@ -6,7 +6,7 @@
     //bool C = (Model.POSITION_TYPE == "C" ? true : false), B = (Model.POSITION_TYPE == "B" ? true : false), P = (Model.POSITION_TYPE == "P" ? true : false);
 }
 
-<h2 align="center">Edit Job Detail</h2>
+<h2 align="center">Edit Job</h2>
 
 
 @using (Html.BeginForm("Edit", "Job", FormMethod.Post, new { enctype = "multipart/form-data", @Id = "JobEditForm" }))
@@ -14,7 +14,7 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        @*<h4>JOBPOSTING</h4>*@
+        
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.JOB_ID)
@@ -49,13 +49,13 @@
                 <span align="right" id="errMsgNoOfVacan" class="text-danger"></span>
             </div>
         </div>
-        <div class="form-group form-group-required">
+        @*<div class="form-group form-group-required">
             @Html.Label("PARTNER", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("ddlVendorList", (SelectList)ViewBag.VendorList, new { multiple = "multiple" })
                 <span align="right" id="errMsgPartner" class="text-danger"></span>
             </div>
-        </div>
+        </div>*@
         @*<div class="form-group form-group-required hide">
             @Html.Label("POSITION TYPE", new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
@@ -114,6 +114,14 @@
                 <span align="right" id="errMsgJDUpload" class="text-danger"></span>
             </div>
         </div>
+        @if (!Model.ISACTIVE) { 
+        <div class="form-group">
+            @Html.LabelFor(model => model.ISACTIVE,"JOB STATUS", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model => model.ISACTIVE) Check To Re-Activate
+            </div>
+        </div>
+        }
 
         <div class="form-group">
             <div class="col-md-10">
@@ -155,11 +163,13 @@
                 enableCaseInsensitiveFiltering: true,
                 nonSelectedText: '--Select Partner--'
             });
-       
+
+        var srcPartner = '@Model.JD_SOURCE';
+
         //SetPartner
-        //var arrPartner = srcPartner ? srcPartner.split(",") : "";
-        //$("#ddlVendorList").val(arrPartner);// Set the value
-        //$("#ddlVendorList").multiselect("refresh");
+        var arrPartner = srcPartner ? srcPartner.split(",") : "";
+        $("#ddlVendorList").val(arrPartner);// Set the value
+        $("#ddlVendorList").multiselect("refresh");
 
     });
 </script>

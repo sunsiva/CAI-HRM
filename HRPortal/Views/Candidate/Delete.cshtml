@@ -1,8 +1,10 @@
-﻿@model HRPortal.CANDIDATE
+﻿@model CANDIDATE
 
 @{
     ViewBag.Title = "De-Activate";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var cmnts = Model.COMMENTS;
+    Model.COMMENTS = string.Empty;
 }
 
 <h2 align="center">De-Activate Candidate</h2>
@@ -97,7 +99,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.COMMENTS)
+            @cmnts
         </dd>
 
         <dt>

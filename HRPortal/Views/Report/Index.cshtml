@@ -1,7 +1,8 @@
-﻿
+﻿@using HRPortal.Helper;
 @{
     ViewBag.Title = "Reports";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
 }
 <link href="~/Content/Tabs.css" rel="stylesheet" />
 
@@ -14,6 +15,8 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            @if(isSuperAdmin)
+            { 
             <div class="col-xs-3">
                 <!-- required for floating -->
                 <!-- Nav tabs -->
@@ -25,7 +28,6 @@
                     <li class=""><a href="#IdleTimeDetails" data-toggle="tab">Idle Time Details</a></li>
                 </ul>
             </div>
-
             <div class="col-xs-9">
                 <!-- Tab panes -->
                 <div class="tab-content">
@@ -47,6 +49,25 @@
                     </div>
                 </div>
             </div>
+            }
+            else
+            {
+                <div class="col-xs-3">
+                    <!-- required for floating -->
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs tabs-left">
+                        <li class="active"><a href="#StagingPartner" data-toggle="tab">Staging By Partner</a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-9">
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="StagingPartner">
+                            @Html.Action("Staging", "Report")
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
     </div>

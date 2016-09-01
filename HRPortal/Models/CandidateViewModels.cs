@@ -33,6 +33,8 @@ namespace HRPortal.Models
             public bool ISACTIVE { get; set; }
             public string MODIFIED_BY { get; set; }
             public Nullable<System.DateTime> MODIFIED_ON { get; set; }
+            public DateTime? SCHEDULED_TO { get; set; }
+            public string SCHEDULED_LENGTH { get; set; }
             public string CREATED_BY { get; set; }
             public DateTime CREATED_ON { get; set; }
             public string STATUS { get; set; }

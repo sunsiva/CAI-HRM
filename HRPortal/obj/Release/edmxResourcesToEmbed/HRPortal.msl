@@ -1,237 +1,318 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="HRPortalModelStoreContainer" CdmEntityContainer="HRPortalEntities">
+  <EntityContainerMapping StorageEntityContainer="Caihrops_portalModelStoreContainer" CdmEntityContainer="HRPortalEntities">
     <EntitySetMapping Name="C__MigrationHistory">
-      <EntityTypeMapping TypeName="HRPortalModel.C__MigrationHistory">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.C__MigrationHistory">
         <MappingFragment StoreEntitySet="__MigrationHistory">
-          <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
-          <ScalarProperty Name="Model" ColumnName="Model" />
-          <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
           <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
+          <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
+          <ScalarProperty Name="Model" ColumnName="Model" />
+          <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="AspNetRoles">
-      <EntityTypeMapping TypeName="HRPortalModel.AspNetRole">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.AspNetRole">
         <MappingFragment StoreEntitySet="AspNetRoles">
-          <ScalarProperty Name="IsSysAdmin" ColumnName="IsSysAdmin" />
-          <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="IsSysAdmin" ColumnName="IsSysAdmin" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="AspNetUserClaims">
-      <EntityTypeMapping TypeName="HRPortalModel.AspNetUserClaim">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.AspNetUserClaim">
         <MappingFragment StoreEntitySet="AspNetUserClaims">
-          <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
-          <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+          <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="AspNetUserLogins">
-      <EntityTypeMapping TypeName="HRPortalModel.AspNetUserLogin">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.AspNetUserLogin">
         <MappingFragment StoreEntitySet="AspNetUserLogins">
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
-          <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
           <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
+          <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AspNetUsers">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.AspNetUser">
+        <MappingFragment StoreEntitySet="AspNetUsers">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+          <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+          <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+          <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+          <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+          <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+          <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+          <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Vendor_Id" ColumnName="Vendor_Id" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="CANDIDATES">
-      <EntityTypeMapping TypeName="HRPortalModel.CANDIDATE">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.CANDIDATE">
         <MappingFragment StoreEntitySet="CANDIDATES">
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-          <ScalarProperty Name="ISINNOTICEPERIOD" ColumnName="ISINNOTICEPERIOD" />
-          <ScalarProperty Name="RESUME_SOURCE" ColumnName="RESUME_SOURCE" />
-          <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
-          <ScalarProperty Name="ANY_OTHER_OFFER" ColumnName="ANY_OTHER_OFFER" />
-          <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
-          <ScalarProperty Name="CURRENT_LOCATION" ColumnName="CURRENT_LOCATION" />
-          <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
-          <ScalarProperty Name="DOB" ColumnName="DOB" />
-          <ScalarProperty Name="ALTERNATE_EMAIL_ID" ColumnName="ALTERNATE_EMAIL_ID" />
-          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
-          <ScalarProperty Name="ALTERNATE_MOBILE_NO" ColumnName="ALTERNATE_MOBILE_NO" />
-          <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
-          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
-          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
-          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
-          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
           <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
+          <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
+          <ScalarProperty Name="ALTERNATE_MOBILE_NO" ColumnName="ALTERNATE_MOBILE_NO" />
+          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+          <ScalarProperty Name="ALTERNATE_EMAIL_ID" ColumnName="ALTERNATE_EMAIL_ID" />
+          <ScalarProperty Name="DOB" ColumnName="DOB" />
+          <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
+          <ScalarProperty Name="CURRENT_LOCATION" ColumnName="CURRENT_LOCATION" />
+          <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
+          <ScalarProperty Name="ANY_OTHER_OFFER" ColumnName="ANY_OTHER_OFFER" />
+          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
+          <ScalarProperty Name="RESUME_SOURCE" ColumnName="RESUME_SOURCE" />
+          <ScalarProperty Name="ISINNOTICEPERIOD" ColumnName="ISINNOTICEPERIOD" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="ERROR_LOG">
-      <EntityTypeMapping TypeName="HRPortalModel.ERROR_LOG">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.ERROR_LOG">
         <MappingFragment StoreEntitySet="ERROR_LOG">
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="ERR_EVENT" ColumnName="ERR_EVENT" />
-          <ScalarProperty Name="ERR_PAGE" ColumnName="ERR_PAGE" />
-          <ScalarProperty Name="ERR_SYSTEM_NAME" ColumnName="ERR_SYSTEM_NAME" />
-          <ScalarProperty Name="ERR_SYSTEM_ID" ColumnName="ERR_SYSTEM_ID" />
-          <ScalarProperty Name="ERR_CODE" ColumnName="ERR_CODE" />
-          <ScalarProperty Name="ERR_DESC" ColumnName="ERR_DESC" />
-          <ScalarProperty Name="ERR_TYPE" ColumnName="ERR_TYPE" />
           <ScalarProperty Name="ERR_ID" ColumnName="ERR_ID" />
+          <ScalarProperty Name="ERR_TYPE" ColumnName="ERR_TYPE" />
+          <ScalarProperty Name="ERR_DESC" ColumnName="ERR_DESC" />
+          <ScalarProperty Name="ERR_CODE" ColumnName="ERR_CODE" />
+          <ScalarProperty Name="ERR_SYSTEM_ID" ColumnName="ERR_SYSTEM_ID" />
+          <ScalarProperty Name="ERR_SYSTEM_NAME" ColumnName="ERR_SYSTEM_NAME" />
+          <ScalarProperty Name="ERR_PAGE" ColumnName="ERR_PAGE" />
+          <ScalarProperty Name="ERR_EVENT" ColumnName="ERR_EVENT" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="EVENTSCHEDULEs">
-      <EntityTypeMapping TypeName="HRPortalModel.EVENTSCHEDULE">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.EVENTSCHEDULE">
         <MappingFragment StoreEntitySet="EVENTSCHEDULE">
-          <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="STATUSENUM" ColumnName="STATUSENUM" />
-          <ScalarProperty Name="APPOINTMENTLENGTH" ColumnName="APPOINTMENTLENGTH" />
-          <ScalarProperty Name="DATETIMESCHEDULED" ColumnName="DATETIMESCHEDULED" />
-          <ScalarProperty Name="KEY" ColumnName="KEY" />
-          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
           <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+          <ScalarProperty Name="KEY" ColumnName="KEY" />
+          <ScalarProperty Name="DATETIMESCHEDULED" ColumnName="DATETIMESCHEDULED" />
+          <ScalarProperty Name="APPOINTMENTLENGTH" ColumnName="APPOINTMENTLENGTH" />
+          <ScalarProperty Name="STATUSENUM" ColumnName="STATUSENUM" />
+          <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="EXCEPTION_LOGGING">
-      <EntityTypeMapping TypeName="HRPortalModel.EXCEPTION_LOGGING">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.EXCEPTION_LOGGING">
         <MappingFragment StoreEntitySet="EXCEPTION_LOGGING">
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="EXCEPTION_DATETIME" ColumnName="EXCEPTION_DATETIME" />
-          <ScalarProperty Name="EXCEPTION_URL" ColumnName="EXCEPTION_URL" />
-          <ScalarProperty Name="EXCEPTION_PAGEDETAILS" ColumnName="EXCEPTION_PAGEDETAILS" />
-          <ScalarProperty Name="EXCEPTION_SOURCE" ColumnName="EXCEPTION_SOURCE" />
-          <ScalarProperty Name="EXCEPTION_TYPE" ColumnName="EXCEPTION_TYPE" />
-          <ScalarProperty Name="EXCEPTION_MSG" ColumnName="EXCEPTION_MSG" />
           <ScalarProperty Name="LOG_ID" ColumnName="LOG_ID" />
+          <ScalarProperty Name="EXCEPTION_MSG" ColumnName="EXCEPTION_MSG" />
+          <ScalarProperty Name="EXCEPTION_TYPE" ColumnName="EXCEPTION_TYPE" />
+          <ScalarProperty Name="EXCEPTION_SOURCE" ColumnName="EXCEPTION_SOURCE" />
+          <ScalarProperty Name="EXCEPTION_PAGEDETAILS" ColumnName="EXCEPTION_PAGEDETAILS" />
+          <ScalarProperty Name="EXCEPTION_URL" ColumnName="EXCEPTION_URL" />
+          <ScalarProperty Name="EXCEPTION_DATETIME" ColumnName="EXCEPTION_DATETIME" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="JOB_HISTORY">
-      <EntityTypeMapping TypeName="HRPortalModel.JOB_HISTORY">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.JOB_HISTORY">
         <MappingFragment StoreEntitySet="JOB_HISTORY">
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
-          <ScalarProperty Name="JOB_COMMENTS" ColumnName="JOB_COMMENTS" />
-          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
           <ScalarProperty Name="JOB_HIST_ID" ColumnName="JOB_HIST_ID" />
+          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+          <ScalarProperty Name="JOB_COMMENTS" ColumnName="JOB_COMMENTS" />
+          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="JOBPOSTINGs">
-      <EntityTypeMapping TypeName="HRPortalModel.JOBPOSTING">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.JOBPOSTING">
         <MappingFragment StoreEntitySet="JOBPOSTING">
-          <ScalarProperty Name="POSITION_TYPE" ColumnName="POSITION_TYPE" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-          <ScalarProperty Name="CUSTOMER_NAME" ColumnName="CUSTOMER_NAME" />
-          <ScalarProperty Name="JD_SOURCE" ColumnName="JD_SOURCE" />
-          <ScalarProperty Name="JD_FILE_PATH" ColumnName="JD_FILE_PATH" />
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="WORK_LOCATION" ColumnName="WORK_LOCATION" />
-          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
-          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
-          <ScalarProperty Name="NO_OF_VACANCIES" ColumnName="NO_OF_VACANCIES" />
-          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
-          <ScalarProperty Name="JOB_DESCRIPTION" ColumnName="JOB_DESCRIPTION" />
-          <ScalarProperty Name="JOB_CODE" ColumnName="JOB_CODE" />
           <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+          <ScalarProperty Name="JOB_CODE" ColumnName="JOB_CODE" />
+          <ScalarProperty Name="JOB_DESCRIPTION" ColumnName="JOB_DESCRIPTION" />
+          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+          <ScalarProperty Name="POSITION_TYPE" ColumnName="POSITION_TYPE" />
+          <ScalarProperty Name="NO_OF_VACANCIES" ColumnName="NO_OF_VACANCIES" />
+          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
+          <ScalarProperty Name="WORK_LOCATION" ColumnName="WORK_LOCATION" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="JD_FILE_PATH" ColumnName="JD_FILE_PATH" />
+          <ScalarProperty Name="JD_SOURCE" ColumnName="JD_SOURCE" />
+          <ScalarProperty Name="CUSTOMER_NAME" ColumnName="CUSTOMER_NAME" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Numbers">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.Number">
+        <MappingFragment StoreEntitySet="Numbers">
+          <ScalarProperty Name="Number1" ColumnName="Number" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="STATUS_HISTORY">
-      <EntityTypeMapping TypeName="HRPortalModel.STATUS_HISTORY">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.STATUS_HISTORY">
         <MappingFragment StoreEntitySet="STATUS_HISTORY">
-          <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="SCHEDULE_LENGTH_MINS" ColumnName="SCHEDULE_LENGTH_MINS" />
-          <ScalarProperty Name="SCHEDULED_TO" ColumnName="SCHEDULED_TO" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
-          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
-          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
           <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="SCHEDULED_TO" ColumnName="SCHEDULED_TO" />
+          <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
+          <ScalarProperty Name="SCHEDULE_LENGTH_MINS" ColumnName="SCHEDULE_LENGTH_MINS" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="STATUS_MASTER">
-      <EntityTypeMapping TypeName="HRPortalModel.STATUS_MASTER">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.STATUS_MASTER">
         <MappingFragment StoreEntitySet="STATUS_MASTER">
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="STATUS_ORDER" ColumnName="STATUS_ORDER" />
-          <ScalarProperty Name="STATUS_DESCRIPTION" ColumnName="STATUS_DESCRIPTION" />
-          <ScalarProperty Name="STATUS_NAME" ColumnName="STATUS_NAME" />
           <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="STATUS_NAME" ColumnName="STATUS_NAME" />
+          <ScalarProperty Name="STATUS_DESCRIPTION" ColumnName="STATUS_DESCRIPTION" />
+          <ScalarProperty Name="STATUS_ORDER" ColumnName="STATUS_ORDER" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="UserLogs">
-      <EntityTypeMapping TypeName="HRPortalModel.UserLog">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.UserLog">
         <MappingFragment StoreEntitySet="UserLog">
-          <ScalarProperty Name="IsOnline" ColumnName="IsOnline" />
-          <ScalarProperty Name="UserMAC" ColumnName="UserMAC" />
-          <ScalarProperty Name="UserIP" ColumnName="UserIP" />
-          <ScalarProperty Name="LoggedOutOn" ColumnName="LoggedOutOn" />
-          <ScalarProperty Name="LoggedInOn" ColumnName="LoggedInOn" />
-          <ScalarProperty Name="LoggedInBy" ColumnName="LoggedInBy" />
-          <ScalarProperty Name="UserLogDesc" ColumnName="UserLogDesc" />
-          <ScalarProperty Name="UserLogName" ColumnName="UserLogName" />
           <ScalarProperty Name="UserLogId" ColumnName="UserLogId" />
+          <ScalarProperty Name="UserLogName" ColumnName="UserLogName" />
+          <ScalarProperty Name="UserLogDesc" ColumnName="UserLogDesc" />
+          <ScalarProperty Name="LoggedInBy" ColumnName="LoggedInBy" />
+          <ScalarProperty Name="LoggedInOn" ColumnName="LoggedInOn" />
+          <ScalarProperty Name="LoggedOutOn" ColumnName="LoggedOutOn" />
+          <ScalarProperty Name="UserIP" ColumnName="UserIP" />
+          <ScalarProperty Name="UserMAC" ColumnName="UserMAC" />
+          <ScalarProperty Name="IsOnline" ColumnName="IsOnline" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="UserXRoles">
-      <EntityTypeMapping TypeName="HRPortalModel.UserXRole">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.UserXRole">
         <MappingFragment StoreEntitySet="UserXRole">
-          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="VENDOR_MASTER">
-      <EntityTypeMapping TypeName="HRPortalModel.VENDOR_MASTER">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.VENDOR_MASTER">
         <MappingFragment StoreEntitySet="VENDOR_MASTER">
-          <ScalarProperty Name="VENDOR_TYPE" ColumnName="VENDOR_TYPE" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-          <ScalarProperty Name="VENDOR_CONTACT_NO" ColumnName="VENDOR_CONTACT_NO" />
-          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
-          <ScalarProperty Name="VENDOR_SPOC" ColumnName="VENDOR_SPOC" />
-          <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
           <ScalarProperty Name="VENDOR_ID" ColumnName="VENDOR_ID" />
+          <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
+          <ScalarProperty Name="VENDOR_SPOC" ColumnName="VENDOR_SPOC" />
+          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+          <ScalarProperty Name="VENDOR_CONTACT_NO" ColumnName="VENDOR_CONTACT_NO" />
+          <ScalarProperty Name="VENDOR_TYPE" ColumnName="VENDOR_TYPE" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <FunctionImportMapping FunctionImportName="getSearchResults" FunctionName="HRPortalModel.Store.getSearchResults">
+    <EntitySetMapping Name="JOBXVENDORs">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.JOBXVENDOR">
+        <MappingFragment StoreEntitySet="JOBXVENDOR">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Vendor_Id" ColumnName="Vendor_Id" />
+          <ScalarProperty Name="Job_Id" ColumnName="Job_Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="AspNetUserRoles" TypeName="Caihrops_portalModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+      <EndProperty Name="AspNetRoles">
+        <ScalarProperty Name="Id" ColumnName="RoleId" />
+      </EndProperty>
+      <EndProperty Name="AspNetUsers">
+        <ScalarProperty Name="Id" ColumnName="UserId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <FunctionImportMapping FunctionName="Caihrops_portalModel.Store.SplitString" FunctionImportName="SplitString">
       <ResultMapping>
-        <ComplexTypeMapping TypeName="HRPortalModel.getSearchResults_Result">
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.SplitString_Result">
+          <ScalarProperty Name="Item" ColumnName="Item" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionName="Caihrops_portalModel.Store.fnSplitString" FunctionImportName="fnSplitString">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.fnSplitString_Result">
+          <ScalarProperty Name="splitdata" ColumnName="splitdata" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionName="Caihrops_portalModel.Store.funcSplitValue" FunctionImportName="funcSplitValue">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.funcSplitValue_Result">
+          <ScalarProperty Name="ListValue" ColumnName="ListValue" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetCandidateDetailsByLastworkingdate" FunctionName="Caihrops_portalModel.Store.GetCandidateDetailsByLastworkingdate">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.GetCandidateDetailsByLastworkingdate_Result">
+          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+          <ScalarProperty Name="PARTNER" ColumnName="PARTNER" />
+          <ScalarProperty Name="SUBMITTED_ON" ColumnName="SUBMITTED_ON" />
+          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="getSearchResults" FunctionName="Caihrops_portalModel.Store.getSearchResults">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.getSearchResults_Result">
           <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
           <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
           <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
@@ -251,68 +332,78 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <EntitySetMapping Name="AspNetUsers">
-      <EntityTypeMapping TypeName="HRPortalModel.AspNetUser">
-        <MappingFragment StoreEntitySet="AspNetUsers">
-          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-          <ScalarProperty Name="Vendor_Id" ColumnName="Vendor_Id" />
-          <ScalarProperty Name="UserName" ColumnName="UserName" />
-          <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
-          <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
-          <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
-          <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
-          <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
-          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-          <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
-          <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-          <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
-          <ScalarProperty Name="LastName" ColumnName="LastName" />
-          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-          <ScalarProperty Name="Email" ColumnName="Email" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <AssociationSetMapping Name="AspNetUserRoles" TypeName="HRPortalModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
-      <EndProperty Name="AspNetUser">
-        <ScalarProperty Name="Id" ColumnName="UserId" />
-      </EndProperty>
-      <EndProperty Name="AspNetRole">
-        <ScalarProperty Name="Id" ColumnName="RoleId" />
-      </EndProperty>
-      <Condition ColumnName="RoleId" IsNull="false" />
-    </AssociationSetMapping>
-    <EntitySetMapping Name="JOBXVENDORs">
-      <EntityTypeMapping TypeName="HRPortalModel.JOBXVENDOR">
-        <MappingFragment StoreEntitySet="JOBXVENDOR">
-          <ScalarProperty Name="Job_Id" ColumnName="Job_Id" />
-          <ScalarProperty Name="Vendor_Id" ColumnName="Vendor_Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <FunctionImportMapping FunctionImportName="fnSplitString" FunctionName="HRPortalModel.Store.fnSplitString" />
-    <FunctionImportMapping FunctionImportName="rptGetCandidatesStaging" FunctionName="HRPortalModel.Store.rptGetCandidatesStaging">
+    <FunctionImportMapping FunctionImportName="rptGetCandidatesIdleTimeByWeek" FunctionName="Caihrops_portalModel.Store.rptGetCandidatesIdleTimeByWeek">
       <ResultMapping>
-        <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesStaging_Result">
-          <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.rptGetCandidatesIdleTimeByWeek_Result">
+          <ScalarProperty Name="position_name" ColumnName="position_name" />
+          <ScalarProperty Name="ScreeningSubmitted" ColumnName="ScreeningSubmitted" />
           <ScalarProperty Name="Round1" ColumnName="Round1" />
           <ScalarProperty Name="Round2" ColumnName="Round2" />
           <ScalarProperty Name="Round3" ColumnName="Round3" />
-          <ScalarProperty Name="ScreeningSubmitted" ColumnName="ScreeningSubmitted" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="rptGetCandidatesStagingByPartner" FunctionName="HRPortalModel.Store.rptGetCandidatesStagingByPartner">
+    <FunctionImportMapping FunctionImportName="rptGetCandidatesIdleTimeDetailsByWeek" FunctionName="Caihrops_portalModel.Store.rptGetCandidatesIdleTimeDetailsByWeek">
       <ResultMapping>
-        <ComplexTypeMapping TypeName="HRPortalModel.rptGetCandidatesStagingByPartner_Result">
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.rptGetCandidatesIdleTimeDetailsByWeek_Result">
+          <ScalarProperty Name="position_name" ColumnName="position_name" />
+          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+          <ScalarProperty Name="PARTNER" ColumnName="PARTNER" />
+          <ScalarProperty Name="SUBMITTED_ON" ColumnName="SUBMITTED_ON" />
+          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="rptGetCandidatesStaging" FunctionName="Caihrops_portalModel.Store.rptGetCandidatesStaging">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.rptGetCandidatesStaging_Result">
+          <ScalarProperty Name="position_name" ColumnName="position_name" />
+          <ScalarProperty Name="ScreeningSubmitted" ColumnName="ScreeningSubmitted" />
+          <ScalarProperty Name="Round1" ColumnName="Round1" />
+          <ScalarProperty Name="Round2" ColumnName="Round2" />
+          <ScalarProperty Name="Round3" ColumnName="Round3" />
+          <ScalarProperty Name="OFFERED" ColumnName="OFFERED" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="rptGetCandidatesStagingByPartner" FunctionName="Caihrops_portalModel.Store.rptGetCandidatesStagingByPartner">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.rptGetCandidatesStagingByPartner_Result">
           <ScalarProperty Name="POSITION_NAME" ColumnName="POSITION_NAME" />
           <ScalarProperty Name="PARTNER" ColumnName="PARTNER" />
           <ScalarProperty Name="SCREENING" ColumnName="SCREENING" />
           <ScalarProperty Name="ROUND1" ColumnName="ROUND1" />
           <ScalarProperty Name="ROUND2" ColumnName="ROUND2" />
           <ScalarProperty Name="ROUND3" ColumnName="ROUND3" />
+          <ScalarProperty Name="OFFERED" ColumnName="OFFERED" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="getCandidatesSchedules" FunctionName="Caihrops_portalModel.Store.getCandidatesSchedules">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.getCandidatesSchedules_Result">
+          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+          <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
+          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+          <ScalarProperty Name="POSITION" ColumnName="POSITION" />
+          <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
+          <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
+          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+          <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
+          <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="SCHEDULED_ON" ColumnName="SCHEDULED_ON" />
+          <ScalarProperty Name="SCHEDULED_FOR" ColumnName="SCHEDULED_FOR" />
+          <ScalarProperty Name="SCHEDULED_LENGTH" ColumnName="SCHEDULED_LENGTH" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>

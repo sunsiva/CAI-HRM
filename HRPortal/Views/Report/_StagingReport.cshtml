@@ -25,7 +25,6 @@
 
                 @if (Model != null)
                 {
-
                     <table class="table table-striped table-hover table-condensed table-bordered">
                         <thead>
                             <tr>
@@ -55,11 +54,6 @@
                                     <th>
                                         OFFERED
                                     </th>
-
-
-                                    <th>
-                                        TOTAL
-                                    </th>
                                 }
                             </tr>
                         </thead>
@@ -76,25 +70,22 @@
                                             @item.Partner_Name
                                         </td>
                                     }
-                                    <td align="right">
+                                    <td align="center">
                                         @item.Screening
                                     </td>
-                                    <td align="right">
+                                    <td align="center">
                                         @item.Round1
                                     </td>
-                                    <td align="right">
+                                    <td align="center">
                                         @item.Round2
                                     </td>
-                                    <td align="right">
+                                    <td align="center">
                                         @item.Round3
                                     </td>
                                     @if (ViewBag.Offered)
                                     {
-                                        <td align="right">
+                                        <td align="center">
                                             @item.Offered
-                                        </td>
-                                        <td align="right">
-                                            @item.Total
                                         </td>
                                     }
                                 </tr>

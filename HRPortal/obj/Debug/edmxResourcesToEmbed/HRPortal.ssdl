@@ -397,6 +397,9 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
     </ReturnType>
   </Function>
   <Function Name="GetCandidateDetailsByLastworkingdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="getCandidatesSchedules" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="NavigDate" Type="nvarchar" Mode="In" />
+  </Function>
   <Function Name="getSearchResults" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="PositionName" Type="nvarchar(max)" Mode="In" />
     <Parameter Name="CandidateName" Type="nvarchar" Mode="In" />
