@@ -51,7 +51,8 @@ namespace HRPortal.Controllers
                     if (System.Configuration.ConfigurationManager.AppSettings["IsAutoUpdateFdkPending"] == "true" &&
                        (17 == HelperFuntions.GetDateTime().Hour || 16 == HelperFuntions.GetDateTime().Hour))
                     {
-                        vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
+                        db.AutoStatusUpdate();
+                        //vmodelCan.AutoUpdateStatus(); //Auto update the status of all the candidates to feedback pending if the due is passed.
                     }
 
                     var dbJobs = await db.JOBPOSTINGs.ToListAsync();

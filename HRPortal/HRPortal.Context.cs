@@ -170,5 +170,10 @@ namespace HRPortal
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getCandidatesSchedules_Result>("getCandidatesSchedules", navigDateParameter);
         }
+    
+        public virtual int AutoStatusUpdate()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AutoStatusUpdate");
+        }
     }
 }

@@ -379,6 +379,7 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
             </CollectionType>
           </ReturnType>
         </Function>
+        <Function Name="AutoStatusUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="fnSplitString" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="string" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="delimiter" Type="char" Mode="In" />
@@ -928,8 +929,9 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
           <Parameter Name="Partner" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="getCandidatesSchedules" ReturnType="Collection(Caihrops_portalModel.getCandidatesSchedules_Result)">
-            <Parameter Name="NavigDate" Mode="In" Type="String" />
+          <Parameter Name="NavigDate" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="AutoStatusUpdate" />
         </EntityContainer>
         <ComplexType Name="GetCandidateDetailsByLastworkingdate_Result">
           <Property Type="String" Name="POSITION_NAME" Nullable="false" MaxLength="50" />
@@ -1424,6 +1426,7 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="AutoStatusUpdate" FunctionName="Caihrops_portalModel.Store.AutoStatusUpdate" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

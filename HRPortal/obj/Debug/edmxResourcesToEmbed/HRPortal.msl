@@ -407,5 +407,6 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="AutoStatusUpdate" FunctionName="Caihrops_portalModel.Store.AutoStatusUpdate" />
   </EntityContainerMapping>
 </Mapping>

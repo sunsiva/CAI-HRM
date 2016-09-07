@@ -104,7 +104,7 @@ namespace HRPortal.Controllers
                 CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
                 var userLst = db.AspNetUsers.ToList();
                 cANDIDATE.CREATED_BY = userLst.Where(u => u.Id == cANDIDATE.CREATED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
-                cANDIDATE.MODIFIED_BY = userLst.Where(u => u.Id == cANDIDATE.MODIFIED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
+                cANDIDATE.MODIFIED_BY = userLst.Where(u => u.Id.ToUpper() == cANDIDATE.MODIFIED_BY.ToUpper()).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
                 var stsCmnts = db.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).OrderByDescending(j => j.MODIFIED_ON).FirstOrDefault().COMMENTS;
                 ViewBag.StatusComments = stsCmnts;
                 if (cANDIDATE == null)
@@ -152,6 +152,8 @@ namespace HRPortal.Controllers
                     cANDIDATE.ISACTIVE = true;
                     cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
                     cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
+                    cANDIDATE.MODIFIED_BY = (_uid == string.Empty ? User.Identity.Name : _uid);
+                    cANDIDATE.MODIFIED_ON = HelperFuntions.GetDateTime();
                     cANDIDATE.CREATED_BY = (_uid == string.Empty ? User.Identity.Name : _uid);
                     cANDIDATE.CREATED_ON = HelperFuntions.GetDateTime();
                     cANDIDATE.STATUS = db.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID.ToString();

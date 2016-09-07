@@ -34,7 +34,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/25/2013 14:34:54</publishTime>
     </File>
     <File Include="bin/HRPortal.dll">
-      <publishTime>09/01/2016 21:45:24</publishTime>
+      <publishTime>09/06/2016 23:51:31</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
       <publishTime>03/31/2016 13:24:09</publishTime>
@@ -514,10 +514,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/01/2016 19:03:40</publishTime>
     </File>
     <File Include="Views/Appointment/Schedules.cshtml">
-      <publishTime>09/01/2016 16:57:41</publishTime>
+      <publishTime>09/06/2016 23:45:32</publishTime>
     </File>
     <File Include="Views/Appointment/SearchResults.cshtml">
-      <publishTime>09/01/2016 18:26:32</publishTime>
+      <publishTime>09/06/2016 22:33:58</publishTime>
     </File>
     <File Include="Views/Candidate/Create.cshtml">
       <publishTime>08/31/2016 18:32:25</publishTime>
@@ -547,7 +547,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/29/2016 20:00:43</publishTime>
     </File>
     <File Include="Views/Dashboard/Index.cshtml">
-      <publishTime>09/01/2016 15:57:32</publishTime>
+      <publishTime>09/06/2016 23:19:56</publishTime>
     </File>
     <File Include="Views/Home/About.cshtml">
       <publishTime>04/05/2016 17:42:07</publishTime>
@@ -556,10 +556,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/05/2016 17:41:53</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>09/01/2016 14:47:24</publishTime>
+      <publishTime>09/06/2016 14:49:27</publishTime>
     </File>
     <File Include="Views/Home/_CandidateList.cshtml">
-      <publishTime>09/01/2016 12:54:05</publishTime>
+      <publishTime>09/06/2016 22:25:19</publishTime>
     </File>
     <File Include="Views/Home/_JobList.cshtml">
       <publishTime>08/29/2016 20:00:43</publishTime>
@@ -571,7 +571,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/24/2016 18:12:27</publishTime>
     </File>
     <File Include="Views/Job/Create.cshtml">
-      <publishTime>08/09/2016 23:18:57</publishTime>
+      <publishTime>09/01/2016 21:59:46</publishTime>
     </File>
     <File Include="Views/Job/Delete.cshtml">
       <publishTime>08/29/2016 20:00:43</publishTime>
@@ -661,7 +661,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/31/2016 13:23:44</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>09/01/2016 19:37:30</publishTime>
+      <publishTime>09/06/2016 23:51:32</publishTime>
     </File>
   </ItemGroup>
 </Project>

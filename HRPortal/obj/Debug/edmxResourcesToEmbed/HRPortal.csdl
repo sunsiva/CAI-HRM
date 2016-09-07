@@ -441,6 +441,7 @@
     <FunctionImport Name="getCandidatesSchedules" ReturnType="Collection(Caihrops_portalModel.getCandidatesSchedules_Result)">
       <Parameter Name="NavigDate" Mode="In" Type="String" />
     </FunctionImport>
+    <FunctionImport Name="AutoStatusUpdate" />
   </EntityContainer>
   <ComplexType Name="GetCandidateDetailsByLastworkingdate_Result">
     <Property Type="String" Name="POSITION_NAME" Nullable="false" MaxLength="50" />

@@ -34,20 +34,20 @@
     <script src="~/Scripts/jquery.cookie.js"></script>
 
     <script lang="ja" type="text/javascript">
+        function ddlStatusListChange(value) {
+            var selText = $("#ddlStatusList option:selected").text();
+            if (selText.toLowerCase().indexOf("tobescheduled") >= 0) {
+                $("#divhideshow").removeClass("hidden")
+                $("#divhideshow").addClass("show")
+            }
+            else {
+                $("#divhideshow").removeClass("show")
+                $("#divhideshow").addClass("hidden")
+            }
+        }
+
         $(document).ready(function ()
         {
-            function ddlStatusListChange(value) {
-                var selText = $("#ddlStatusList option:selected").text();
-                if (selText.toLowerCase().indexOf("tobescheduled") >= 0) {
-                    $("#divhideshow").removeClass("hidden")
-                    $("#divhideshow").addClass("show")
-                }
-                else {
-                    $("#divhideshow").removeClass("show")
-                    $("#divhideshow").addClass("hidden")
-                }
-            }
-
             $('.date-picker').datetimepicker({
                 format: 'DD/MM/YYYY' // This format is for SP
             });
@@ -128,6 +128,24 @@
                 $("#txttimepicker").val("");
                 $("#divhideshow").removeClass("show")
                 $("#divhideshow").addClass("hidden")
+
+                $('.date-picker').datetimepicker({
+                    format: 'DD/MM/YYYY' // This format is for SP
+                });
+
+                $('.job-date-picker').datetimepicker({
+                    format: 'MM/DD/YYYY'
+                });
+
+                $('#txtdatepicker').datetimepicker({
+                    format: 'DD/MM/YYYY' // This format is for SP,
+                    //pickTime: false
+                });
+
+                $('#txttimepicker').datetimepicker({
+                    format: "hh:mm A" // This format is for SP
+                });
+
             };
 
             window.fnBtnStatusClick = function () {

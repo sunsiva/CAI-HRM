@@ -4,9 +4,10 @@
 
 @{ 
     int pSize = ViewBag.PageSize == null ? 1 : ViewBag.PageSize;
-    int pNo = 1;// ViewBag.PageNo == null ? 1 : ViewBag.PageNo;
+    int pNo = ViewBag.PageNo == null ? 1 : ViewBag.PageNo;
     var modal = Model != null ? Model.ToPagedList(pNo, pSize) : null;
     int sl = (pNo == 1 ? 0 : (pNo - 1) * 10);
+    var currDateSelected = ViewBag.CurrDateSel;
 }
 <div class="table-responsive">
     @if (modal != null)
@@ -15,13 +16,13 @@
             <tr>
                 <th>#</th>
                 <th>
-                    @Html.ActionLink("CANDIDATE NAME", "Schedules", new { sOdr = ViewBag.CNameSort })
+                    @Html.ActionLink("CANDIDATE NAME", "Schedules", new { sOdr = ViewBag.CNameSort,dtSel= currDateSelected })
                 </th>
                 <th>
                     PARTNER
                 </th>
                 <th>
-                    @Html.ActionLink("POSITION", "Schedules", new { sOdr = ViewBag.SkillSort })
+                    @Html.ActionLink("POSITION", "Schedules", new { sOdr = ViewBag.SkillSort, dtSel = currDateSelected })
                 </th>
                 <th>
                     NOTICE PERIOD
@@ -38,10 +39,13 @@
                     PROFILE
                 </th>
                 <th>
+                    SCHEDULED TO
+                </th>
+                <th>
                     SCHEDULED DATE/TIME
                 </th>
                 <th>
-                    @Html.ActionLink("STATUS", "Schedules", new { sOdr = ViewBag.StatusSort })
+                    @Html.ActionLink("STATUS", "Schedules", new { sOdr = ViewBag.StatusSort, dtSel = currDateSelected })
                 </th>
             </tr>
 
@@ -69,7 +73,10 @@
                         <a href="@item.RESUME_FILE_PATH" target="_blank" title="Click To Download Candidate CV">Download</a>
                     </td>
                     <td>
-                        <span id="schTxt_@item.CANDIDATE_ID">@( (item.SCHEDULED_TO != null ? item.SCHEDULED_TO.Value.ToString() : "")+"--"+ item.SCHEDULED_LENGTH+" MINS")</span> 
+                        @Html.DisplayFor(modelItem => item.MODIFIED_BY)
+                    </td>
+                    <td>
+                        <span id="schTxt_@item.CANDIDATE_ID">@( (item.SCHEDULED_TO != null ? item.SCHEDULED_TO.Value.ToString() : "")+" ["+ item.SCHEDULED_LENGTH+" MINS]")</span> 
                     </td>
                     <td>
                         @if (item.STATUS.ToUpper().ToString().Contains("SCHEDULED"))
@@ -93,7 +100,7 @@
                             <td>Page @(modal.PageCount < modal.PageNumber ? 0 : modal.PageNumber) of @modal.PageCount  </td>
                             <td width="10px"></td>
                             <td>
-                                @Html.PagedListPager(modal, page => Url.Action("Schedules", "Appointment", new { page, sOdr = ViewBag.CurrentSort }))
+                                @Html.PagedListPager(modal, page => Url.Action("Schedules", "Appointment", new { page, sOdr = ViewBag.CurrentSort, dtSel = currDateSelected }))
                             </td>
                         </tr>
                     </table>

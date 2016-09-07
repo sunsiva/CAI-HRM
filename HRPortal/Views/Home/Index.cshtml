@@ -48,8 +48,6 @@
 
         $(document).ready(function ()
         {
-            
-
             $('.date-picker').datetimepicker({
                 format: 'DD/MM/YYYY' // This format is for SP
             });
@@ -130,6 +128,23 @@
                 $("#txttimepicker").val("");
                 $("#divhideshow").removeClass("show")
                 $("#divhideshow").addClass("hidden")
+
+                $('.date-picker').datetimepicker({
+                    format: 'DD/MM/YYYY' // This format is for SP to compare date
+                });
+
+                $('.job-date-picker').datetimepicker({
+                    format: 'MM/DD/YYYY'
+                });
+
+                $('#txtdatepicker').datetimepicker({
+                    format: 'MM/DD/YYYY'
+                });
+
+                $('#txttimepicker').datetimepicker({
+                    format: "hh:mm A"
+                });
+
             };
 
             window.fnBtnStatusClick = function () {

@@ -1,6 +1,8 @@
 ﻿@model  IEnumerable<HRPortal.Models.CandidateViewModels>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    var currDt = ViewBag.CurrDateSel == null ? DateTime.Now.ToString("dd-MMM-yyyy") : ViewBag.CurrDateSel;
 }
 
 <h2>Schedules</h2>
@@ -8,7 +10,7 @@
 <link href="~/Content/tags/tagit.ui-zendesk.css" rel="stylesheet" />
 <div class="container text-center" id="dvSchedule">
     <a href="javascript:void(0);" class="glyphicon glyphicon-chevron-left" style="font-size:x-large" id="navLeft"  title="Previous day"><i></i></a>
-    <span  style="background-color:gold;font-size:large" id="scheduleDate">@DateTime.Now.ToString("dd-MMM-yyyy")</span>
+    <span style="background-color:gold;font-size:large" id="scheduleDate">@currDt</span>
     <a href="javascript:void(0);" class="glyphicon glyphicon-chevron-right" style="font-size:x-large" id="navRight" title="Next day"><i></i></a>
 </div>
 <br />
@@ -25,7 +27,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Re-Schedule Interview For - <b><span class="candidate-name"></span></b> </h4>
+                <h4 class="modal-title">Re-Schedule An Interview For - <b><span class="candidate-name"></span></b> </h4>
             </div>
             <div class="modal-body">
                 <div class="form-group form-group-required">
@@ -127,7 +129,7 @@
                 return false;
             }
             else if ($("#sendTo").val() == "") {
-                $("#errMsgModal").text("Please enter email address whom to be sent.");
+                $("#errMsgModal").text("Please enter an email id.");
                 return false;
             }
             else if ($("#txtStsComments").val() == "") {

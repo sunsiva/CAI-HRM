@@ -104,17 +104,20 @@ namespace HRPortal.Controllers
         #endregion
 
         #region "Schedules"
-        public ActionResult Schedules(string sOdr, int? page)
+        public ActionResult Schedules(string sOdr, int? page,string dtSel)
         {
-            List<CandidateViewModels> lstCan = appVM.GetCandidateSchedules(DateTime.Now);
-            var objCan = lstCan != null ? GetPagination(lstCan, sOdr, page) : lstCan;
+            DateTime dtSelFrm = string.IsNullOrEmpty(dtSel) ? DateTime.Now : DateTime.Parse(dtSel);
+            ViewBag.CurrDateSel = dtSelFrm.ToString("dd-MMM-yyyy");
+            List<CandidateViewModels> lstCan = appVM.GetCandidateSchedules(dtSelFrm);
+            var objCan = (lstCan != null ? GetPagination(lstCan, sOdr, page) : lstCan).OrderBy(s => s.SCHEDULED_TO);
             return View(objCan);
         }
 
         public ActionResult SearchResults(DateTime scheduleDt)
         {
+            ViewBag.CurrDateSel = scheduleDt.ToString("dd-MMM-yyyy");
             List<CandidateViewModels> lstCan = appVM.GetCandidateSchedules(scheduleDt);
-            var objCan = lstCan != null ? GetPagination(lstCan, "", pageSize) : lstCan;
+            var objCan = (lstCan != null ? GetPagination(lstCan, "", 1) : lstCan).OrderBy(s=>s.SCHEDULED_TO);
             return PartialView(objCan);
         }
 
@@ -125,7 +128,6 @@ namespace HRPortal.Controllers
                           select v.VENDOR_NAME).FirstOrDefault();
             return vendor.ToString();
         }
-
 
         private List<CandidateViewModels> GetPagination(List<CandidateViewModels> jobCanObj, string sOdr, int? page)
         {

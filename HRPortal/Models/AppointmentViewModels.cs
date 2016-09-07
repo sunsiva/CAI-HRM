@@ -148,7 +148,7 @@ namespace HRPortal.Models
                 string bccs = System.Configuration.ConfigurationManager.AppSettings["BCCMailIdForMonitor"];
                 string strSubject = "HROps-Interview To Be Scheduled For " + canName;
                 string bodyHtml = "Hi " + profOwner.FirstName + ", <br><br> FYI - Interview to be scheduled for the candidate <b>" + canName + " </b> on <b>" + date + "</b> for " + length + " minutes and for the position of <b>" + job.POSITION_NAME +
-                    "</b>.<br><br>USER COMMENTS: " + comments + " <br> <br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
+                    "</b>.<br><br>USER COMMENTS: " + comments + " <br> <br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>NOTE:- This is a system generated e-mail(www.caihrops.in). Please do not reply to this e-mail.</small>";
                 //=====================================
 
                 MailMessage message = new MailMessage();
@@ -201,7 +201,7 @@ namespace HRPortal.Models
                 string UserName = CookieStore.GetCookie(CacheKey.UserName.ToString());
                 string strSubject = (isNew ? "HROps-New Job Posted - " : "HROps-Job Modified - ") + jobposting.POSITION_NAME;
                 string bodyHtml = "Hi, <br><br> A " + (isNew ? "new" : "modified") + " position is posted with a job code <b>" + jobposting.JOB_CODE + " </b>. Below is the position detail, <br><br> <b>Position Name:</b> " + jobposting.POSITION_NAME +
-                    "</b><br><br><b>Position Description:</b> " + jobposting.JOB_DESCRIPTION + " <br> <br> <br> Regards,<br><b> Admin </b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
+                    "</b><br><br><b>Position Description:</b> " + jobposting.JOB_DESCRIPTION + " <br> <br> <br> Regards,<br><b> Admin </b>. <br><br><small>NOTE:- This is a system generated e-mail(www.caihrops.in). Please do not reply to this e-mail.</small>";
                 //===================================================================================
 
                 MailMessage message = new MailMessage();
@@ -344,7 +344,7 @@ namespace HRPortal.Models
                 }
 
                 string bodyHtml = "Hi, <br><br> Interview has been scheduled for the position of <b>" + job.POSITION_NAME +
-                    "</b>. Attached candidate profile for your reference. <br> <br>USER COMMENTS: " + comments + "<br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>--This is system generated e-mail(www.caihrops.in).</small>";
+                    "</b>. Attached candidate profile for your reference. <br> <br>USER COMMENTS: " + comments + "<br> <br> Regards,<br><b>" + UserName + "</b>. <br><br><small>NOTE:- This is a system generated e-mail(www.caihrops.in). Please do not reply to this e-mail.</small>";
                 string location = "Available";
                 string organizerMail = UserEmail;
                 string filename = "Test.txt";//--- Attachments
@@ -505,6 +505,7 @@ namespace HRPortal.Models
                         CREATED_ON = i.CREATED_ON,
                         SCHEDULED_TO = i.SCHEDULED_ON,
                         SCHEDULED_LENGTH = i.SCHEDULED_LENGTH.ToString(),
+                        MODIFIED_BY=i.MODIFIED_BY
                     }).ToList();
                     return lstOfSchedules;
                 }

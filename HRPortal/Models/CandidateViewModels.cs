@@ -72,7 +72,7 @@ namespace HRPortal.Models
             string autoMsg = "Automatic Status Update: Feedback Pending From";
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
             var sHist = dbContext.STATUS_HISTORY.Where(i => i.ISACTIVE == true).ToList();
-            var updHist = sHist.Where(i => i.SCHEDULED_TO != null && i.SCHEDULED_TO <= DateTime.Now).ToList();
+            var updHist = sHist.Where(i => i.SCHEDULED_TO != null && i.SCHEDULED_TO <= HelperFuntions.GetDateTime()).ToList();
             var existHist = sHist.Where(i => i.COMMENTS.Contains(autoMsg)).Select(c=>c.CANDIDATE_ID).ToList();
 
             if (sHist.Count() > 0)
@@ -97,7 +97,7 @@ namespace HRPortal.Models
 
                         CANDIDATE cANDIDATE = dbContext.CANDIDATES.Where(i => i.CANDIDATE_ID == item.CANDIDATE_ID).FirstOrDefault();
                         cANDIDATE.STATUS = stsHist.STATUS_ID.ToString();
-                        cANDIDATE.MODIFIED_BY = uid;
+                        //cANDIDATE.MODIFIED_BY = uid;
                         cANDIDATE.MODIFIED_ON = HelperFuntions.GetDateTime();
                         dbContext.Entry(cANDIDATE).State = EntityState.Modified;
                         dbContext.SaveChanges();
