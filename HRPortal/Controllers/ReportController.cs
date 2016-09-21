@@ -45,6 +45,29 @@ namespace HRPortal.Controllers
 
         public ActionResult Staging(string partner)
         {
+            ViewBag.VendorList = vmodelCan.GetVendorListWithIDs();
+            List<StagingReportViewModel> lstStagingReport; //= getStagingReport(partner);
+            ViewBag.partner = false;
+            ViewBag.Offered = true;
+            ViewBag.WeekList = false;
+            ViewBag.VenderList = true;
+            var rptList = db.rptGetCandidatesStaging(partner);
+
+            lstStagingReport = rptList.Select(i => new StagingReportViewModel
+            {
+                Position_Name = i.position_name,
+                Round1 = Convert.ToInt32(i.Round1),
+                Round2 = Convert.ToInt32(i.Round2),
+                Round3 = Convert.ToInt32(i.Round3),
+                Screening = Convert.ToInt32(i.ScreeningSubmitted),
+                Offered = Convert.ToInt32(i.OFFERED),
+                Total = Convert.ToInt32(i.Total)
+            }).ToList();
+            return PartialView("_StagingReport", lstStagingReport);
+        }
+
+        public ActionResult StagingByPartner(string partner)
+        {
             bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
             ViewBag.VendorList = vmodelCan.GetVendorListWithIDs();
             List<StagingReportViewModel> lstStagingReport;
@@ -57,7 +80,7 @@ namespace HRPortal.Controllers
             {
                 partner = CookieStore.GetCookie(CacheKey.VendorId.ToString());
             }
-            
+
             var rptList = db.rptGetCandidatesStagingByPartner(partner);
             lstStagingReport = rptList.Select(i => new StagingReportViewModel
             {
@@ -110,7 +133,7 @@ namespace HRPortal.Controllers
             return PartialView("_StagingReport", lstStagingReportViewModel);
         }
 
-        public  ActionResult CadidatesIdleTimeDetails(string week)
+        public ActionResult CadidatesIdleTimeDetails(string week)
         {
             if (string.IsNullOrEmpty(week))
                 week = "1week";
@@ -118,14 +141,14 @@ namespace HRPortal.Controllers
             ViewBag.WeekList = true;
             ViewBag.VenderList = false;
             ViewBag.partner = false;
-            var rptList =  db.rptGetCandidatesIdleTimeDetailsByWeek(week);
+            var rptList = db.rptGetCandidatesIdleTimeDetailsByWeek(week);
             lstLWDCandidateReportViewModel = rptList.Select(i => new LWDCandidateReportViewModel
             {
                 Position_Name = i.position_name,
                 Partner_Name = Convert.ToString(i.PARTNER),
                 Candidate_name = Convert.ToString(i.CANDIDATE_NAME),
                 Submitted_On = Convert.ToDateTime(i.SUBMITTED_ON) == DateTime.MinValue ? "" : Convert.ToDateTime(i.SUBMITTED_ON).ToShortDateString(),
-                Last_Working_Date = Convert.ToDateTime(i.LAST_WORKING_DATE)==DateTime.MinValue?"": Convert.ToDateTime(i.LAST_WORKING_DATE).ToShortDateString(),
+                Last_Working_Date = Convert.ToDateTime(i.LAST_WORKING_DATE) == DateTime.MinValue ? "" : Convert.ToDateTime(i.LAST_WORKING_DATE).ToShortDateString(),
                 Status = Convert.ToString(i.STATUS)
             }).ToList();
             return PartialView("_LWDReport", lstLWDCandidateReportViewModel);

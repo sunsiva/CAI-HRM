@@ -7,6 +7,7 @@
 <link href="~/Content/Tabs.css" rel="stylesheet" />
 
 <div class="container">
+
     <div id="page-wrapper">
         <div class="col-sm-6">
             <div class="row">
@@ -15,40 +16,69 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
-            @if(isSuperAdmin)
-            { 
-            <div class="col-xs-3">
-                <!-- required for floating -->
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs tabs-left">
-                    <li class="active"><a href="#Staging" data-toggle="tab">Staging</a></li>
-                    <li class=""><a href="#StagingPartner" data-toggle="tab">Staging By Partner</a></li>
-                    <li class=""><a href="#LWD" data-toggle="tab">LWD</a></li>
-                    <li class=""><a href="#IdleTime" data-toggle="tab">Idle Time</a></li>
-                    <li class=""><a href="#IdleTimeDetails" data-toggle="tab">Idle Time Details</a></li>
-                </ul>
-            </div>
-            <div class="col-xs-9">
-                <!-- Tab panes -->
-                <div class="tab-content">
-                    <div class="tab-pane active" id="Staging">
+            @if (isSuperAdmin)
+            {
 
-                        @Html.Partial("_StagingReport")
-                    </div>
-                    <div class="tab-pane" id="StagingPartner">
-                        @Html.Action("Staging", "Report")
-                    </div>
-                    <div class="tab-pane" id="LWD">
-                        @Html.Action("CadidatesByLastWorkingDay", "Report")
-                    </div>
-                    <div class="tab-pane" id="IdleTime">
-                        @Html.Action("CadidatesIdleTime", "Report")
-                    </div>
-                    <div class="tab-pane" id="IdleTimeDetails">
-                        @Html.Action("CadidatesIdleTimeDetails", "Report")
-                    </div>
+                <div class="col-xs-3">
+                    <!-- required for floating -->
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs tabs-left">
+                        <li class="active"><a href="#Staging1" id="idStaging" data-toggle="tab">Staging</a></li>
+                        <li class=""><a href="#StagingPartner" id="idStagingPartner" data-toggle="tab">Staging By Partner</a></li>
+                        <li class=""><a href="#LWD" data-toggle="tab">LWD</a></li>
+                        <li class=""><a href="#IdleTime" data-toggle="tab">Idle Time</a></li>
+                        <li class=""><a href="#IdleTimeDetails" data-toggle="tab">Idle Time Details</a></li>
+                    </ul>
                 </div>
-            </div>
+                    <div class="col-xs-9">
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="Staging1">
+                                @if (isSuperAdmin)
+                                {
+                                    @Html.Label("Partner", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.DropDownList("ddlVendor", (SelectList)ViewBag.VendorList, new { multiple = "multiple", @class = "vendorSelectClass" })
+                                        <a class="btn btn-danger btn-xs" id="btnSearchStaging" >
+                                            Refresh
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </a>
+                                    </div>
+                                }
+                                <br/>
+                                <div id="StagingPartial">
+                                    @Html.Partial("_StagingReport")
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="StagingPartner">
+                                @if (isSuperAdmin)
+                                {
+                                    @Html.Label("Partner", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.DropDownList("ddlVendorPartner", (SelectList)ViewBag.VendorList, new { multiple = "multiple", @class = "vendorSelectClass" })
+                                        <a class="btn btn-danger btn-xs" id="btnSearchStagingPartner" >
+                                            Refresh
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </a>
+                                    </div>
+                                }
+                                <br/>
+                                <div id="StagingPartnerPartial">
+                                    @Html.Action("StagingByPartner", "Report")
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="LWD">
+                                @Html.Action("CadidatesByLastWorkingDay", "Report")
+                            </div>
+                            <div class="tab-pane" id="IdleTime">
+                                @Html.Action("CadidatesIdleTime", "Report")
+                            </div>
+                            <div class="tab-pane" id="IdleTimeDetails">
+                                @Html.Action("CadidatesIdleTimeDetails", "Report")
+                            </div>
+                        </div>
+                    </div>
             }
             else
             {
@@ -59,50 +89,61 @@
                         <li class="active"><a href="#StagingPartner" data-toggle="tab">Staging By Partner</a></li>
                     </ul>
                 </div>
-                <div class="col-xs-9">
-                    <!-- Tab panes -->
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="StagingPartner">
-                            @Html.Action("Staging", "Report")
+                    <div class="col-xs-9">
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="StagingPartner">
+                                @Html.Action("StagingByPartner", "Report")
+                            </div>
                         </div>
                     </div>
-                </div>
             }
         </div>
     </div>
-    </div>
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-        <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
-        <link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
-        <script lang="ja" type="text/javascript">
-            $(function () {
-                $('#ddlVendorList').multiselect(
-               {
-                   includeSelectAllOption: true,
-                   enableCaseInsensitiveFiltering: true,
-                   nonSelectedText: '--Select Partner--'
-               });
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css" />
+    <script lang="ja" type="text/javascript">
 
-                $('#btnSearchStaging').click(function () {
-                    //alert($('#ddlVendorList').val());
-                    $.get("/Report/StagingReport", { partner: $('#ddlVendorList').val() }, function (data) {
-                        $("#Staging").html(data);
-                    });
+        $(function () {
+
+
+            $('.vendorSelectClass').multiselect(
+           {
+               includeSelectAllOption: true,
+               enableCaseInsensitiveFiltering: true,
+               nonSelectedText: '--Select Partner--'
+           });
+
+            $('#btnSearchStaging').click(function () {
+                $.get("/Report/Staging", { partner: $('#ddlVendor').val() == null ? null : $('#ddlVendor').val().join(',') }, function (data) {
+                    $("#StagingPartial").html(data);
                 });
-
             });
-            function weekChangeEvent(val) {
-                $.get("/Report/CadidatesIdleTimeDetails", { week: val }, function (data) {
-                    $("#IdleTimeDetails").html(data);
-                });
-            }
-            function weekChangeStgEvent(val) {
-                $.get("/Report/CadidatesIdleTime", { week: val }, function (data) {
-                    $("#IdleTime").html(data);
-                });
 
-            }
 
-        </script>
-    }
+            $('#btnSearchStagingPartner').click(function () {
+                $.get("/Report/StagingByPartner", { partner: $('#ddlVendorPartner').val() == null ? null : $('#ddlVendorPartner').val().join(',') }, function (data) {
+                    $("#StagingPartnerPartial").html(data);
+                    
+                });
+            });
+          
+
+        });
+        function weekChangeEvent(val) {
+            $.get("/Report/CadidatesIdleTimeDetails", { week: val }, function (data) {
+                $("#IdleTimeDetails").html(data);
+            });
+        }
+        function weekChangeStgEvent(val) {
+            $.get("/Report/CadidatesIdleTime", { week: val }, function (data) {
+                $("#IdleTime").html(data);
+            });
+
+        }
+
+    </script>
+}

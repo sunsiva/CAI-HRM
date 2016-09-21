@@ -385,13 +385,13 @@ namespace HRPortal.Controllers
             }
         }
 
-        public async Task<ActionResult> SearchCriteria(string name, string vendor, string position, string status, string stdt, string edt)
+        public async Task<ActionResult> SearchCriteria(string name, string vendor, string position, string status, string stdt, string edt, string flag)
         {
             try
             {
                 var dbJobs = await db.JOBPOSTINGs.ToListAsync();
                 var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                CookieStore.SetCookie(CacheKey.CANSearch.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
+                CookieStore.SetCookie(CacheKey.CANSearch.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt + "|" + flag, TimeSpan.FromHours(4));
                 var dbCan = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
                 if (dbCan != null && dbCan.Count > 0)
                 {
@@ -417,7 +417,27 @@ namespace HRPortal.Controllers
         public async Task<ActionResult> ClearSearch()
         {
             CookieStore.ClearCookie(CacheKey.CANSearch.ToString());
-            return await SearchCriteria(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+            return await SearchCriteria(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,string.Empty);
+        }
+
+        public ActionResult _TimeLines(Guid Id)
+        {
+            List<STATUS_HISTORY> lstCan = db.STATUS_HISTORY.Where(c=>c.CANDIDATE_ID==Id).ToList();
+            var canTimeLine = (from sh in lstCan
+                               join sm in db.STATUS_MASTER on sh.STATUS_ID equals sm.STATUS_ID
+                               join usr in db.AspNetUsers on sh.MODIFIED_BY.ToLower() equals usr.Id.ToLower()
+                               select new CandidateViewModels
+                               {
+                                   COMMENTS = sh.COMMENTS,
+                                   MODIFIED_BY=usr.FirstName+" "+usr.LastName,
+                                   MODIFIED_ON=sh.MODIFIED_ON,
+                                   SCHEDULED_TO=sh.SCHEDULED_TO,
+                                   STATUS=sm.STATUS_DESCRIPTION,
+                                   STATUS_ID=sm.STATUS_NAME
+                               }).OrderByDescending(s=>s.MODIFIED_ON).ToList();
+                               //select new {sh.COMMENTS,sm.STATUS_DESCRIPTION,usr.FirstName,usr.LastName,sh.MODIFIED_BY,sh.MODIFIED_ON,sh.SCHEDULED_TO}).ToList();
+
+            return PartialView(canTimeLine);
         }
 
         /// <summary>
@@ -432,7 +452,7 @@ namespace HRPortal.Controllers
             var dupli = db.CANDIDATES.Where(u => u.MOBILE_NO == mob).ToList();
             if(dupli.Count()==0)
             {
-                DateTime oDob = string.IsNullOrEmpty(dob) ? DateTime.Now : DateTime.Parse(dob);
+                DateTime oDob = string.IsNullOrEmpty(dob) ? HelperFuntions.GetDateTime() : DateTime.Parse(dob);
                 isDupli = (db.CANDIDATES.Where(u=>u.DOB == oDob && u.MOBILE_NO == mob).Count()>0 ? true : false);
             }
             return isDupli;
@@ -519,15 +539,15 @@ namespace HRPortal.Controllers
             try
             {
                 var cookie = CookieStore.GetCookie(CacheKey.CANSearch.ToString());
-                string name = string.Empty, vendor = string.Empty, position = string.Empty, status = string.Empty, stdt = string.Empty, edt = string.Empty;
+                string name = string.Empty, vendor = string.Empty, position = string.Empty, status = string.Empty, stdt = string.Empty, edt = string.Empty, flag = string.Empty;
                 if (!string.IsNullOrEmpty(cookie))
                 {
                     string[] val = cookie.Split('|');
-                    name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5];
+                    name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5]; flag = val[6];
                 }
                 if (System.Configuration.ConfigurationManager.AppSettings["IsCallSP_Temp"] == "true")
                 {
-                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, CookieStore.GetCookie(CacheKey.Uid.ToString())).ToList();
+                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, CookieStore.GetCookie(CacheKey.Uid.ToString()),flag).ToList();
                     jobCanObj.CandidateItems = canlist.Select(i => new CandidateViewModels
                     {
                         CANDIDATE_ID = i.CANDIDATE_ID,

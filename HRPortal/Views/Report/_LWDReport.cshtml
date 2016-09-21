@@ -11,72 +11,72 @@
         new SelectListItem {Text="1-2 Weeks (8-14 days)",Value="1week",Selected=true },
         new SelectListItem {Text="2-3 Weeks (15-21 days)",Value="2week" },
         new SelectListItem {Text=">3 Weeks (>22 days)",Value="3week" } },
-         new { @onchange="weekChangeEvent(this.value)" }
+         new { @onchange = "weekChangeEvent(this.value)" }
   )
-        
+
     </div>
 }
 
-        <div class="container" id="LWDPartial">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        @if (Model != null)
+<div class="container" id="LWDPartial">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                @if (Model != null)
                 {
-                            <table class="table table-striped table-hover table-condensed table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            POSITION NAME
-                                        </th>
-                                        <th>
-                                            CANDIDATE NAME
-                                        </th>
-                                        <th>
-                                            PARTNER
-                                        </th>
-                                        <th>
-                                            SUBMITTED ON
-                                        </th>
-                                        <th>
-                                            LAST WORKING DATE
-                                        </th>
-                                        <th>
-                                            STATUS
-                                        </th>
+                    <table class="table table-striped table-hover table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    POSITION NAME
+                                </th>
+                                <th>
+                                    CANDIDATE NAME
+                                </th>
+                                <th>
+                                    PARTNER
+                                </th>
+                                <th>
+                                    SUBMITTED ON
+                                </th>
+                                <th>
+                                    LAST WORKING DATE
+                                </th>
+                                <th>
+                                    STATUS
+                                </th>
 
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td align="left">
-                                                @item.Position_Name
-                                            </td>
-                                            <td align="left">
-                                                @item.Candidate_name
-                                            </td>
-                                            <td align="left">
-                                                @item.Partner_Name
-                                            </td>
-                                            <td align="right">
-                                                @item.Submitted_On
-                                            </td>
-                                            <td align="right">
-                                                @item.Last_Working_Date 
-                                            </td>
-                                            <td align="left">
-                                                @item.Status
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td align="left">
+                                        @item.Position_Name
+                                    </td>
+                                    <td align="left">
+                                        @item.Candidate_name
+                                    </td>
+                                    <td align="left">
+                                        @item.Partner_Name
+                                    </td>
+                                    <td align="right">
+                                        @item.Submitted_On
+                                    </td>
+                                    <td align="right">
+                                        @item.Last_Working_Date
+                                    </td>
+                                    <td align="left">
+                                        @item.Status
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
 
 
-                        }
-                    </div>
-                </div>
+                }
             </div>
         </div>
+    </div>
+</div>

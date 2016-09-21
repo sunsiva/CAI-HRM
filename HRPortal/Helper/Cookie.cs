@@ -13,13 +13,13 @@ namespace HRPortal.Helper
             if (HttpContext.Current.Request.Cookies[key] != null)
             {
                 var cookieOld = HttpContext.Current.Request.Cookies[key];
-                cookieOld.Expires = DateTime.Now.Add(expires);
+                cookieOld.Expires = HelperFuntions.GetDateTime().Add(expires);
                 cookieOld.Value = encodedCookie.Value;
                 HttpContext.Current.Response.Cookies.Add(cookieOld);
             }
             else
             {
-                encodedCookie.Expires = DateTime.Now.Add(expires);
+                encodedCookie.Expires = HelperFuntions.GetDateTime().Add(expires);
                 HttpContext.Current.Response.Cookies.Add(encodedCookie);
             }
         }
@@ -48,7 +48,7 @@ namespace HRPortal.Helper
             var cookie = HttpContext.Current.Request.Cookies[key];
             if(cookie!=null)
             {
-                cookie.Expires = DateTime.Now.AddYears(-1);
+                cookie.Expires = HelperFuntions.GetDateTime().AddYears(-1);
                 cookie.Value = string.Empty;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }

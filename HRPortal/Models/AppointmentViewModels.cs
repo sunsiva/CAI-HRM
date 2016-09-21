@@ -380,8 +380,8 @@ namespace HRPortal.Models
                 Event evt = iCal.Create<Event>();
                 evt.UID = canId.ToString();
                 evt.Class = "PUBLIC";
-                evt.Created = new iCalDateTime(DateTime.Now);
-                evt.DTStamp = new iCalDateTime(DateTime.Now);
+                evt.Created = new iCalDateTime(HelperFuntions.GetDateTime());
+                evt.DTStamp = new iCalDateTime(HelperFuntions.GetDateTime());
                 evt.Transparency = TransparencyType.Transparent;
 
                 // Set the event start / end times

@@ -19,14 +19,23 @@
                         @if (isSuperAdmin)
                         {
                         <div id="srchCandidates">
+                            <div class="checkbox">
+                                <label>
+                                    <input id="chkShowAll" type="checkbox" title="Gets all the active candidates" data-toggle="toggle">
+                                    Check To Show All Candidates
+                                </label>
+                            </div>
+
                             <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
                            @* <input type="text" id="txtCriteriaVendor" placeholder="Partner" />
                               <input type="text" id="txtCriteriaPosition" placeholder="Position Name" />*@
                             @Html.DropDownList("ddlCriteriaVendor", (SelectList)ViewBag.VendorList, new { multiple = "multiple" })
                                 @Html.DropDownList("ddlCriteriaPosition", (SelectList)ViewBag.PositionList, new { multiple = "multiple" })
                                 @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, new { multiple = "multiple" })<br /><br />
+                            
                                 <input type="text" id="txtCriteriaStDate" class="date-picker" placeholder="Uploaded Start Date" />
                                 <input type="text" id="txtCriteriaEndDate" class="date-picker" placeholder="Uploaded End Date" />
+                            
                                 <a class="btn btn-danger btn-xs" id="btnSearchCriteria">Search 
                                     <span class="glyphicon glyphicon-search"></span>
                                 </a>

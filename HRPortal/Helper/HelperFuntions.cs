@@ -14,7 +14,7 @@ namespace HRPortal.Helper
         /// <returns></returns>
         public static string TimeAgo(this DateTime date)
         {
-            TimeSpan timeSince = DateTime.Now.Subtract(date);
+            TimeSpan timeSince = GetDateTime().Subtract(date);
             if (timeSince.TotalMilliseconds < 1) return "";
             if (timeSince.TotalMinutes < 1) return "just now";
             if (timeSince.TotalMinutes < 2) return "1 minute ago";

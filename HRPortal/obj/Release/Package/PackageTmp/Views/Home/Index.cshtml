@@ -49,7 +49,7 @@
         $(document).ready(function ()
         {
             $('.date-picker').datetimepicker({
-                format: 'DD/MM/YYYY' // This format is for SP
+                format: 'DD/MM/YYYY'  // This format is for SP to compare date
             });
 
             $('.job-date-picker').datetimepicker({
@@ -57,12 +57,11 @@
             });
 
             $('#txtdatepicker').datetimepicker({
-                format: 'DD/MM/YYYY' // This format is for SP,
-                //pickTime: false
+                format: 'MM/DD/YYYY'
             });
 
             $('#txttimepicker').datetimepicker({
-                format: "hh:mm A" // This format is for SP
+                format: "hh:mm A"
             });
 
             $('#ddlCriteriaVendor').multiselect(
@@ -98,6 +97,7 @@
                 $("#ddlCriteriaPosition").multiselect("clearSelection");
                 $("#ddlStatusSearchList").multiselect("clearSelection");
                 $("#txtCriteriaStDate").val(''); $("#txtCriteriaEndDate").val('');
+                $("#chkShowAll").attr('checked', false);
                 $("#spnFilter").removeClass('show').addClass('hide');
                 $.get("/Home/ClearSearch", { id: "CAN" },
                     function (data) {
@@ -130,7 +130,7 @@
                 $("#divhideshow").addClass("hidden")
 
                 $('.date-picker').datetimepicker({
-                    format: 'DD/MM/YYYY' // This format is for SP
+                    format: 'DD/MM/YYYY' // This format is for SP to compare date
                 });
 
                 $('.job-date-picker').datetimepicker({
@@ -138,12 +138,11 @@
                 });
 
                 $('#txtdatepicker').datetimepicker({
-                    format: 'DD/MM/YYYY' // This format is for SP,
-                    //pickTime: false
+                    format: 'MM/DD/YYYY'
                 });
 
                 $('#txttimepicker').datetimepicker({
-                    format: "hh:mm A" // This format is for SP
+                    format: "hh:mm A"
                 });
 
             };
@@ -196,7 +195,16 @@
             $("#btnSearchCriteria").click(function () {
                 var vendor = $("#ddlCriteriaVendor").val() == null ? "" : $("#ddlCriteriaVendor").val().join(','), position = $("#ddlCriteriaPosition").val() == null ? "" : $("#ddlCriteriaPosition").val().join(',')
                 , status = $("#ddlStatusSearchList").val() == null ? "" : $("#ddlStatusSearchList").val().join(',');
-                $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
+                $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val(), flag: $("#chkShowAll").is(':checked') }, function (data) {
+                    $("#CandidatesPartial").html(data);
+                    $("#spnFilter").removeClass('hide').addClass('show');
+                });
+            });
+
+            $("#chkShowAll").click(function () {
+                var vendor = $("#ddlCriteriaVendor").val() == null ? "" : $("#ddlCriteriaVendor").val().join(','), position = $("#ddlCriteriaPosition").val() == null ? "" : $("#ddlCriteriaPosition").val().join(',')
+                , status = $("#ddlStatusSearchList").val() == null ? "" : $("#ddlStatusSearchList").val().join(',');
+                $.get("/Home/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val(), flag: $("#chkShowAll").is(':checked') }, function (data) {
                     $("#CandidatesPartial").html(data);
                     $("#spnFilter").removeClass('hide').addClass('show');
                 });
@@ -225,16 +233,19 @@
 
             //BEGIN: Candidate Search: Set the cookie value to criteria controls back whenever the page gets loaded
             var src = $.cookie('CANSearchHome');
-            if (src && src.replace('|||||', ''))
+            if (src && src.replace('||||||', ''))
                 $("#spnFilter").removeClass('hide').addClass('show');
             else
                 $("#spnFilter").removeClass('show').addClass('hide');
 
-            src = src && src.replace('|||||', '') ? src.split('|') : '';
-            var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5];
+            src = src && src.replace('||||||', '') ? src.split('|') : '';
+            var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5], flag = src[6];
             $("#txtCriteriaCanName").val(srcName);
             $("#txtCriteriaStDate").val(srcStDt);
             $("#txtCriteriaEndDate").val(srcEnDt);
+            if (flag=='true'){
+                $("#chkShowAll").attr('checked', 'checked');
+            }
 
             //SetPosition
             var arrPosition = srcPosition ? srcPosition.split(",") : "";

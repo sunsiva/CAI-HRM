@@ -36,7 +36,7 @@ namespace HRPortal.Controllers
                     { 
                         //int canCnt = db.CANDIDATES.Where(u => u.CREATED_ON.ToShortDateString() == DateTime.Now.ToShortDateString()).Count();
                         //int jobCnt = db.JOBPOSTINGs.Where(u => u.CREATED_ON.ToShortDateString() == DateTime.Now.ToShortDateString()).Count();
-                        int schCnt = appVM.GetCandidateSchedules(DateTime.Now).Count();
+                        int schCnt = appVM.GetCandidateSchedules(HelperFuntions.GetDateTime()).Count();
 
                         //CookieStore.SetCookie("TodaysCanCnt", canCnt.ToString(), TimeSpan.FromHours(1));
                         //CookieStore.SetCookie("TodaysJobCnt", jobCnt.ToString(), TimeSpan.FromHours(1));
@@ -83,7 +83,7 @@ namespace HRPortal.Controllers
             catch (Exception ex) { throw ex; }
         }
 
-        public async Task<ActionResult> SearchCriteria(string name, string vendor, string position, string status, string stdt, string edt)
+        public async Task<ActionResult> SearchCriteria(string name, string vendor, string position, string status, string stdt, string edt,string flag)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace HRPortal.Controllers
                     var dbJobs = await db.JOBPOSTINGs.ToListAsync();
                     if (HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
                     {
-                        CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt, TimeSpan.FromHours(4));
+                        CookieStore.SetCookie(CacheKey.CANSearchHome.ToString(), name + "|" + vendor + "|" + position + "|" + status + "|" + stdt + "|" + edt + "|" + flag, TimeSpan.FromHours(4));
                         var dbCan = await db.CANDIDATES.Where(row => row.ISACTIVE == true).ToListAsync();
                         jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
                         ViewBag.StatusList = vmodelCan.GetStatusList();
@@ -181,6 +181,11 @@ namespace HRPortal.Controllers
                 Guid cId = Guid.Parse(id);
                 string uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                 STATUS_HISTORY sHist = new STATUS_HISTORY();
+                //BEGIN:SET TO INACTIVE BEFORE SETTING NEW STATUS in STATUS HISTORY TABLE
+                var oHist = await db.STATUS_HISTORY.Where(c => c.CANDIDATE_ID == cId).ToListAsync();
+                oHist.ForEach(a => a.ISACTIVE = false);
+                await db.SaveChangesAsync();
+                //END:SET TO INACTIVE BEFORE SETTING NEW STATUS
                 Guid stsId = Guid.Parse(status);
                 var stsMst = db.STATUS_MASTER.Where(s => s.STATUS_ID == stsId).FirstOrDefault();
 
@@ -218,7 +223,7 @@ namespace HRPortal.Controllers
         public async Task<ActionResult> ClearSearch(string id)
         {
             CookieStore.ClearCookie(id == "CAN" ? CacheKey.CANSearchHome.ToString() : CacheKey.JobSearchHome.ToString());
-            return await SearchCriteria(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+            return await SearchCriteria(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,string.Empty);
         }
 
         private JobAndCandidateViewModels GetPagination(JobAndCandidateViewModels jobCanObj, string sOdr, int? page)
@@ -307,16 +312,16 @@ namespace HRPortal.Controllers
             try
             {
                 var cookie = CookieStore.GetCookie(CacheKey.CANSearchHome.ToString());
-                string name = string.Empty, vendor = string.Empty, position = string.Empty, status = string.Empty, stdt = string.Empty, edt = string.Empty;
+                string name = string.Empty, vendor = string.Empty, position = string.Empty, status = string.Empty, stdt = string.Empty, edt = string.Empty, flag = string.Empty;
                 if (!string.IsNullOrEmpty(cookie))
                 {
                     string[] val = cookie.Split('|');
-                    name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5];
+                    name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5]; flag = val[6];
                 }
 
                 if (System.Configuration.ConfigurationManager.AppSettings["IsCallSP_Temp"] == "true")
                 {
-                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, "").ToList();
+                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, "",flag).ToList();
                     jobCanObj.CandidateItems = canlist.Select(i => new CandidateViewModels
                     {
                         CANDIDATE_ID = i.CANDIDATE_ID,

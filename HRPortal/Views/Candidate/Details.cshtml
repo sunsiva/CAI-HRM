@@ -1,4 +1,4 @@
-﻿@model HRPortal.CANDIDATE
+﻿@model CANDIDATE
 
 @{
     ViewBag.Title = "Details";
@@ -7,180 +7,184 @@
     var dob = (Model.DOB.ToString("dd-MMM-yyyy"));
     var isNP = Model.ISINNOTICEPERIOD == true ? "Yes" : "No";
 }
-
+<link href="~/Content/timeline.css" rel="stylesheet" />
 <h2 align="center">Candidate Details</h2>
 
 <div>
-    @*<h4>CANDIDATE</h4>*@
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayName("CANDIDATE NAME")
-        </dt>
+                   @*<h4>CANDIDATE</h4>*@
+                   <hr />
+                   <dl class="dl-horizontal">
+                       <dt>
+                           @Html.DisplayName("CANDIDATE NAME")
+                       </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.CANDIDATE_NAME)
-        </dd>
-        
-        <dt>
-            @Html.DisplayName("TOTAL EXPERIENCE")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.CANDIDATE_NAME)
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.YEARS_OF_EXP_TOTAL)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("TOTAL EXPERIENCE")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("MOBILE NO")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.YEARS_OF_EXP_TOTAL)
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.MOBILE_NO)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("MOBILE NO")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("EMAIL")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.MOBILE_NO)
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.EMAIL)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("EMAIL")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("DOB")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.EMAIL)
+                       </dd>
 
-        <dd>
-            @dob
-        </dd>
+                       <dt>
+                           @Html.DisplayName("DOB")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("CURRENT COMPANY")
-        </dt>
+                       <dd>
+                           @dob
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.CURRENT_COMPANY)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("CURRENT COMPANY")
+                       </dt>
+
+                       <dd>
+                           @Html.DisplayFor(model => model.CURRENT_COMPANY)
+                       </dd>
 
 
-        <dt>
-            @Html.DisplayName("CURRENT LOCATION")
-        </dt>
+                       <dt>
+                           @Html.DisplayName("CURRENT LOCATION")
+                       </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.CURRENT_LOCATION)
-        </dd>
+                       <dd>
+                           @Html.DisplayFor(model => model.CURRENT_LOCATION)
+                       </dd>
 
-        <dt>
-            @Html.DisplayName("IS IN NOTICE PERIOD?")
-        </dt>
+                       <dt>
+                           @Html.DisplayName("IS IN NOTICE PERIOD?")
+                       </dt>
 
-        <dd>
-            @isNP
-        </dd>
+                       <dd>
+                           @isNP
+                       </dd>
 
-        <dt>
-            @Html.DisplayName("NOTICE PERIOD")
-        </dt>
+                       <dt>
+                           @Html.DisplayName("NOTICE PERIOD")
+                       </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.NOTICE_PERIOD)
-        </dd>
+                       <dd>
+                           @Html.DisplayFor(model => model.NOTICE_PERIOD)
+                       </dd>
 
-        <dt>
-            @Html.DisplayName("LAST WORKING DATE")
-        </dt>
+                       <dt>
+                           @Html.DisplayName("LAST WORKING DATE")
+                       </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.LAST_WORKING_DATE)
-        </dd>
+                       <dd>
+                           @Html.DisplayFor(model => model.LAST_WORKING_DATE)
+                       </dd>
 
-        <dt>
-            @Html.DisplayName("COMMENTS")
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.COMMENTS)
-        </dd>
-        <dt>
-            @Html.DisplayName("STATUS COMMENTS")
-        </dt>
-        <dd>
-            @ViewBag.StatusComments
-        </dd>
-        
-        <dt>
-            @Html.DisplayName("STATUS")
-        </dt>
+                       <dt>
+                           @Html.DisplayName("COMMENTS")
+                       </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.COMMENTS)
+                       </dd>
+                       <dt>
+                           @Html.DisplayName("STATUS COMMENTS")
+                       </dt>
+                       <dd>
+                           @ViewBag.StatusComments
+                       </dd>
 
-        <dd>
-            @isActive
-        </dd>
+                       <dt>
+                           @Html.DisplayName("STATUS")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("RELEVANT EXPERIENCE")
-        </dt>
+                       <dd>
+                           @isActive
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.YEARS_OF_EXP_RELEVANT)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("RELEVANT EXPERIENCE")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("ALTERNATE EMAIL")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.YEARS_OF_EXP_RELEVANT)
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.ALTERNATE_EMAIL_ID)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("ALTERNATE EMAIL")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("ALTERNATE MOBILE")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.ALTERNATE_EMAIL_ID)
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.ALTERNATE_MOBILE_NO)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("ALTERNATE MOBILE")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("LAST MODIFIED BY")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.ALTERNATE_MOBILE_NO)
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.MODIFIED_BY)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("LAST MODIFIED BY")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("LAST MODIFIED ON")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.MODIFIED_BY)
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.MODIFIED_ON)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("LAST MODIFIED ON")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("SUBMITTED BY")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.MODIFIED_ON)
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.CREATED_BY)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("SUBMITTED BY")
+                       </dt>
 
-        <dt>
-            @Html.DisplayName("SUBMITTED ON")
-        </dt>
+                       <dd>
+                           @Html.DisplayFor(model => model.CREATED_BY)
+                       </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.CREATED_ON)
-        </dd>
+                       <dt>
+                           @Html.DisplayName("SUBMITTED ON")
+                       </dt>
 
-    </dl>
-</div>
+                       <dd>
+                           @Html.DisplayFor(model => model.CREATED_ON)
+                       </dd>
+
+                   </dl>
+               </div>
 <p>
     @if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "H")
     {
-        @Html.ActionLink("Back to List", "Index", "Home",new { page= Request.QueryString["p"]},null) 
+        @Html.ActionLink("Back to List", "Index", "Home", new { page = Request.QueryString["p"] }, null)
     }
     else if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "S")
     { @Html.ActionLink("Back to List", "SquadJobs", "Candidate", new { page = Request.QueryString["p"] }, null)
     }
     else { @Html.ActionLink("Back to List", "Index", new { page = Request.QueryString["p"] })}
-</p>
+</p>  
+<table><tr><td>
+    @Html.Action("_TimeLines", "Candidate", new { Id=Model.CANDIDATE_ID })
+   </td></tr></table>
+

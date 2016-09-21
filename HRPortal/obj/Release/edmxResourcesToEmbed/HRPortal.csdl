@@ -424,6 +424,7 @@
       <Parameter Name="Partner" Mode="In" Type="String" />
       <Parameter Name="StartDate" Mode="In" Type="String" />
       <Parameter Name="EndDate" Mode="In" Type="String" />
+      <Parameter Name="UserId" Mode="In" Type="String" />
       <Parameter Name="flag" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="rptGetCandidatesIdleTimeByWeek" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesIdleTimeByWeek_Result)">

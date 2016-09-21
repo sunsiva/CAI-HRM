@@ -73,7 +73,16 @@
             $("#btnSearchCriteria").click(function () {
                 var vendor = $("#ddlCriteriaVendor").val() == null ? "" : $("#ddlCriteriaVendor").val().join(','), position = $("#ddlCriteriaPosition").val() == null ? "" : $("#ddlCriteriaPosition").val().join(',')
                 , status = $("#ddlStatusSearchList").val() == null ? "" : $("#ddlStatusSearchList").val().join(',');
-                $.get("/Candidate/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val() }, function (data) {
+                $.get("/Candidate/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val(), flag: $("#chkShowAll").is(':checked') }, function (data) {
+                    $("#CandidatesPartial").html(data);
+                    $("#spnFilter").removeClass('hide').addClass('show');
+                });
+            });
+
+            $("#chkShowAll").click(function () {
+                var vendor = $("#ddlCriteriaVendor").val() == null ? "" : $("#ddlCriteriaVendor").val().join(','), position = $("#ddlCriteriaPosition").val() == null ? "" : $("#ddlCriteriaPosition").val().join(',')
+               , status = $("#ddlStatusSearchList").val() == null ? "" : $("#ddlStatusSearchList").val().join(',');
+                $.get("/Candidate/SearchCriteria", { name: $("#txtCriteriaCanName").val(), vendor: vendor, position: position, status: status, stdt: $("#txtCriteriaStDate").val(), edt: $("#txtCriteriaEndDate").val(), flag: $("#chkShowAll").is(':checked') }, function (data) {
                     $("#CandidatesPartial").html(data);
                     $("#spnFilter").removeClass('hide').addClass('show');
                 });
@@ -103,7 +112,8 @@
             $("#ddlCriteriaVendor").multiselect("clearSelection");
             $("#ddlCriteriaPosition").multiselect("clearSelection");
             $("#ddlStatusSearchList").multiselect("clearSelection");
-            $("#txtCriteriaStDate").val('');$("#txtCriteriaEndDate").val('');
+            $("#txtCriteriaStDate").val(''); $("#txtCriteriaEndDate").val('');
+            $("#chkShowAll").attr('checked', false);
             $.get("/Candidate/ClearSearch",
                 function (data) {
                     $("#CandidatesPartial").html(data);
@@ -146,16 +156,18 @@
 
             //BEGIN: Set the cookie value to criteria controls back whenever the page gets loaded
         var src = $.cookie('CANSearch');
-        src = src ? src.replace('|||||', '') : '';
+        src = src ? src.replace('||||||', '') : '';
         if (src) {
             src = src.split('|');
             $("#spnFilter").removeClass('hide').addClass('show');
 
-            var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5];
+            var srcName = src[0], srcPartner = src[1], srcPosition = src[2], srcStatus = src[3], srcStDt = src[4], srcEnDt = src[5], flag = src[6];
             $("#txtCriteriaCanName").val(srcName);
             $("#txtCriteriaStDate").val(srcStDt);
             $("#txtCriteriaEndDate").val(srcEnDt);
-
+            if (flag == 'true') {
+                $("#chkShowAll").attr('checked', 'checked');
+            }
             //SetPosition
             var arrPosition = srcPosition && srcPosition.split(",");
             $("#ddlCriteriaPosition").val(arrPosition);// Set the value

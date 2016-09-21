@@ -93,7 +93,7 @@ namespace HRPortal
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetCandidateDetailsByLastworkingdate_Result>("GetCandidateDetailsByLastworkingdate");
         }
     
-        public virtual ObjectResult<getSearchResults_Result> getSearchResults(string positionName, string candidateName, string statusIds, string partner, string startDate, string endDate, string flag)
+        public virtual ObjectResult<getSearchResults_Result> getSearchResults(string positionName, string candidateName, string statusIds, string partner, string startDate, string endDate, string userId, string flag)
         {
             var positionNameParameter = positionName != null ?
                 new ObjectParameter("PositionName", positionName) :
@@ -119,11 +119,15 @@ namespace HRPortal
                 new ObjectParameter("EndDate", endDate) :
                 new ObjectParameter("EndDate", typeof(string));
     
+            var userIdParameter = userId != null ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(string));
+    
             var flagParameter = flag != null ?
                 new ObjectParameter("flag", flag) :
                 new ObjectParameter("flag", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getSearchResults_Result>("getSearchResults", positionNameParameter, candidateNameParameter, statusIdsParameter, partnerParameter, startDateParameter, endDateParameter, flagParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getSearchResults_Result>("getSearchResults", positionNameParameter, candidateNameParameter, statusIdsParameter, partnerParameter, startDateParameter, endDateParameter, userIdParameter, flagParameter);
         }
     
         public virtual ObjectResult<rptGetCandidatesIdleTimeByWeek_Result> rptGetCandidatesIdleTimeByWeek(string week)

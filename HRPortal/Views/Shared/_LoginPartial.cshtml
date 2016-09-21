@@ -1,11 +1,12 @@
 ﻿@using HRPortal.Helper
 @if (Request.IsAuthenticated)
-{
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
+        var curDt = HelperFuntions.GetDateTime();
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
 
-    <ul class="nav navbar-nav dropdown">
+            <ul class="nav navbar-nav dropdown">
         <li class="dropdown">
             <a class="dropdown-toggle" href="@Url.Action("Index","Manage")">
                 Welcome <b> @(CookieStore.GetCookie(CacheKey.UserName.ToString()) != null ? CookieStore.GetCookie(CacheKey.UserName.ToString()) : User.Identity.Name)</b>
@@ -122,9 +123,9 @@
         <li><a class="" title="Click To Log Off" href="javascript:document.getElementById('logoutForm').submit()">Log Out  <i class="glyphicon glyphicon-log-out"></i></a></li>
         <li>
             <time class="icon">
-                <em>@DateTime.Now.ToString("dddd")</em>
-                <strong>@DateTime.Now.ToString("MMM").ToUpper()</strong>
-                <span>@DateTime.Now.ToString("dd")</span>
+                <em>@curDt.ToString("dddd")</em>
+                <strong>@curDt.ToString("MMM").ToUpper()</strong>
+                <span>@curDt.ToString("dd")</span>
             </time>
         </li>
         <li><div></div></li>

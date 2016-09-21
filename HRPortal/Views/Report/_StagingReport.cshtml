@@ -1,9 +1,11 @@
 ﻿@using System.Web.Mvc;
+@using HRPortal.Helper;
 
 @model IEnumerable<HRPortal.Models.StagingReportViewModel>
 @using HRPortal.Models
-
-
+@{
+    bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
+}
 @if (ViewBag.WeekList)
 {
     @Html.Label("Week", htmlAttributes: new { @class = "control-label col-md-2" })

@@ -424,6 +424,7 @@
     <Content Include="Views\Report\Index.cshtml" />
     <Content Include="Views\Appointment\SearchResults.cshtml" />
     <Content Include="Views\Job\_JobList.cshtml" />
+    <Content Include="Views\Candidate\_TimeLines.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

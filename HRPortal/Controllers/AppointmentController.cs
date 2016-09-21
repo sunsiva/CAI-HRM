@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HRPortal.Common;
 using HRPortal.Common.Enums;
 using System.Collections.Generic;
+using HRPortal.Helper;
 
 namespace HRPortal.Controllers
 {
@@ -106,7 +107,7 @@ namespace HRPortal.Controllers
         #region "Schedules"
         public ActionResult Schedules(string sOdr, int? page,string dtSel)
         {
-            DateTime dtSelFrm = string.IsNullOrEmpty(dtSel) ? DateTime.Now : DateTime.Parse(dtSel);
+            DateTime dtSelFrm = string.IsNullOrEmpty(dtSel) ? HelperFuntions.GetDateTime() : DateTime.Parse(dtSel);
             ViewBag.CurrDateSel = dtSelFrm.ToString("dd-MMM-yyyy");
             List<CandidateViewModels> lstCan = appVM.GetCandidateSchedules(dtSelFrm);
             var objCan = (lstCan != null ? GetPagination(lstCan, sOdr, page) : lstCan).OrderBy(s => s.SCHEDULED_TO);

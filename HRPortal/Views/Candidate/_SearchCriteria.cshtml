@@ -17,6 +17,12 @@
                         <br />
                         
                         <div id="srchCandidates">
+                            <div class="checkbox">
+                                <label>
+                                    <input id="chkShowAll" type="checkbox" title="Gets all the active candidates" data-toggle="toggle">
+                                    Check To Show All Candidates
+                                </label>
+                            </div>
                             <input type="text" id="txtCriteriaCanName" placeholder="Candidate Name" />
                                 @Html.DropDownList("ddlCriteriaPosition", (SelectList)ViewBag.PositionList, new { multiple = "multiple" })
                                 @Html.DropDownList("ddlStatusSearchList", (SelectList)ViewBag.StatusList, new { multiple = "multiple" })<br /><br />

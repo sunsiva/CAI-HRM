@@ -39,6 +39,9 @@
                     PROFILE
                 </th>
                 <th>
+                    SCHEDULED TO
+                </th>
+                <th>
                     SCHEDULED DATE/TIME
                 </th>
                 <th>
@@ -70,7 +73,10 @@
                         <a href="@item.RESUME_FILE_PATH" target="_blank" title="Click To Download Candidate CV">Download</a>
                     </td>
                     <td>
-                        <span id="schTxt_@item.CANDIDATE_ID">@( (item.SCHEDULED_TO != null ? item.SCHEDULED_TO.Value.ToString() : "")+"--"+ item.SCHEDULED_LENGTH+" MINS")</span> 
+                        @Html.DisplayFor(modelItem => item.MODIFIED_BY)
+                    </td>
+                    <td>
+                        <span id="schTxt_@item.CANDIDATE_ID">@( (item.SCHEDULED_TO != null ? item.SCHEDULED_TO.Value.ToString() : "")+" ["+ item.SCHEDULED_LENGTH+" MINS]")</span> 
                     </td>
                     <td>
                         @if (item.STATUS.ToUpper().ToString().Contains("SCHEDULED"))

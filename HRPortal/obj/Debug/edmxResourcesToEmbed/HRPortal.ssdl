@@ -408,6 +408,7 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
     <Parameter Name="Partner" Type="nvarchar" Mode="In" />
     <Parameter Name="StartDate" Type="nvarchar" Mode="In" />
     <Parameter Name="EndDate" Type="nvarchar" Mode="In" />
+    <Parameter Name="UserId" Type="nvarchar" Mode="In" />
     <Parameter Name="flag" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="rptGetCandidatesIdleTimeByWeek" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -417,7 +418,7 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
     <Parameter Name="Week" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="rptGetCandidatesStaging" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-    <Parameter Name="Partner" Type="nvarchar" Mode="In" />
+    <Parameter Name="Partner" Type="nvarchar(max)" Mode="In" />
   </Function>
   <Function Name="rptGetCandidatesStagingByPartner" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Partner" Type="nvarchar(max)" Mode="In" />
