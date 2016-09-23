@@ -24,6 +24,7 @@ namespace HRPortal
         public Nullable<int> SCHEDULE_LENGTH_MINS { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
+        public Nullable<int> NO_OF_TIMES_APPEARED { get; set; }
     
         public virtual STATUS_MASTER STATUS_MASTER { get; set; }
     }

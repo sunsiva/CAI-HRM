@@ -105,6 +105,7 @@
     <Property Name="CREATED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
     <NavigationProperty Name="JOBPOSTING" Relationship="Self.FK_CANDIDATES_JOBPOSTING" FromRole="CANDIDATES" ToRole="JOBPOSTING" />
+    <Property Name="NO_OF_TIMES_APPEARED" Type="Int32" />
   </EntityType>
   <EntityType Name="ERROR_LOG">
     <Key>
@@ -174,7 +175,7 @@
     <Property Name="JOB_CODE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="JOB_DESCRIPTION" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="POSITION_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="POSITION_TYPE" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="POSITION_TYPE" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
     <Property Name="NO_OF_VACANCIES" Type="Int32" Nullable="false" />
     <Property Name="YEARS_OF_EXP_TOTAL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="YEARS_OF_EXP_RELEVANT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -192,12 +193,6 @@
     <NavigationProperty Name="CANDIDATES" Relationship="Self.FK_CANDIDATES_JOBPOSTING" FromRole="JOBPOSTING" ToRole="CANDIDATES" />
     <NavigationProperty Name="JOB_HISTORY" Relationship="Self.FK_JOB_HISTORY_JOBPOSTING" FromRole="JOBPOSTING" ToRole="JOB_HISTORY" />
   </EntityType>
-  <EntityType Name="Number">
-    <Key>
-      <PropertyRef Name="Number1" />
-    </Key>
-    <Property Name="Number1" Type="Int32" Nullable="false" />
-  </EntityType>
   <EntityType Name="STATUS_HISTORY">
     <Key>
       <PropertyRef Name="ID" />
@@ -213,6 +208,7 @@
     <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
     <NavigationProperty Name="STATUS_MASTER" Relationship="Self.FK_STATUS_HISTORY_STATUS_MASTER" FromRole="STATUS_HISTORY" ToRole="STATUS_MASTER" />
+    <Property Name="NO_OF_TIMES_APPEARED" Type="Int32" />
   </EntityType>
   <EntityType Name="STATUS_MASTER">
     <Key>
@@ -259,7 +255,7 @@
     <Property Name="VENDOR_SPOC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="EMAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="VENDOR_CONTACT_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="VENDOR_TYPE" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="VENDOR_TYPE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
     <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
     <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
@@ -369,7 +365,6 @@
     <EntitySet Name="EXCEPTION_LOGGING" EntityType="Self.EXCEPTION_LOGGING" />
     <EntitySet Name="JOB_HISTORY" EntityType="Self.JOB_HISTORY" />
     <EntitySet Name="JOBPOSTINGs" EntityType="Self.JOBPOSTING" />
-    <EntitySet Name="Numbers" EntityType="Self.Number" />
     <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" />
     <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" />
     <EntitySet Name="UserLogs" EntityType="Self.UserLog" />
@@ -417,16 +412,6 @@
       <Parameter Name="List" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="GetCandidateDetailsByLastworkingdate" ReturnType="Collection(Caihrops_portalModel.GetCandidateDetailsByLastworkingdate_Result)" />
-    <FunctionImport Name="getSearchResults" ReturnType="Collection(Caihrops_portalModel.getSearchResults_Result)">
-      <Parameter Name="PositionName" Mode="In" Type="String" />
-      <Parameter Name="CandidateName" Mode="In" Type="String" />
-      <Parameter Name="StatusIds" Mode="In" Type="String" />
-      <Parameter Name="Partner" Mode="In" Type="String" />
-      <Parameter Name="StartDate" Mode="In" Type="String" />
-      <Parameter Name="EndDate" Mode="In" Type="String" />
-      <Parameter Name="UserId" Mode="In" Type="String" />
-      <Parameter Name="flag" Mode="In" Type="String" />
-    </FunctionImport>
     <FunctionImport Name="rptGetCandidatesIdleTimeByWeek" ReturnType="Collection(Caihrops_portalModel.rptGetCandidatesIdleTimeByWeek_Result)">
       <Parameter Name="Week" Mode="In" Type="String" />
     </FunctionImport>
@@ -443,6 +428,17 @@
       <Parameter Name="NavigDate" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="AutoStatusUpdate" />
+    <EntitySet Name="CANDIDATES_ARCHIVE" EntityType="Caihrops_portalModel.CANDIDATES_ARCHIVE" />
+    <FunctionImport Name="getSearchResults" ReturnType="Collection(Caihrops_portalModel.getSearchResults_Result)">
+      <Parameter Name="PositionName" Mode="In" Type="String" />
+      <Parameter Name="CandidateName" Mode="In" Type="String" />
+      <Parameter Name="StatusIds" Mode="In" Type="String" />
+      <Parameter Name="Partner" Mode="In" Type="String" />
+      <Parameter Name="StartDate" Mode="In" Type="String" />
+      <Parameter Name="EndDate" Mode="In" Type="String" />
+      <Parameter Name="UserId" Mode="In" Type="String" />
+      <Parameter Name="flag" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="GetCandidateDetailsByLastworkingdate_Result">
     <Property Type="String" Name="POSITION_NAME" Nullable="false" MaxLength="50" />
@@ -451,24 +447,6 @@
     <Property Type="DateTime" Name="SUBMITTED_ON" Nullable="true" />
     <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" />
     <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
-  </ComplexType>
-  <ComplexType Name="getSearchResults_Result">
-    <Property Type="Guid" Name="CANDIDATE_ID" Nullable="false" />
-    <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
-    <Property Type="String" Name="MOBILE_NO" Nullable="false" MaxLength="25" />
-    <Property Type="String" Name="EMAIL" Nullable="false" MaxLength="50" />
-    <Property Type="String" Name="POSITION" Nullable="false" MaxLength="50" />
-    <Property Type="String" Name="RESUME_FILE_PATH" Nullable="true" MaxLength="166" />
-    <Property Type="String" Name="NOTICE_PERIOD" Nullable="false" MaxLength="50" />
-    <Property Type="Decimal" Name="YEARS_OF_EXP_TOTAL" Nullable="false" Precision="18" Scale="2" />
-    <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" Precision="23" />
-    <Property Type="String" Name="CURRENT_COMPANY" Nullable="false" MaxLength="150" />
-    <Property Type="String" Name="VENDOR_NAME" Nullable="true" MaxLength="50" />
-    <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
-    <Property Type="String" Name="STATUS_ID" Nullable="true" MaxLength="50" />
-    <Property Type="DateTime" Name="CREATED_ON" Nullable="false" Precision="23" />
-    <Property Type="DateTime" Name="MODIFIED_ON" Nullable="true" Precision="23" />
-    <Property Type="String" Name="MODIFIED_BY" Nullable="true" MaxLength="100" />
   </ComplexType>
   <ComplexType Name="rptGetCandidatesIdleTimeByWeek_Result">
     <Property Type="String" Name="position_name" Nullable="false" MaxLength="50" />
@@ -524,5 +502,56 @@
     <Property Type="DateTime" Name="SCHEDULED_ON" Nullable="true" Precision="23" />
     <Property Type="String" Name="SCHEDULED_FOR" Nullable="true" MaxLength="500" />
     <Property Type="Int32" Name="SCHEDULED_LENGTH" Nullable="true" />
+  </ComplexType>
+  <EntityType Name="CANDIDATES_ARCHIVE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CANDIDATE_ID" Type="Guid" Nullable="false" />
+    <Property Name="CANDIDATE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="JOB_ID" Type="Guid" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_TOTAL" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="YEARS_OF_EXP_RELEVANT" Type="Int32" />
+    <Property Name="MOBILE_NO" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="ALTERNATE_MOBILE_NO" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ALTERNATE_EMAIL_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DOB" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CURRENT_COMPANY" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="CURRENT_LOCATION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="NOTICE_PERIOD" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ANY_OTHER_OFFER" Type="Boolean" />
+    <Property Name="LAST_WORKING_DATE" Type="DateTime" Precision="3" />
+    <Property Name="COMMENTS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="RESUME_FILE_PATH" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="RESUME_SOURCE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ISINNOTICEPERIOD" Type="Boolean" />
+    <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="NO_OF_TIMES_APPEARED" Type="Int32" />
+    <Property Name="MODIFIED_BY" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MODIFIED_ON" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="CREATED_ON" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <ComplexType Name="getSearchResults_Result">
+    <Property Type="Guid" Name="CANDIDATE_ID" Nullable="false" />
+    <Property Type="String" Name="CANDIDATE_NAME" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="MOBILE_NO" Nullable="false" MaxLength="25" />
+    <Property Type="String" Name="EMAIL" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="POSITION" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="RESUME_FILE_PATH" Nullable="true" MaxLength="166" />
+    <Property Type="String" Name="NOTICE_PERIOD" Nullable="false" MaxLength="50" />
+    <Property Type="Decimal" Name="YEARS_OF_EXP_TOTAL" Nullable="false" Precision="18" Scale="2" />
+    <Property Type="DateTime" Name="LAST_WORKING_DATE" Nullable="true" Precision="23" />
+    <Property Type="String" Name="CURRENT_COMPANY" Nullable="false" MaxLength="150" />
+    <Property Type="String" Name="VENDOR_NAME" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="STATUS" Nullable="true" MaxLength="250" />
+    <Property Type="String" Name="STATUS_ID" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="CREATED_ON" Nullable="false" Precision="23" />
+    <Property Type="DateTime" Name="MODIFIED_ON" Nullable="false" Precision="23" />
+    <Property Type="String" Name="MODIFIED_BY" Nullable="true" MaxLength="100" />
+    <Property Type="Int32" Name="NO_OF_TIMES_APPEARED" Nullable="true" />
   </ComplexType>
 </Schema>

@@ -66,6 +66,7 @@
     <EntitySetMapping Name="CANDIDATES">
       <EntityTypeMapping TypeName="Caihrops_portalModel.CANDIDATE">
         <MappingFragment StoreEntitySet="CANDIDATES">
+          <ScalarProperty Name="NO_OF_TIMES_APPEARED" ColumnName="NO_OF_TIMES_APPEARED" />
           <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
           <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
           <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
@@ -182,16 +183,10 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Numbers">
-      <EntityTypeMapping TypeName="Caihrops_portalModel.Number">
-        <MappingFragment StoreEntitySet="Numbers">
-          <ScalarProperty Name="Number1" ColumnName="Number" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="STATUS_HISTORY">
       <EntityTypeMapping TypeName="Caihrops_portalModel.STATUS_HISTORY">
         <MappingFragment StoreEntitySet="STATUS_HISTORY">
+          <ScalarProperty Name="NO_OF_TIMES_APPEARED" ColumnName="NO_OF_TIMES_APPEARED" />
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
           <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
@@ -277,24 +272,10 @@
         <ScalarProperty Name="Id" ColumnName="UserId" />
       </EndProperty>
     </AssociationSetMapping>
-    <FunctionImportMapping FunctionName="Caihrops_portalModel.Store.SplitString" FunctionImportName="SplitString">
-      <ResultMapping>
-        <ComplexTypeMapping TypeName="Caihrops_portalModel.SplitString_Result">
-          <ScalarProperty Name="Item" ColumnName="Item" />
-        </ComplexTypeMapping>
-      </ResultMapping>
-    </FunctionImportMapping>
     <FunctionImportMapping FunctionName="Caihrops_portalModel.Store.fnSplitString" FunctionImportName="fnSplitString">
       <ResultMapping>
         <ComplexTypeMapping TypeName="Caihrops_portalModel.fnSplitString_Result">
           <ScalarProperty Name="splitdata" ColumnName="splitdata" />
-        </ComplexTypeMapping>
-      </ResultMapping>
-    </FunctionImportMapping>
-    <FunctionImportMapping FunctionName="Caihrops_portalModel.Store.funcSplitValue" FunctionImportName="funcSplitValue">
-      <ResultMapping>
-        <ComplexTypeMapping TypeName="Caihrops_portalModel.funcSplitValue_Result">
-          <ScalarProperty Name="ListValue" ColumnName="ListValue" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
@@ -307,28 +288,6 @@
           <ScalarProperty Name="SUBMITTED_ON" ColumnName="SUBMITTED_ON" />
           <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
           <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-        </ComplexTypeMapping>
-      </ResultMapping>
-    </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="getSearchResults" FunctionName="Caihrops_portalModel.Store.getSearchResults">
-      <ResultMapping>
-        <ComplexTypeMapping TypeName="Caihrops_portalModel.getSearchResults_Result">
-          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
-          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
-          <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
-          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
-          <ScalarProperty Name="POSITION" ColumnName="POSITION" />
-          <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
-          <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
-          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
-          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
-          <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
-          <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
-          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
-          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
-          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
-          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
@@ -408,5 +367,61 @@
       </ResultMapping>
     </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="AutoStatusUpdate" FunctionName="Caihrops_portalModel.Store.AutoStatusUpdate" />
+    <EntitySetMapping Name="CANDIDATES_ARCHIVE">
+      <EntityTypeMapping TypeName="Caihrops_portalModel.CANDIDATES_ARCHIVE">
+        <MappingFragment StoreEntitySet="CANDIDATES_ARCHIVE">
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="NO_OF_TIMES_APPEARED" ColumnName="NO_OF_TIMES_APPEARED" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="ISINNOTICEPERIOD" ColumnName="ISINNOTICEPERIOD" />
+          <ScalarProperty Name="RESUME_SOURCE" ColumnName="RESUME_SOURCE" />
+          <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
+          <ScalarProperty Name="COMMENTS" ColumnName="COMMENTS" />
+          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+          <ScalarProperty Name="ANY_OTHER_OFFER" ColumnName="ANY_OTHER_OFFER" />
+          <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
+          <ScalarProperty Name="CURRENT_LOCATION" ColumnName="CURRENT_LOCATION" />
+          <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
+          <ScalarProperty Name="DOB" ColumnName="DOB" />
+          <ScalarProperty Name="ALTERNATE_EMAIL_ID" ColumnName="ALTERNATE_EMAIL_ID" />
+          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+          <ScalarProperty Name="ALTERNATE_MOBILE_NO" ColumnName="ALTERNATE_MOBILE_NO" />
+          <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
+          <ScalarProperty Name="YEARS_OF_EXP_RELEVANT" ColumnName="YEARS_OF_EXP_RELEVANT" />
+          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+          <ScalarProperty Name="JOB_ID" ColumnName="JOB_ID" />
+          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="getSearchResults" FunctionName="Caihrops_portalModel.Store.getSearchResults">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Caihrops_portalModel.getSearchResults_Result">
+          <ScalarProperty Name="CANDIDATE_ID" ColumnName="CANDIDATE_ID" />
+          <ScalarProperty Name="CANDIDATE_NAME" ColumnName="CANDIDATE_NAME" />
+          <ScalarProperty Name="MOBILE_NO" ColumnName="MOBILE_NO" />
+          <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+          <ScalarProperty Name="POSITION" ColumnName="POSITION" />
+          <ScalarProperty Name="RESUME_FILE_PATH" ColumnName="RESUME_FILE_PATH" />
+          <ScalarProperty Name="NOTICE_PERIOD" ColumnName="NOTICE_PERIOD" />
+          <ScalarProperty Name="YEARS_OF_EXP_TOTAL" ColumnName="YEARS_OF_EXP_TOTAL" />
+          <ScalarProperty Name="LAST_WORKING_DATE" ColumnName="LAST_WORKING_DATE" />
+          <ScalarProperty Name="CURRENT_COMPANY" ColumnName="CURRENT_COMPANY" />
+          <ScalarProperty Name="VENDOR_NAME" ColumnName="VENDOR_NAME" />
+          <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="CREATED_ON" ColumnName="CREATED_ON" />
+          <ScalarProperty Name="MODIFIED_ON" ColumnName="MODIFIED_ON" />
+          <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+          <ScalarProperty Name="NO_OF_TIMES_APPEARED" ColumnName="NO_OF_TIMES_APPEARED" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
   </EntityContainerMapping>
 </Mapping>

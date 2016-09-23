@@ -8,7 +8,12 @@
     bool isAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
 }
 
-<h2 align="center">Edit Candidate</h2>
+@if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["cTyp"] == "2")
+{
+    <h2 align="center">Candidate Re-Submit</h2>
+}
+else
+{ <h2 align="center">Edit Candidate</h2>}
 
 @using (Html.BeginForm("Edit", "Candidate", FormMethod.Post, new { enctype = "multipart/form-data", @Id = "CandidateFormEdit" })) 
 {
@@ -79,7 +84,7 @@
             </div>
             @if(isAdmin)
             { 
-                <div class="form-group">
+                <div class="form-group form-group-required">
                     @Html.LabelFor(model => model.JOB_ID, "POSITION", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.DropDownList("ddlCriteriaPosition", (SelectList)ViewBag.PositionList)
@@ -182,7 +187,7 @@
     @if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "S")
     { @Html.ActionLink("Back to List", "SquadJobs", "Candidate", new { page= Request.QueryString["p"] }, null)
     }
-    else if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && Request.QueryString["styp"] == "H")
+    else if (Request.QueryString.Count > 0 && Request.QueryString.Count > 1 && (Request.QueryString["styp"] == "H" || Request.QueryString["cTyp"] == "2"))
     {
         @Html.ActionLink("Back to List", "Index", "Home", new { page = Request.QueryString["p"] }, null)
     }
@@ -266,6 +271,13 @@
                     return false;
                 }
                 else {
+                    //BEGIN:Archive the original candidate data
+                    var cTyp = getParameterByName('cTyp');
+                    if (cTyp == "2")
+                    { 
+                        $.post("/Candidate/ArchiveCandidate", { Id:'@Model.CANDIDATE_ID'});
+                    }
+                    //END:Archive the original candidate data
                     $("#CandidateFormEdit").submit()
                 }
             }
@@ -343,6 +355,16 @@
             }
             else { return true; }
         };
+
+        function getParameterByName(name) {
+            var url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
 
     });
 </script>

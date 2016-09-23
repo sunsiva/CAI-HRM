@@ -27,7 +27,8 @@ namespace HRPortal
         public string STATUS { get; set; }
         public string STATUS_ID { get; set; }
         public System.DateTime CREATED_ON { get; set; }
-        public Nullable<System.DateTime> MODIFIED_ON { get; set; }
+        public System.DateTime MODIFIED_ON { get; set; }
         public string MODIFIED_BY { get; set; }
+        public Nullable<int> NO_OF_TIMES_APPEARED { get; set; }
     }
 }

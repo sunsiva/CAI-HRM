@@ -80,6 +80,8 @@
                                 <span id="stsSecondTxt_@item.CANDIDATE_ID"></span>
                                 }
                                 else { @Html.DisplayFor(modelItem => item.STATUS) }
+                                @if (item.NO_OF_TIMES_APPEARED >= 2)
+                                { <i class="glyphicon glyphicon-info-sign" title="Candidate re-appeared"></i> }
                             </td>
                             <td>
                                 <p data-placement="top" data-toggle="tooltip" title="Details">

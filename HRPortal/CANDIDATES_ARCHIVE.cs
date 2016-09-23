@@ -12,8 +12,9 @@ namespace HRPortal
     using System;
     using System.Collections.Generic;
     
-    public partial class CANDIDATE
+    public partial class CANDIDATES_ARCHIVE
     {
+        public int ID { get; set; }
         public System.Guid CANDIDATE_ID { get; set; }
         public string CANDIDATE_NAME { get; set; }
         public System.Guid JOB_ID { get; set; }
@@ -35,12 +36,10 @@ namespace HRPortal
         public Nullable<bool> ISINNOTICEPERIOD { get; set; }
         public string STATUS { get; set; }
         public bool ISACTIVE { get; set; }
+        public Nullable<int> NO_OF_TIMES_APPEARED { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_ON { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_ON { get; set; }
-        public Nullable<int> NO_OF_TIMES_APPEARED { get; set; }
-    
-        public virtual JOBPOSTING JOBPOSTING { get; set; }
     }
 }

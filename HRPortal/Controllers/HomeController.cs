@@ -318,10 +318,8 @@ namespace HRPortal.Controllers
                     string[] val = cookie.Split('|');
                     name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5]; flag = val[6];
                 }
-
-                if (System.Configuration.ConfigurationManager.AppSettings["IsCallSP_Temp"] == "true")
-                {
-                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, "",flag).ToList();
+                
+                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, "", flag).ToList();
                     jobCanObj.CandidateItems = canlist.Select(i => new CandidateViewModels
                     {
                         CANDIDATE_ID = i.CANDIDATE_ID,
@@ -339,39 +337,8 @@ namespace HRPortal.Controllers
                         CREATED_ON = i.CREATED_ON,
                         MODIFIED_ON = i.MODIFIED_ON,
                         MODIFIED_BY = i.MODIFIED_BY,
+                        NO_OF_TIMES_APPEARED=i.NO_OF_TIMES_APPEARED
                     }).ToList();
-                }
-                else
-                {
-                    jobCanObj.CandidateItems = (from c in dbCan
-                                                join j in dbJobs on c.JOB_ID equals j.JOB_ID
-                                                join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id
-                                                join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID
-                                                where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
-                                                && (status != string.Empty ? status.Split(',').Contains(c.STATUS) : true)
-                                                && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
-                                                && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
-                                                && (!string.IsNullOrEmpty(vendor) ? vendor.Split(',').Contains(v.VENDOR_NAME) : true)
-                                                && (!string.IsNullOrEmpty(position) ? position.Split(',').Contains(j.JOB_CODE) : true)
-                                                select new { Candidate = c, Job = j }).Select(i => new CandidateViewModels
-                                                {
-                                                    CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
-                                                    CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
-                                                    MOBILE_NO = i.Candidate.MOBILE_NO,
-                                                    EMAIL = i.Candidate.EMAIL,
-                                                    POSITION = i.Job.POSITION_NAME,
-                                                    RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH) ? string.Empty : Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
-                                                    NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
-                                                    YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
-                                                    LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
-                                                    VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
-                                                    STATUS = vmodelCan.GetStatusNameById(i.Candidate.CANDIDATE_ID),
-                                                    STATUS_ID = i.Candidate.STATUS,
-                                                    CREATED_ON = i.Candidate.CREATED_ON,
-                                                    MODIFIED_ON = i.Candidate.MODIFIED_ON,
-                                                    MODIFIED_BY = GetModifiedById(i.Candidate),
-                                                }).ToList();
-                }
 
                 return jobCanObj;
             }

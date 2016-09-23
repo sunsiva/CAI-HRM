@@ -17,7 +17,7 @@ namespace HRPortal.Models
             public Guid JOB_ID { get; set; }
             public string POSITION { get; set; }
             public decimal YEARS_OF_EXP_TOTAL { get; set; }
-            public Nullable<int> YEARS_OF_EXP_RELEVANT { get; set; }
+            public int? YEARS_OF_EXP_RELEVANT { get; set; }
             public string MOBILE_NO { get; set; }
             public string ALTERNATE_MOBILE_NO { get; set; }
             public string EMAIL { get; set; }
@@ -25,20 +25,21 @@ namespace HRPortal.Models
             public DateTime DOB { get; set; }
             public string CURRENT_COMPANY { get; set; }
             public string NOTICE_PERIOD { get; set; }
-            public Nullable<bool> ANY_OTHER_OFFER { get; set; }
-            public Nullable<System.DateTime> LAST_WORKING_DATE { get; set; }
+            public bool? ANY_OTHER_OFFER { get; set; }
+            public DateTime? LAST_WORKING_DATE { get; set; }
             public string RESUME_FILE_PATH { get; set; }
             public string COMMENTS { get; set; }
-            public Nullable<bool> ISINNOTICEPERIOD { get; set; }
+            public bool? ISINNOTICEPERIOD { get; set; }
             public bool ISACTIVE { get; set; }
             public string MODIFIED_BY { get; set; }
-            public Nullable<System.DateTime> MODIFIED_ON { get; set; }
+            public DateTime? MODIFIED_ON { get; set; }
             public DateTime? SCHEDULED_TO { get; set; }
             public string SCHEDULED_LENGTH { get; set; }
             public string CREATED_BY { get; set; }
             public DateTime CREATED_ON { get; set; }
             public string STATUS { get; set; }
             public string STATUS_ID { get; set; }
+            public int? NO_OF_TIMES_APPEARED { get; set; }
 
         /// <summary>
         /// Update the candidate status on creating the canidate profile
@@ -46,8 +47,9 @@ namespace HRPortal.Models
         /// <param name="stid"></param>
         /// <param name="cId"></param>
         /// <param name="cmnts"></param>
+        /// <param name="canType">Is used to find out if the candidates reappeard</param>
         /// <returns></returns>
-        public string UpdateStatus(Guid stid, Guid cId, string cmnts)
+        public string UpdateStatus(Guid stid, Guid cId, string cmnts,int canType)
         {
             STATUS_HISTORY stsHist = new STATUS_HISTORY();
             var stsId = dbContext.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID;
@@ -57,6 +59,7 @@ namespace HRPortal.Models
             stsHist.CANDIDATE_ID = cId;
             stsHist.COMMENTS = string.IsNullOrEmpty(cmnts) ? "Initial Status - SCR-SBM" : cmnts;
             stsHist.ISACTIVE = true;
+            stsHist.NO_OF_TIMES_APPEARED = canType;
             stsHist.MODIFIED_BY = uid.ToString();
             stsHist.MODIFIED_ON = HelperFuntions.GetDateTime();
             dbContext.STATUS_HISTORY.Add(stsHist);

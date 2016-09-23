@@ -38,13 +38,13 @@ namespace HRPortal
         public virtual DbSet<EXCEPTION_LOGGING> EXCEPTION_LOGGING { get; set; }
         public virtual DbSet<JOB_HISTORY> JOB_HISTORY { get; set; }
         public virtual DbSet<JOBPOSTING> JOBPOSTINGs { get; set; }
-        public virtual DbSet<Number> Numbers { get; set; }
         public virtual DbSet<STATUS_HISTORY> STATUS_HISTORY { get; set; }
         public virtual DbSet<STATUS_MASTER> STATUS_MASTER { get; set; }
         public virtual DbSet<UserLog> UserLogs { get; set; }
         public virtual DbSet<UserXRole> UserXRoles { get; set; }
         public virtual DbSet<VENDOR_MASTER> VENDOR_MASTER { get; set; }
         public virtual DbSet<JOBXVENDOR> JOBXVENDORs { get; set; }
+        public virtual DbSet<CANDIDATES_ARCHIVE> CANDIDATES_ARCHIVE { get; set; }
     
         [DbFunction("HRPortalEntities", "SplitString")]
         public virtual IQueryable<SplitString_Result> SplitString(string input, string character)
@@ -91,43 +91,6 @@ namespace HRPortal
         public virtual ObjectResult<GetCandidateDetailsByLastworkingdate_Result> GetCandidateDetailsByLastworkingdate()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetCandidateDetailsByLastworkingdate_Result>("GetCandidateDetailsByLastworkingdate");
-        }
-    
-        public virtual ObjectResult<getSearchResults_Result> getSearchResults(string positionName, string candidateName, string statusIds, string partner, string startDate, string endDate, string userId, string flag)
-        {
-            var positionNameParameter = positionName != null ?
-                new ObjectParameter("PositionName", positionName) :
-                new ObjectParameter("PositionName", typeof(string));
-    
-            var candidateNameParameter = candidateName != null ?
-                new ObjectParameter("CandidateName", candidateName) :
-                new ObjectParameter("CandidateName", typeof(string));
-    
-            var statusIdsParameter = statusIds != null ?
-                new ObjectParameter("StatusIds", statusIds) :
-                new ObjectParameter("StatusIds", typeof(string));
-    
-            var partnerParameter = partner != null ?
-                new ObjectParameter("Partner", partner) :
-                new ObjectParameter("Partner", typeof(string));
-    
-            var startDateParameter = startDate != null ?
-                new ObjectParameter("StartDate", startDate) :
-                new ObjectParameter("StartDate", typeof(string));
-    
-            var endDateParameter = endDate != null ?
-                new ObjectParameter("EndDate", endDate) :
-                new ObjectParameter("EndDate", typeof(string));
-    
-            var userIdParameter = userId != null ?
-                new ObjectParameter("UserId", userId) :
-                new ObjectParameter("UserId", typeof(string));
-    
-            var flagParameter = flag != null ?
-                new ObjectParameter("flag", flag) :
-                new ObjectParameter("flag", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getSearchResults_Result>("getSearchResults", positionNameParameter, candidateNameParameter, statusIdsParameter, partnerParameter, startDateParameter, endDateParameter, userIdParameter, flagParameter);
         }
     
         public virtual ObjectResult<rptGetCandidatesIdleTimeByWeek_Result> rptGetCandidatesIdleTimeByWeek(string week)
@@ -178,6 +141,43 @@ namespace HRPortal
         public virtual int AutoStatusUpdate()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AutoStatusUpdate");
+        }
+    
+        public virtual ObjectResult<getSearchResults_Result> getSearchResults(string positionName, string candidateName, string statusIds, string partner, string startDate, string endDate, string userId, string flag)
+        {
+            var positionNameParameter = positionName != null ?
+                new ObjectParameter("PositionName", positionName) :
+                new ObjectParameter("PositionName", typeof(string));
+    
+            var candidateNameParameter = candidateName != null ?
+                new ObjectParameter("CandidateName", candidateName) :
+                new ObjectParameter("CandidateName", typeof(string));
+    
+            var statusIdsParameter = statusIds != null ?
+                new ObjectParameter("StatusIds", statusIds) :
+                new ObjectParameter("StatusIds", typeof(string));
+    
+            var partnerParameter = partner != null ?
+                new ObjectParameter("Partner", partner) :
+                new ObjectParameter("Partner", typeof(string));
+    
+            var startDateParameter = startDate != null ?
+                new ObjectParameter("StartDate", startDate) :
+                new ObjectParameter("StartDate", typeof(string));
+    
+            var endDateParameter = endDate != null ?
+                new ObjectParameter("EndDate", endDate) :
+                new ObjectParameter("EndDate", typeof(string));
+    
+            var userIdParameter = userId != null ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(string));
+    
+            var flagParameter = flag != null ?
+                new ObjectParameter("flag", flag) :
+                new ObjectParameter("flag", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getSearchResults_Result>("getSearchResults", positionNameParameter, candidateNameParameter, statusIdsParameter, partnerParameter, startDateParameter, endDateParameter, userIdParameter, flagParameter);
         }
     }
 }

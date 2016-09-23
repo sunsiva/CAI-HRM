@@ -92,6 +92,39 @@
     <Property Name="ISINNOTICEPERIOD" Type="bit" />
     <Property Name="STATUS" Type="nvarchar" MaxLength="50" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
+    <Property Name="NO_OF_TIMES_APPEARED" Type="int" />
+    <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
+    <Property Name="MODIFIED_ON" Type="datetime" />
+    <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="CREATED_ON" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CANDIDATES_ARCHIVE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CANDIDATE_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CANDIDATE_NAME" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="JOB_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_TOTAL" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="YEARS_OF_EXP_RELEVANT" Type="int" />
+    <Property Name="MOBILE_NO" Type="nvarchar" MaxLength="25" Nullable="false" />
+    <Property Name="ALTERNATE_MOBILE_NO" Type="nvarchar" MaxLength="25" />
+    <Property Name="EMAIL" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ALTERNATE_EMAIL_ID" Type="nvarchar" MaxLength="50" />
+    <Property Name="DOB" Type="datetime" Nullable="false" />
+    <Property Name="CURRENT_COMPANY" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="CURRENT_LOCATION" Type="nvarchar" MaxLength="150" />
+    <Property Name="NOTICE_PERIOD" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ANY_OTHER_OFFER" Type="bit" />
+    <Property Name="LAST_WORKING_DATE" Type="datetime" />
+    <Property Name="COMMENTS" Type="nvarchar(max)" />
+    <Property Name="RESUME_FILE_PATH" Type="nvarchar" MaxLength="150" />
+    <Property Name="RESUME_SOURCE" Type="nvarchar(max)" />
+    <Property Name="ISINNOTICEPERIOD" Type="bit" />
+    <Property Name="STATUS" Type="nvarchar" MaxLength="50" />
+    <Property Name="ISACTIVE" Type="bit" Nullable="false" />
+    <Property Name="NO_OF_TIMES_APPEARED" Type="int" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
     <Property Name="CREATED_BY" Type="nvarchar" MaxLength="128" Nullable="false" />
@@ -164,7 +197,7 @@
     <Property Name="JOB_CODE" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="JOB_DESCRIPTION" Type="nvarchar(max)" Nullable="false" />
     <Property Name="POSITION_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
-    <Property Name="POSITION_TYPE" Type="nchar" MaxLength="10" />
+    <Property Name="POSITION_TYPE" Type="nchar" MaxLength="1" />
     <Property Name="NO_OF_VACANCIES" Type="int" Nullable="false" />
     <Property Name="YEARS_OF_EXP_TOTAL" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="YEARS_OF_EXP_RELEVANT" Type="nvarchar" MaxLength="50" />
@@ -191,12 +224,6 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
     <Property Name="Vendor_Id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="Job_Id" Type="uniqueidentifier" />
   </EntityType>
-  <EntityType Name="Numbers">
-    <Key>
-      <PropertyRef Name="Number" />
-    </Key>
-    <Property Name="Number" Type="int" Nullable="false" />
-  </EntityType>
   <EntityType Name="STATUS_HISTORY">
     <Key>
       <PropertyRef Name="ID" />
@@ -207,8 +234,9 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
     <Property Name="COMMENTS" Type="nvarchar(max)" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
     <Property Name="SCHEDULED_TO" Type="datetime" />
-    <Property Name="SCHEDULED_FOR" Type="nvarchar" MaxLength="500" />
     <Property Name="SCHEDULE_LENGTH_MINS" Type="int" />
+    <Property Name="SCHEDULED_FOR" Type="nvarchar" MaxLength="500" />
+    <Property Name="NO_OF_TIMES_APPEARED" Type="int" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
   </EntityType>
@@ -256,7 +284,7 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
     <Property Name="VENDOR_SPOC" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="EMAIL" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="VENDOR_CONTACT_NO" Type="nvarchar" MaxLength="25" Nullable="false" />
-    <Property Name="VENDOR_TYPE" Type="nchar" MaxLength="10" />
+    <Property Name="VENDOR_TYPE" Type="nvarchar" MaxLength="25" />
     <Property Name="ISACTIVE" Type="bit" Nullable="false" />
     <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="128" />
     <Property Name="MODIFIED_ON" Type="datetime" />
@@ -363,17 +391,6 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Function Name="SplitString" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="Caihrops">
-    <Parameter Name="Input" Type="nvarchar(max)" Mode="In" />
-    <Parameter Name="Character" Type="char" Mode="In" />
-    <ReturnType>
-      <CollectionType>
-        <RowType>
-          <Property Name="Item" Type="nvarchar" MaxLength="1000" />
-        </RowType>
-      </CollectionType>
-    </ReturnType>
-  </Function>
   <Function Name="AutoStatusUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <Function Name="fnSplitString" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="string" Type="nvarchar(max)" Mode="In" />
@@ -382,17 +399,6 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
       <CollectionType>
         <RowType>
           <Property Name="splitdata" Type="nvarchar(max)" />
-        </RowType>
-      </CollectionType>
-    </ReturnType>
-  </Function>
-  <Function Name="funcSplitValue" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-    <Parameter Name="SplitOn" Type="char" Mode="In" />
-    <Parameter Name="List" Type="varchar" Mode="In" />
-    <ReturnType>
-      <CollectionType>
-        <RowType>
-          <Property Name="ListValue" Type="varchar" MaxLength="500" />
         </RowType>
       </CollectionType>
     </ReturnType>
@@ -418,7 +424,7 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
     <Parameter Name="Week" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="rptGetCandidatesStaging" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-    <Parameter Name="Partner" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="Partner" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="rptGetCandidatesStagingByPartner" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Partner" Type="nvarchar(max)" Mode="In" />
@@ -431,12 +437,12 @@ warning 6002: The table/view 'Caihrops_portal.dbo.JOBXVENDOR' does not have a pr
     <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="CANDIDATES" EntityType="Self.CANDIDATES" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CANDIDATES_ARCHIVE" EntityType="Self.CANDIDATES_ARCHIVE" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="EVENTSCHEDULE" EntityType="Self.EVENTSCHEDULE" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="EXCEPTION_LOGGING" EntityType="Self.EXCEPTION_LOGGING" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="JOB_HISTORY" EntityType="Self.JOB_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="JOBPOSTING" EntityType="Self.JOBPOSTING" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Numbers" EntityType="Self.Numbers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_HISTORY" EntityType="Self.STATUS_HISTORY" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="STATUS_MASTER" EntityType="Self.STATUS_MASTER" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserLog" EntityType="Self.UserLog" Schema="dbo" store:Type="Tables" />

@@ -178,6 +178,22 @@
         </div>
 }
 
+<div class="modal" id="confirmModal" style="display: none;" tabindex="-1" role="dialog" aria-labelledby="StatusModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><b><span id="confirmMessage" class="modal-body"></span></b> </h4>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default" id="confirmOk">Yes</button>
+                    <button type="button" class="btn btn-default" id="confirmCancel">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @if (Request.QueryString.Count > 0 && Request.QueryString["styp"] == "H")
 {
     @Html.ActionLink("Back to List", "Index", "Home")
@@ -353,13 +369,34 @@ else
                                return true;
                            }
                            else {
-                               $("#errMsgIsDuplicate").text("This candidate's profile is already exist.");
-                               $("#hdnIsValidated").val("");
+                               if (data.InDays > 90)
+                               {
+                                   confirmDialog("This candidate is already exist. Do you want to re-submit?", function () {
+                                       window.open("/Candidate/Edit?" + $.param({ id: data.CandidateId, p: 1, cTyp: 2 }), '_self');
+                                   });
+                               }
+                                $("#errMsgIsDuplicate").text("This candidate is already exist.");
+                                $("#hdnIsValidated").val("");
+                              
                                return false;
                            }
                    });
                 }
             };
+
+            function confirmDialog(message, onConfirm) {
+                var fClose = function () {
+                    $("#confirmModal").removeClass("show");
+                    $("#confirmModal").addClass("hide");
+                };
+
+                $("#confirmModal").addClass("show");
+                $("#confirmMessage").empty().append(message);
+                $("#confirmOk").one('click', onConfirm);
+                $("#confirmOk").one('click', fClose);
+                $("#confirmCancel").one("click", fClose);
+                $(".close").one("click", fClose);
+            }
 
         $('.date-picker').datetimepicker({
             format: 'MM/DD/YYYY'

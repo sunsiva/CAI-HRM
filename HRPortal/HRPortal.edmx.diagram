@@ -16,7 +16,6 @@
         <EntityTypeShape EntityType="Caihrops_portalModel.EXCEPTION_LOGGING" Width="1.5" PointX="0.75" PointY="11.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Caihrops_portalModel.JOB_HISTORY" Width="1.5" PointX="8" PointY="14" IsExpanded="true" />
         <EntityTypeShape EntityType="Caihrops_portalModel.JOBPOSTING" Width="1.5" PointX="5.75" PointY="9.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="Caihrops_portalModel.Number" Width="1.5" PointX="2.75" PointY="11.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Caihrops_portalModel.STATUS_HISTORY" Width="1.5" PointX="13" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="Caihrops_portalModel.STATUS_MASTER" Width="1.5" PointX="10.75" PointY="5.125" IsExpanded="true" />
         <EntityTypeShape EntityType="Caihrops_portalModel.UserLog" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
@@ -30,6 +29,7 @@
         <AssociationConnector Association="Caihrops_portalModel.FK_STATUS_HISTORY_STATUS_MASTER" ManuallyRouted="false" />
         <AssociationConnector Association="Caihrops_portalModel.FK_JOBXVENDOR_VENDOR_MASTER" ManuallyRouted="false" />
         <AssociationConnector Association="Caihrops_portalModel.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Caihrops_portalModel.CANDIDATES_ARCHIVE" Width="1.5" PointX="13.375" PointY="12.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

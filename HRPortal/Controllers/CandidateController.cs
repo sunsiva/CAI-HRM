@@ -33,18 +33,11 @@ namespace HRPortal.Controllers
         const int pageSize = 10;
 
         // GET: Candidate
-        public async Task<ActionResult> Index(string sOdr, int? page)
+        public ActionResult Index(string sOdr, int? page)
         {
             try
             {
-                var uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
-                var dbCan = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
-                var dbJobs = await db.JOBPOSTINGs.ToListAsync();
-
-                if (dbCan != null && dbCan.Count > 0)
-                {
-                    jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
-                }
+                jobCanObj = GetCandidateSearchResults();
                 ViewBag.StatusList = vmodel.GetStatusList();
                 ViewBag.VendorList = vmodel.GetVendorList();
                 ViewBag.PositionList = vmodel.GetPositionForPartner();
@@ -104,7 +97,7 @@ namespace HRPortal.Controllers
                 CANDIDATE cANDIDATE = await db.CANDIDATES.FindAsync(id);
                 var userLst = db.AspNetUsers.ToList();
                 cANDIDATE.CREATED_BY = userLst.Where(u => u.Id == cANDIDATE.CREATED_BY).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
-                cANDIDATE.MODIFIED_BY = userLst.Where(u => u.Id.ToUpper() == cANDIDATE.MODIFIED_BY.ToUpper()).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
+                cANDIDATE.MODIFIED_BY = cANDIDATE.MODIFIED_BY == null ? string.Empty : userLst.Where(u => u.Id.ToUpper() == cANDIDATE.MODIFIED_BY.ToUpper()).Select(um => um.FirstName + " " + um.LastName).FirstOrDefault();
                 var stsCmnts = db.STATUS_HISTORY.Where(i => i.CANDIDATE_ID == id).OrderByDescending(j => j.MODIFIED_ON).FirstOrDefault().COMMENTS;
                 ViewBag.StatusComments = stsCmnts;
                 if (cANDIDATE == null)
@@ -139,7 +132,7 @@ namespace HRPortal.Controllers
             string _uid = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
             var jid = _qryString.Split('&').Count() > 1 ? _qryString.Split('&')[1] : cANDIDATE.JOB_ID.ToString();
             cANDIDATE.JOB_ID = new Guid(jid.Replace("JID=", ""));
-            if (IsProfileDuplicate(cANDIDATE.MOBILE_NO, cANDIDATE.DOB.ToShortDateString()))
+            if (IsProfileDuplicate(cANDIDATE.MOBILE_NO, cANDIDATE.DOB.ToShortDateString())) //Additional check
             {
                 ViewBag.IsExist = "Candidate is already exist.";
             }
@@ -157,11 +150,11 @@ namespace HRPortal.Controllers
                     cANDIDATE.CREATED_BY = (_uid == string.Empty ? User.Identity.Name : _uid);
                     cANDIDATE.CREATED_ON = HelperFuntions.GetDateTime();
                     cANDIDATE.STATUS = db.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID.ToString();
-                    cANDIDATE.RESUME_FILE_PATH = FileUpload(file);
+                    cANDIDATE.RESUME_FILE_PATH = FileUpload(file, cANDIDATE.CANDIDATE_NAME);
                     db.CANDIDATES.Add(cANDIDATE);
                     await db.SaveChangesAsync();
 
-                    vmodel.UpdateStatus(Guid.Empty, cANDIDATE.CANDIDATE_ID, string.Empty);
+                    vmodel.UpdateStatus(Guid.Empty, cANDIDATE.CANDIDATE_ID, string.Empty,1);
                      bool isSuperAdmin = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN") ? true : false;
                      if (isSuperAdmin) //For redirecting to Admin's job list page
                         return RedirectToAction("Index","Job");
@@ -229,13 +222,15 @@ namespace HRPortal.Controllers
             catch (Exception ex) { throw ex; }
         }
         
-        private string FileUpload(HttpPostedFileBase file)
+        private string FileUpload(HttpPostedFileBase file,string canName)
         {
             string filename = string.Empty;
             if (file != null && file.ContentLength > 0)
                 try
                 {
-                    filename = Path.GetFileName(file.FileName); //TODO:filename should be with vendorname appended.
+                    filename = Path.GetFileName(file.FileName);
+                    DateTime dtNow = HelperFuntions.GetDateTime();
+                    filename = canName.Trim().Replace(' ', '_') + "_" + dtNow.Day + dtNow.ToString("MMM") + "_" + dtNow.Hour + dtNow.Minute + Path.GetExtension(filename);
                     string path = Path.Combine(Server.MapPath("~/UploadDocument"), filename);
                     file.SaveAs(path);
                     ViewBag.FileMessage = "File uploaded successfully";
@@ -275,49 +270,55 @@ namespace HRPortal.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "CANDIDATE_ID,JOB_ID,CANDIDATE_NAME,YEARS_OF_EXP_TOTAL,YEARS_OF_EXP_RELEVANT,MOBILE_NO,ALTERNATE_MOBILE_NO,EMAIL,ALTERNATE_EMAIL_ID,DOB,CURRENT_COMPANY,CURRENT_LOCATION,NOTICE_PERIOD,COMMENTS,ISINNOTICEPERIOD,STATUS,ISACTIVE,MODIFIED_BY,CREATED_ON,CREATED_BY")] CANDIDATE cANDIDATE, HttpPostedFileBase file, FormCollection frm)
         {
-            try
-            {
-                if (!User.Identity.IsAuthenticated)
+                try
                 {
-                    return RedirectToAction("Login", "Account");
-                }
+                    if (!User.Identity.IsAuthenticated)
+                    {
+                        return RedirectToAction("Login", "Account");
+                    }
 
-                //TODO:duplicate has to be checked
-                //CANDIDATE oldCan = db.CANDIDATES.Find(cANDIDATE.CANDIDATE_ID);
-                //var isExist = (oldCan.MOBILE_NO == cANDIDATE.MOBILE_NO || oldCan.DOB == cANDIDATE.DOB) ? true : false;
-                //if (!isExist && IsCandidateDuplicate(cANDIDATE.MOBILE_NO, cANDIDATE.DOB.ToShortDateString()))
-                //{
-                //    ViewBag.IsExist = "Candidate is already exist.";
-                //}
-                //else
-                //{
-                if (ModelState.IsValid)
+                    if (ModelState.IsValid)
                     {
                         cANDIDATE.ISINNOTICEPERIOD = (!string.IsNullOrEmpty(frm["IsNP"]) && frm["IsNP"] == "Yes") ? true : false;
                         cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
-                        if(!string.IsNullOrEmpty(frm["ddlCriteriaPosition"]))
-                        { 
+                        if (!string.IsNullOrEmpty(frm["ddlCriteriaPosition"]))
+                        {
                             cANDIDATE.JOB_ID = Guid.Parse(frm["ddlCriteriaPosition"].ToString());
                         }
                         cANDIDATE.MODIFIED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
                         cANDIDATE.MODIFIED_ON = HelperFuntions.GetDateTime();
                         cANDIDATE.LAST_WORKING_DATE = string.IsNullOrEmpty(frm["LAST_WORKING_DATE"]) ? cANDIDATE.LAST_WORKING_DATE : DateTime.Parse(frm["LAST_WORKING_DATE"]);
-                        cANDIDATE.RESUME_FILE_PATH = (file == null ? frm["RESUME_FILE_PATH"] : FileUpload(file));
+                        cANDIDATE.RESUME_FILE_PATH = (file == null ? frm["RESUME_FILE_PATH"] : FileUpload(file, cANDIDATE.CANDIDATE_NAME));
+
+                        //BEGIN:Re-Submitting the canddate's profile, after cooling period over
+                        if (Request.UrlReferrer.Query.ToString().Contains("cTyp=2"))
+                        {
+                            var canId = cANDIDATE.CANDIDATE_ID;
+                            cANDIDATE.CREATED_BY = HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.Uid.ToString()));
+                            cANDIDATE.CREATED_ON = HelperFuntions.GetDateTime();
+                            cANDIDATE.NO_OF_TIMES_APPEARED = 2;
+                            cANDIDATE.STATUS = db.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID.ToString();
+
+                            //Insert corresponding data in Status History table
+                            vmodel.UpdateStatus(Guid.Empty, canId, string.Empty, 2);
+                        }
+                        //END:Re-Submitting the candidate's profile, after cooling period over
+
                         db.Entry(cANDIDATE).State = EntityState.Modified;
                         await db.SaveChangesAsync();
 
-                    if (Request.UrlReferrer.Query.ToString().Contains("?styp=S"))
-                        return RedirectToAction("SquadJobs");
-                    else if (Request.UrlReferrer.Query.ToString().Contains("?styp=H"))
-                        return RedirectToAction("Index","Home");
-                    else
-                        return RedirectToAction("Index");
+                        if (Request.UrlReferrer.Query.ToString().Contains("?styp=S"))
+                            return RedirectToAction("SquadJobs");
+                        else if (Request.UrlReferrer.Query.ToString().Contains("?styp=H") || Request.UrlReferrer.Query.ToString().Contains("cTyp=2"))
+                            return RedirectToAction("Index", "Home");
+                        else
+                            return RedirectToAction("Index");
                     }
-                
-                ModelState.AddModelError("FAILED", "Failed to update");
-                return View(cANDIDATE);
-            }
-            catch (Exception ex) { throw ex; }
+
+                    ModelState.AddModelError("FAILED", "Failed to update");
+                    return View(cANDIDATE);
+                }
+                catch (Exception ex) { throw ex; }
         }
 
         // GET: Candidate/Delete/5
@@ -373,9 +374,28 @@ namespace HRPortal.Controllers
         {
             try
             {
+                bool isDupli = true;
+                double InDays = 0;
+                Guid canId = new Guid();
+                var dupli = db.CANDIDATES.Where(u => u.MOBILE_NO == mob).ToList();
+                if (dupli.Count() == 0)
+                {
+                    DateTime oDob = string.IsNullOrEmpty(dob) ? HelperFuntions.GetDateTime() : DateTime.Parse(dob);
+                    isDupli = (db.CANDIDATES.Where(u => u.DOB == oDob && u.MOBILE_NO == mob).Count() > 0 ? true : false);
+                }
+
+                if (isDupli)
+                {
+                    DateTime daysOlder = dupli.Select(c => c.CREATED_ON).FirstOrDefault();
+                    InDays = (HelperFuntions.GetDateTime() - daysOlder).TotalDays;
+                    canId = dupli.Select(c => c.CANDIDATE_ID).FirstOrDefault();
+                }
+
                 var model = new
                 {
                     IsDuplicate = IsProfileDuplicate(mob, dob),
+                    InDays=InDays,
+                    CandidateId=canId
                 };
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
@@ -395,7 +415,7 @@ namespace HRPortal.Controllers
                 var dbCan = await db.CANDIDATES.Where(c => c.CREATED_BY == uid && c.ISACTIVE == true).ToListAsync();
                 if (dbCan != null && dbCan.Count > 0)
                 {
-                    jobCanObj = GetCandidateSearchResults(dbCan, dbJobs);
+                    jobCanObj = GetCandidateSearchResults();
                 }
 
                 ViewBag.StatusList = vmodel.GetStatusList();
@@ -457,20 +477,6 @@ namespace HRPortal.Controllers
             }
             return isDupli;
         }
-
-        //private string GetErrMsg(FormCollection frm, HttpPostedFileBase file)
-        //{
-        //    string errMsg = string.Empty;
-        //    if (frm["ISINNOTICEPERIOD"] == "Yes" && string.IsNullOrEmpty(frm["LAST_WORKING_DATE"]))
-        //        errMsg = "Last working date is required.";
-        //    else if (frm["ISINNOTICEPERIOD"] == "No" && string.IsNullOrEmpty(frm["NOTICE_PERIOD"]))
-        //        errMsg = "Notice Period is required.";
-        //    else if (file == null)
-        //        errMsg = "Please upload a resume.";
-        //    else
-        //        errMsg = "Required field is empty.";
-        //    return errMsg;
-        //}
 
         protected override void Dispose(bool disposing)
         {
@@ -534,72 +540,42 @@ namespace HRPortal.Controllers
             return strUser;
         }
 
-        private JobAndCandidateViewModels GetCandidateSearchResults(List<CANDIDATE> dbCan, List<JOBPOSTING> dbJobs)
+        private JobAndCandidateViewModels GetCandidateSearchResults()
         {
             try
             {
                 var cookie = CookieStore.GetCookie(CacheKey.CANSearch.ToString());
+                string Uid = string.Empty;
                 string name = string.Empty, vendor = string.Empty, position = string.Empty, status = string.Empty, stdt = string.Empty, edt = string.Empty, flag = string.Empty;
                 if (!string.IsNullOrEmpty(cookie))
                 {
                     string[] val = cookie.Split('|');
                     name = val[0]; vendor = val[1]; position = val[2]; status = val[3]; stdt = val[4]; edt = val[5]; flag = val[6];
                 }
-                if (System.Configuration.ConfigurationManager.AppSettings["IsCallSP_Temp"] == "true")
+                if (!HelperFuntions.HasValue(CookieStore.GetCookie(CacheKey.RoleName.ToString())).ToUpper().Contains("ADMIN"))
+                    Uid = CookieStore.GetCookie(CacheKey.Uid.ToString());
+
+                var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, Uid, flag).ToList();
+                jobCanObj.CandidateItems = canlist.Select(i => new CandidateViewModels
                 {
-                    var canlist = db.getSearchResults(position, name, status, vendor, stdt, edt, CookieStore.GetCookie(CacheKey.Uid.ToString()),flag).ToList();
-                    jobCanObj.CandidateItems = canlist.Select(i => new CandidateViewModels
-                    {
-                        CANDIDATE_ID = i.CANDIDATE_ID,
-                        CANDIDATE_NAME = i.CANDIDATE_NAME,
-                        MOBILE_NO = i.MOBILE_NO,
-                        EMAIL = i.EMAIL,
-                        POSITION = i.POSITION,
-                        RESUME_FILE_PATH = (string.IsNullOrEmpty(i.RESUME_FILE_PATH) ? string.Empty : i.RESUME_FILE_PATH),
-                        NOTICE_PERIOD = i.NOTICE_PERIOD,
-                        CURRENT_COMPANY = i.CURRENT_COMPANY,
-                        YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
-                        LAST_WORKING_DATE = i.LAST_WORKING_DATE,
-                        VENDOR_NAME = i.VENDOR_NAME,
-                        STATUS = i.STATUS,
-                        STATUS_ID = i.STATUS_ID,
-                        CREATED_ON = i.CREATED_ON,
-                        MODIFIED_ON = i.MODIFIED_ON,
-                        MODIFIED_BY = i.MODIFIED_BY,
-                    }).ToList();
-                }
-                else
-                {
-                    jobCanObj.CandidateItems = (from c in dbCan
-                                                join j in dbJobs on c.JOB_ID equals j.JOB_ID
-                                                join u1 in db.AspNetUsers.ToList() on c.CREATED_BY equals u1.Id
-                                                join v in db.VENDOR_MASTER.ToList() on u1.Vendor_Id equals v.VENDOR_ID
-                                                where c.CANDIDATE_NAME.ToUpper().Contains(name.ToUpper())
-                                                && (status != string.Empty ? status.Split(',').Contains(c.STATUS) : true)
-                                                && (stdt != string.Empty ? ((Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) >= Convert.ToDateTime(stdt))) : true)
-                                                && (edt != string.Empty ? Convert.ToDateTime(c.CREATED_ON.ToShortDateString()) <= Convert.ToDateTime(edt) : true)
-                                                && (!string.IsNullOrEmpty(vendor) ? vendor.Split(',').Contains(v.VENDOR_NAME) : true)
-                                                && (!string.IsNullOrEmpty(position) ? position.Split(',').Contains(j.POSITION_NAME) : true)
-                                                select new { Candidate = c, Job = j }).Select(i => new CandidateViewModels
-                                                {
-                                                    CANDIDATE_ID = i.Candidate.CANDIDATE_ID,
-                                                    CANDIDATE_NAME = i.Candidate.CANDIDATE_NAME,
-                                                    POSITION = i.Job.POSITION_NAME,
-                                                    MOBILE_NO = i.Candidate.MOBILE_NO,
-                                                    EMAIL = i.Candidate.EMAIL,
-                                                    CURRENT_COMPANY = i.Candidate.CURRENT_COMPANY,
-                                                    RESUME_FILE_PATH = string.IsNullOrEmpty(i.Candidate.RESUME_FILE_PATH) ? string.Empty : Path.Combine("/UploadDocument/", i.Candidate.RESUME_FILE_PATH),
-                                                    NOTICE_PERIOD = i.Candidate.NOTICE_PERIOD,
-                                                    YEARS_OF_EXP_TOTAL = i.Candidate.YEARS_OF_EXP_TOTAL,
-                                                    LAST_WORKING_DATE = i.Candidate.LAST_WORKING_DATE,
-                                                    VENDOR_NAME = GetPartnerName(i.Candidate.CREATED_BY),
-                                                    STATUS = vmodel.GetStatusNameById(i.Candidate.CANDIDATE_ID),
-                                                    STATUS_ID = i.Candidate.STATUS,
-                                                    CREATED_ON = i.Candidate.CREATED_ON,
-                                                    MODIFIED_ON = i.Candidate.MODIFIED_ON,
-                                                    MODIFIED_BY = GetModifiedById(i.Candidate),
-                                                }).ToList();
-                }
+                    CANDIDATE_ID = i.CANDIDATE_ID,
+                    CANDIDATE_NAME = i.CANDIDATE_NAME,
+                    MOBILE_NO = i.MOBILE_NO,
+                    EMAIL = i.EMAIL,
+                    POSITION = i.POSITION,
+                    RESUME_FILE_PATH = (string.IsNullOrEmpty(i.RESUME_FILE_PATH) ? string.Empty : i.RESUME_FILE_PATH),
+                    NOTICE_PERIOD = i.NOTICE_PERIOD,
+                    CURRENT_COMPANY = i.CURRENT_COMPANY,
+                    YEARS_OF_EXP_TOTAL = i.YEARS_OF_EXP_TOTAL,
+                    LAST_WORKING_DATE = i.LAST_WORKING_DATE,
+                    VENDOR_NAME = i.VENDOR_NAME,
+                    STATUS = i.STATUS,
+                    STATUS_ID = i.STATUS_ID,
+                    CREATED_ON = i.CREATED_ON,
+                    MODIFIED_ON = i.MODIFIED_ON,
+                    MODIFIED_BY = i.MODIFIED_BY,
+                    NO_OF_TIMES_APPEARED=i.NO_OF_TIMES_APPEARED
+                }).ToList();
                 return jobCanObj;
             }
             catch (Exception ex)
@@ -614,6 +590,47 @@ namespace HRPortal.Controllers
                           join v in db.VENDOR_MASTER on u.Vendor_Id equals v.VENDOR_ID
                           select v.VENDOR_NAME).FirstOrDefault();
             return vendor.ToString();
+        }
+
+        /// <summary>
+        /// Archive the original candidate data when cooling period is over
+        /// </summary>
+        /// <param name="canId">Candidate Id</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<bool> ArchiveCandidate(Guid Id)
+        {
+            CANDIDATES_ARCHIVE cArch = new CANDIDATES_ARCHIVE();
+            CANDIDATE oCan = await db.CANDIDATES.Where(c => c.CANDIDATE_ID == Id).SingleAsync();
+            cArch.CANDIDATE_ID = oCan.CANDIDATE_ID;
+            cArch.CANDIDATE_NAME = oCan.CANDIDATE_NAME.Trim();
+            cArch.ALTERNATE_EMAIL_ID = oCan.ALTERNATE_EMAIL_ID;
+            cArch.ALTERNATE_MOBILE_NO = oCan.ALTERNATE_MOBILE_NO;
+            cArch.ANY_OTHER_OFFER = oCan.ANY_OTHER_OFFER;
+            cArch.COMMENTS = oCan.COMMENTS;
+            cArch.CURRENT_COMPANY = oCan.CURRENT_COMPANY;
+            cArch.CURRENT_LOCATION = oCan.CURRENT_LOCATION;
+            cArch.DOB = oCan.DOB;
+            cArch.EMAIL = oCan.EMAIL;
+            cArch.JOB_ID = oCan.JOB_ID;
+            cArch.LAST_WORKING_DATE = oCan.LAST_WORKING_DATE;
+            cArch.MOBILE_NO = oCan.MOBILE_NO;
+            cArch.NO_OF_TIMES_APPEARED = oCan.NO_OF_TIMES_APPEARED;
+            cArch.RESUME_SOURCE = oCan.RESUME_SOURCE;
+            cArch.YEARS_OF_EXP_RELEVANT = oCan.YEARS_OF_EXP_RELEVANT;
+            cArch.YEARS_OF_EXP_TOTAL = oCan.YEARS_OF_EXP_TOTAL;
+            cArch.ISACTIVE = oCan.ISACTIVE;
+            cArch.ISINNOTICEPERIOD = oCan.ISINNOTICEPERIOD;
+            cArch.NOTICE_PERIOD = oCan.NOTICE_PERIOD;
+            cArch.MODIFIED_BY = oCan.MODIFIED_BY;
+            cArch.MODIFIED_ON = oCan.MODIFIED_ON;
+            cArch.CREATED_BY = oCan.CREATED_BY;
+            cArch.CREATED_ON = oCan.CREATED_ON;
+            cArch.STATUS = oCan.STATUS;
+            cArch.RESUME_FILE_PATH = oCan.RESUME_FILE_PATH;
+            db.CANDIDATES_ARCHIVE.Add(cArch);
+            await db.SaveChangesAsync();
+            return true;
         }
 
         public async Task<ActionResult> ExportToExcel()

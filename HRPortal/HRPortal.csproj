@@ -228,6 +228,9 @@
     <Compile Include="CANDIDATE.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
     </Compile>
+    <Compile Include="CANDIDATES_ARCHIVE.cs">
+      <DependentUpon>HRPortal.tt</DependentUpon>
+    </Compile>
     <Compile Include="Common\Context.cs" />
     <Compile Include="Common\DiaryEvents.cs" />
     <Compile Include="Common\HRPConst.cs" />
@@ -312,9 +315,6 @@
     <Compile Include="Models\PaginationViewModels.cs" />
     <Compile Include="Models\ReportsViewModels.cs" />
     <Compile Include="Models\SearchViewModel.cs" />
-    <Compile Include="Number.cs">
-      <DependentUpon>HRPortal.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="rptGetCandidatesIdleTimeByWeek_Result.cs">
       <DependentUpon>HRPortal.tt</DependentUpon>
