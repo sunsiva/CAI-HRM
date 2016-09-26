@@ -406,6 +406,7 @@
     <Content Include="Views\Appointment\Schedules.cshtml" />
     <Content Include="Views\Candidate\Index.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Job\_JobList.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -423,7 +424,6 @@
     </Content>
     <Content Include="Views\Report\Index.cshtml" />
     <Content Include="Views\Appointment\SearchResults.cshtml" />
-    <Content Include="Views\Job\_JobList.cshtml" />
     <Content Include="Views\Candidate\_TimeLines.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

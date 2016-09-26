@@ -48,7 +48,10 @@
                             @foreach (var item in modal.ToList())
                             {
                                 <tr>
-                                    <td>@(sl = sl + 1)</td>
+                                    <td>@(sl = sl + 1)
+                                        @if (item.NO_OF_TIMES_APPEARED >= 2)
+                                        { <i class="glyphicon glyphicon-tag" title="Candidate re-appeared"></i> }
+                                    </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.CANDIDATE_NAME)
                                     </td>
@@ -73,8 +76,7 @@
                                     </td>
                                     <td width="150px">
                                         <a href="#StatusModal" id="btnStsPnl_@item.CANDIDATE_ID" data-toggle="modal" onclick='myPanel(this); return false;' data-custom-name="@item.CANDIDATE_NAME" data-custom-value="@item.CANDIDATE_ID" title="Click To Change The Status">@item.STATUS
-                                            @if (item.NO_OF_TIMES_APPEARED >= 2)
-                                            { <i class="glyphicon glyphicon-info-sign" title="Candidate re-appeared"></i> }
+                                           
                                         </a>
                                     </td>
                                     <td>

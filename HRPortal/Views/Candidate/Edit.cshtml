@@ -207,7 +207,7 @@ else
         $('.date-picker').datetimepicker({
             format: 'MM/DD/YYYY'
         });
-        
+
         var objNP = '@Model.NOTICE_PERIOD';
         if (objNP)
         {
@@ -274,9 +274,24 @@ else
                     //BEGIN:Archive the original candidate data
                     var cTyp = getParameterByName('cTyp');
                     if (cTyp == "2")
-                    { 
-                        $.post("/Candidate/ArchiveCandidate", { Id:'@Model.CANDIDATE_ID'});
-                    }
+                    {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/Candidate/ArchiveCandidate',
+                            data: { Id:'@Model.CANDIDATE_ID'},
+                            cache: false,
+                            timeout: 60000,
+                            async: false,
+                            success: function (data, textStatus, jqXHR) {
+                                //alert(data);
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                //alert(jqXHR.error);
+                                //alert(textStatus);
+                                //alert(errorThrown);
+                            }
+                        });
+                      }
                     //END:Archive the original candidate data
                     $("#CandidateFormEdit").submit()
                 }

@@ -147,6 +147,7 @@ namespace HRPortal.Controllers
                     cANDIDATE.NOTICE_PERIOD = string.IsNullOrEmpty(frm["ddlNoticePeriod"]) ? "0" : frm["ddlNoticePeriod"].ToString();
                     cANDIDATE.MODIFIED_BY = (_uid == string.Empty ? User.Identity.Name : _uid);
                     cANDIDATE.MODIFIED_ON = HelperFuntions.GetDateTime();
+                    cANDIDATE.NO_OF_TIMES_APPEARED = 1;
                     cANDIDATE.CREATED_BY = (_uid == string.Empty ? User.Identity.Name : _uid);
                     cANDIDATE.CREATED_ON = HelperFuntions.GetDateTime();
                     cANDIDATE.STATUS = db.STATUS_MASTER.Where(i => i.STATUS_ORDER == 1).FirstOrDefault().STATUS_ID.ToString();
